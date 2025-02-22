@@ -237,7 +237,7 @@ const ChatItem = (props: Props) => {
             <ChatController {...props} isLastChild={isLastChild} />
           </Flex>
         )}
-        <ChatAvatar src={avatar} type={type} />
+        {type === ChatRoleEnum.AI ? <ChatAvatar src={avatar} type={type} /> : null}
 
         {/* Workflow status */}
         {!!chatStatusMap && statusBoxData && isLastChild && showNodeStatus && (

@@ -182,12 +182,12 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
             flexDirection={'column'}
           >
             {/* header */}
-            <ChatHeader
+            {/* <ChatHeader
               totalRecordsCount={totalRecordsCount}
               apps={myApps}
               history={chatRecords}
               showHistory
-            />
+            /> */}
 
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
