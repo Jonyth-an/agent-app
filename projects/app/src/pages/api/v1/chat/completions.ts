@@ -93,14 +93,17 @@ type AuthResponseType = {
 };
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+  // 监听响应关闭事件
   res.on('close', () => {
     res.end();
   });
+  // 监听响应错误事件
   res.on('error', () => {
     console.log('error: ', 'request error');
     res.end();
   });
 
+  // 解析请求体
   let {
     chatId,
     appId,
@@ -120,11 +123,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     metadata
   } = req.body as Props;
 
+  // 获取客户端IP
   const originIp = requestIp.getClientIp(req);
 
+  // 记录开始时间
   const startTime = Date.now();
 
   try {
+    // 检查messages是否为数组
     if (!Array.isArray(messages)) {
       throw new Error('messages is not array');
     }
@@ -134,6 +140,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       API params: chatId + [Human]
       API params: [histories, Human]
     */
+    // 将messages转换为chatMessages
     const chatMessages = GPTMessages2Chats(messages);
 
     // Computed start hook params

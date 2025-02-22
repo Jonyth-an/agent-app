@@ -18,7 +18,7 @@ import FilePreview from '../../components/FilePreview';
 import { useFileUpload } from '../hooks/useFileUpload';
 import ComplianceTip from '@/components/common/ComplianceTip/index';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-
+import CardList from './card-list';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -464,47 +464,47 @@ const ChatInput = ({
         }
       }}
     >
-      <Box
-        pt={fileList.length > 0 ? '0' : ['14px', '18px']}
-        pb={['14px', '18px']}
-        position={'relative'}
-        boxShadow={isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`}
-        borderRadius={['none', 'md']}
-        bg={'white'}
-        overflow={'display'}
-        {...(isPc
-          ? {
-              border: '1px solid',
-              borderColor: 'rgba(0,0,0,0.12)'
-            }
-          : {
-              borderTop: '1px solid',
-              borderTopColor: 'rgba(0,0,0,0.15)'
-            })}
-      >
-        {/* Chat input guide box */}
-        {chatInputGuide.open && (
-          <InputGuideBox
-            appId={appId}
-            text={inputValue}
-            onSelect={(e) => {
-              setValue('input', e);
-            }}
-            onSend={(e) => {
-              handleSend(e);
-            }}
-          />
-        )}
-
-        {/* translate loading */}
-        {RenderTranslateLoading}
-
-        {/* file preview */}
-        <Box px={[1, 3]}>
-          <FilePreview fileList={fileList} removeFiles={removeFiles} />
+      {/* mark卡片列表 */}
+      <Box boxShadow={isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`}>
+        <CardList />
+        <Box
+          pt={fileList.length > 0 ? '0' : ['14px', '18px']}
+          pb={['14px', '18px']}
+          position={'relative'}
+          borderRadius={['none', 'md']}
+          bg={'white'}
+          overflow={'display'}
+          {...(isPc
+            ? {
+                border: '1px solid',
+                borderColor: 'rgba(0,0,0,0.12)'
+              }
+            : {
+                borderTop: '1px solid',
+                borderTopColor: 'rgba(0,0,0,0.15)'
+              })}
+        >
+          {/* Chat input guide box */}
+          {chatInputGuide.open && (
+            <InputGuideBox
+              appId={appId}
+              text={inputValue}
+              onSelect={(e) => {
+                setValue('input', e);
+              }}
+              onSend={(e) => {
+                handleSend(e);
+              }}
+            />
+          )}
+          {/* translate loading */}
+          {RenderTranslateLoading}
+          {/* file preview */}
+          <Box px={[1, 3]}>
+            <FilePreview fileList={fileList} removeFiles={removeFiles} />
+          </Box>
+          {RenderTextarea}
         </Box>
-
-        {RenderTextarea}
       </Box>
       <ComplianceTip type={'chat'} />
     </Box>
