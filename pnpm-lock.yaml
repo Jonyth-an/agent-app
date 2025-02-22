@@ -519,6 +519,9 @@ importers:
       mermaid:
         specifier: ^10.2.3
         version: 10.9.1
+      mongoose:
+        specifier: ^7.0.2
+        version: 7.8.2
       nanoid:
         specifier: ^4.0.1
         version: 4.0.2
