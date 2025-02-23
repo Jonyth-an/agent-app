@@ -22,8 +22,12 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*', // 匹配 /api 开头的请求
-        destination: 'http://10.5.9.219:3000/api/:path*' // 将请求重写到目标地址
+        source: '/api/:path*',
+        destination: 'http://10.5.9.219:3000/api/:path*'
+      },
+      {
+        source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'https://aim-saas-share-dev.newtamp.cn/uc-system/:path*'
       }
     ];
   },

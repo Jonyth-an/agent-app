@@ -13,7 +13,8 @@ import { i18nT } from '@fastgpt/web/i18n/utils';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 
 interface ConfigType {
-  headers?: { [key: string]: string };
+  baseURL?: string;
+  headers?: { [key: number | string]: any };
   timeout?: number;
   onUploadProgress?: (progressEvent: AxiosProgressEvent) => void;
   cancelToken?: AbortController;
@@ -95,10 +96,11 @@ function responseSuccess(response: AxiosResponse<ResponseDataType>) {
  * 响应数据检查
  */
 function checkRes(data: ResponseDataType) {
+  // console.log('xxx checkRes->data', data);
   if (data === undefined) {
     console.log('error->', data, 'data is empty');
     return Promise.reject('服务器异常');
-  } else if (data.code < 200 || data.code >= 400) {
+  } else if ((data.code !== 0 && data.code < 200) || (data.code !== 0 && data.code >= 400)) {
     return Promise.reject(data);
   }
   return data.data;
@@ -108,7 +110,7 @@ function checkRes(data: ResponseDataType) {
  * 响应错误
  */
 function responseError(err: any) {
-  console.log('error->', '请求错误', err);
+  // console.log('error->', '请求错误', err);
   const data = err?.response?.data || err;
 
   if (!err) {
@@ -122,28 +124,28 @@ function responseError(err: any) {
   }
 
   // 有报错响应
-  if (data?.code in TOKEN_ERROR_CODE) {
-    if (!['/chat/share', '/chat/team', '/login'].includes(window.location.pathname)) {
-      clearToken();
-      window.location.replace(
-        getWebReqUrl(`/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`)
-      );
-    }
+  // if (data?.code in TOKEN_ERROR_CODE) {
+  //   if (!['/chat/share', '/chat/team', '/login'].includes(window.location.pathname)) {
+  //     clearToken();
+  //     window.location.replace(
+  //       getWebReqUrl(`/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`)
+  //     );
+  //   }
 
-    return Promise.reject({ message: i18nT('common:unauth_token') });
-  }
-  if (
-    data?.statusText === TeamErrEnum.aiPointsNotEnough ||
-    data?.statusText === TeamErrEnum.datasetSizeNotEnough ||
-    data?.statusText === TeamErrEnum.datasetAmountNotEnough ||
-    data?.statusText === TeamErrEnum.appAmountNotEnough ||
-    data?.statusText === TeamErrEnum.pluginAmountNotEnough ||
-    data?.statusText === TeamErrEnum.websiteSyncNotEnough ||
-    data?.statusText === TeamErrEnum.reRankNotEnough
-  ) {
-    useSystemStore.getState().setNotSufficientModalType(data.statusText);
-    return Promise.reject(data);
-  }
+  //   return Promise.reject({ message: i18nT('common:unauth_token') });
+  // }
+  // if (
+  //   data?.statusText === TeamErrEnum.aiPointsNotEnough ||
+  //   data?.statusText === TeamErrEnum.datasetSizeNotEnough ||
+  //   data?.statusText === TeamErrEnum.datasetAmountNotEnough ||
+  //   data?.statusText === TeamErrEnum.appAmountNotEnough ||
+  //   data?.statusText === TeamErrEnum.pluginAmountNotEnough ||
+  //   data?.statusText === TeamErrEnum.websiteSyncNotEnough ||
+  //   data?.statusText === TeamErrEnum.reRankNotEnough
+  // ) {
+  //   useSystemStore.getState().setNotSufficientModalType(data.statusText);
+  //   return Promise.reject(data);
+  // }
   return Promise.reject(data);
 }
 

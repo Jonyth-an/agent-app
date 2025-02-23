@@ -36,6 +36,7 @@ import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/contex
 import ChatRecordContextProvider, {
   ChatRecordContext
 } from '@/web/core/chat/context/chatRecordContext';
+import { getAgentConfig, getUserInfo } from '@/web/core/chat/user';
 
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
@@ -63,11 +64,17 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const totalRecordsCount = useContextSelector(ChatRecordContext, (v) => v.totalRecordsCount);
 
   // Load chat init data
+
   const { loading } = useRequest2(
     async () => {
+      const res3 = await getAgentConfig({ agentId: 11 });
+      console.log('xxx getAgentConfig res3', res3);
+      const res2 = await getUserInfo();
+      console.log('xxx getUserInfo res2', res2);
       if (!appId || forbidLoadChat.current) return;
 
       const res = await getInitChatInfo({ appId, chatId });
+      console.log('xxx getInitChatInfo res2', res2);
       res.userAvatar = userInfo?.avatar;
 
       // Wait for state update to complete
@@ -293,7 +300,7 @@ export async function getServerSideProps(context: any) {
     props: {
       appId: context?.query?.appId || '',
       isStandalone: context?.query?.isStandalone || '',
-      ...(await serviceSideProps(context, ['file', 'app', 'chat', 'workflow']))
+      ...(await serviceSideProps(context, ['chat']))
     }
   };
 }
