@@ -36,7 +36,7 @@ import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/contex
 import ChatRecordContextProvider, {
   ChatRecordContext
 } from '@/web/core/chat/context/chatRecordContext';
-import { getAgentConfig, getUserInfo } from '@/web/core/chat/user';
+import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
 
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
@@ -67,14 +67,19 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const { loading } = useRequest2(
     async () => {
-      const res3 = await getAgentConfig({ agentId: 11 });
-      console.log('xxx getAgentConfig res3', res3);
-      const res2 = await getUserInfo();
-      console.log('xxx getUserInfo res2', res2);
+      const agentConfigInfo = await getAgentConfigInfo({ agentId: 11 });
+      console.log('xxx getAgentConfigInfo agentConfigInfo', agentConfigInfo);
+      // 将res3存储到store
+      useChatStore.setState({ agentConfigInfo: agentConfigInfo });
+
+      const staffInfo = await getStaffInfo();
+      console.log('xxx staffInfo', staffInfo);
+      // 将res2存储到store
+      useChatStore.setState({ staffInfo: staffInfo });
       if (!appId || forbidLoadChat.current) return;
 
       const res = await getInitChatInfo({ appId, chatId });
-      console.log('xxx getInitChatInfo res2', res2);
+      console.log('xxx getInitChatInfo res2', res);
       res.userAvatar = userInfo?.avatar;
 
       // Wait for state update to complete

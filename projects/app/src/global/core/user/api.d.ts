@@ -4,10 +4,10 @@ export type ApiResponse<T = any> = {
 };
 
 // 定义具体的响应数据结构 使用 type 替代 interface
-export type UserInfoResponse = ApiResponse<UserInfo>;
+export type StaffInfoResponse = ApiResponse<StaffInfo>;
 export type ParentOrgIdList = number[];
 // 定义用户信息的具体字段 使用 type 替代 interface
-export type UserInfo = {
+export type StaffInfo = {
   id: number; // 用户ID，假设为数字类型
   name: string; // 用户姓名，字符串类型
   userId: string; // 用户标识符ID，字符串类型
@@ -15,11 +15,11 @@ export type UserInfo = {
   parentOrgIdList: ParentOrgIdList; // 用户所属组织的上级组织ID列表，数组中的每个元素都是数字类型
 };
 
-export type AgentConfigReq = {
+export type agentConfigInfoReq = {
   agentId: number | string; // 智能体ID
 };
 // 定义整个 API 返回的数据结构
-export type AgentConfigRes = {
+export type agentConfigInfo = {
   agentId: string; // 智能体ID
   agentName: string; // 智能体名称
   agentIcon: string; // 智能体图标链接

@@ -1,12 +1,12 @@
 import { GET, POST, DELETE, PUT } from '@/web/common/api/request';
-import { AgentConfigRes, UserInfo } from '@/global/core/user/api';
-import { AgentConfigReq } from '../../../global/core/user/api';
+import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import { agentConfigInfoReq } from '../../../global/core/user/api';
 
 /**
  * 获取用户信息
  */
-export const getUserInfo = () =>
-  GET<UserInfo>(
+export const getStaffInfo = () =>
+  GET<StaffInfo>(
     `/mobile/api/v1/org/staff/getStaffInfo`,
     {},
     {
@@ -19,8 +19,8 @@ export const getUserInfo = () =>
     }
   );
 
-export const getAgentConfig = (agentConfigReq: AgentConfigReq) =>
-  GET<AgentConfigRes>(`/mobile/api/v1/ai/agent/config`, agentConfigReq, {
+export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq) =>
+  GET<agentConfigInfo>(`/mobile/api/v1/ai/agent/config`, agentConfigInfoReq, {
     baseURL: '/uc-system'
   });
 
