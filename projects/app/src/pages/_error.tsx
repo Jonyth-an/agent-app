@@ -46,9 +46,9 @@ function Error() {
 
     setTimeout(() => {
       if (modelError) {
-        router.push('/account/model');
+        router.push('/login');
       } else {
-        router.push('/app/list');
+        router.push('/login');
       }
     }, 2000);
   }, []);

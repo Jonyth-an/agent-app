@@ -86,31 +86,31 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   });
 
   // Check model invalid
-  useDebounceEffect(
-    () => {
-      console.log('xxx userInfo', userInfo);
-      console.log('xxx llmModelList', llmModelList);
-      if (userInfo?.username === 'root') {
-        if (llmModelList.length === 0) {
-          toast({
-            status: 'warning',
-            title: t('common:llm_model_not_config')
-          });
-          router.push('/account/model');
-        } else if (embeddingModelList.length === 0) {
-          toast({
-            status: 'warning',
-            title: t('common:embedding_model_not_config')
-          });
-          router.push('/account/model');
-        }
-      }
-    },
-    [embeddingModelList.length, llmModelList.length, userInfo?.username],
-    {
-      wait: 2000
-    }
-  );
+  // useDebounceEffect(
+  //   () => {
+  //     console.log('xxx userInfo', userInfo);
+  //     console.log('xxx llmModelList', llmModelList);
+  //     if (userInfo?.username === 'root') {
+  //       if (llmModelList.length === 0) {
+  //         toast({
+  //           status: 'warning',
+  //           title: t('common:llm_model_not_config')
+  //         });
+  //         router.push('/account/model');
+  //       } else if (embeddingModelList.length === 0) {
+  //         toast({
+  //           status: 'warning',
+  //           title: t('common:embedding_model_not_config')
+  //         });
+  //         router.push('/account/model');
+  //       }
+  //     }
+  //   },
+  //   [embeddingModelList.length, llmModelList.length, userInfo?.username],
+  //   {
+  //     wait: 2000
+  //   }
+  // );
 
   return (
     <>
