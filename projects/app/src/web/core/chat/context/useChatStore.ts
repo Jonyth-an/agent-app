@@ -24,7 +24,7 @@ type State = {
   setOutLinkAuthData: (e: OutLinkChatAuthProps) => any; // 设置外部链接认证数据的方法
 
   agentConfigInfo: agentConfigInfo; // 存储代理配置
-  setagentConfigInfo: (config: agentConfigInfo) => void; // 更新代理配置的方法
+  setAgentConfigInfo: (config: agentConfigInfo) => void; // 更新代理配置的方法
 
   staffInfo: StaffInfo; // 存储员工信息
   setStaffInfo: (info: any) => void; // 更新员工信息的方法
@@ -140,9 +140,13 @@ export const useChatStore = create<State>()(
           agentConfig: '',
           tenantId: 0
         },
-        setagentConfigInfo(config) {
+        setAgentConfigInfo(config) {
           set((state) => {
             state.agentConfigInfo = config;
+            if (config.agentConfig && typeof config.agentConfig === 'string') {
+              state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
+            }
+            console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
           });
         },
         staffInfo: {

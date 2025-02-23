@@ -47,7 +47,8 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const { isPc } = useSystem();
 
   const { userInfo } = useUserStore();
-  const { setLastChatAppId, chatId, appId, outLinkAuthData } = useChatStore();
+  const { setLastChatAppId, chatId, appId, outLinkAuthData, setAgentConfigInfo, setStaffInfo } =
+    useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -69,13 +70,13 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     async () => {
       const agentConfigInfo = await getAgentConfigInfo({ agentId: 11 });
       console.log('xxx getAgentConfigInfo agentConfigInfo', agentConfigInfo);
-      // 将res3存储到store
-      useChatStore.setState({ agentConfigInfo: agentConfigInfo });
+      // 使用 setAgentConfigInfo 方法存储到 store
+      setAgentConfigInfo(agentConfigInfo);
 
       const staffInfo = await getStaffInfo();
       console.log('xxx staffInfo', staffInfo);
-      // 将res2存储到store
-      useChatStore.setState({ staffInfo: staffInfo });
+      // 使用 setStaffInfo 方法存储到 store
+      setStaffInfo(staffInfo);
       if (!appId || forbidLoadChat.current) return;
 
       const res = await getInitChatInfo({ appId, chatId });

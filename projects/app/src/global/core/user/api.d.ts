@@ -27,6 +27,6 @@ export type agentConfigInfo = {
   enabled: boolean; // 是否启用
   permissionType: string; // 权限类型
   agentDescription: string; // 智能体描述
-  agentConfig: string; // 智能体配置
+  agentConfig: any; // 智能体配置
   tenantId: number; // 租户ID
 };

@@ -1,36 +1,35 @@
-import { Box, Flex, Text, useTheme } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import { Box, Flex, Text, useTheme, Image } from '@chakra-ui/react';
+import { useMemo } from 'react';
 
-interface CardItem {
+export interface CardItem {
   icon: string;
-  label: string;
+  name: string;
+  url: string;
 }
 
-const cardItems: CardItem[] = [
-  {
-    icon: 'AI',
-    label: '展业助手'
-  },
-  {
-    icon: 'AI',
-    label: '话术助手'
-  },
-  {
-    icon: 'AI',
-    label: '基金亮点挖掘'
-  },
-  {
-    icon: 'AI',
-    label: '基金亮点挖掘'
-  },
-  {
-    icon: 'AI',
-    label: '基金亮点挖掘'
-  }
-];
+// const { agentConfigInfo } = useChatStore();
+// const agentConfig = agentConfigInfo?.agentConfig || {};
+// // console.log('xxx agentConfig', agentConfig);
+// const cardList = (agentConfig && agentConfig.list) || [];
+// console.log('xxx cardList', cardList);
+// useEffect(() => {
+//   const { agentConfigInfo } = useChatStore();
+//   const agentConfig = agentConfigInfo?.agentConfig || {};
+//   // console.log('xxx agentConfig', agentConfig);
+//   const cardList = (agentConfig && agentConfig.list) || [];
+//   console.log('xxx cardList', cardList);
+// }, []);
 
-const CardList = () => {
+const CardList = ({ cardItems }: { cardItems: CardItem[] }) => {
   const theme = useTheme();
+  // const { agentConfigInfo } = useChatStore();
+
+  // const cardItems: CardItem[] = useMemo(() => {
+  //   const agentConfig = agentConfigInfo?.agentConfig || {};
+  //   const cardList = (agentConfig && agentConfig.list) || [];
+  //   console.log('xxx cardList', cardList);
+  //   return cardList;
+  // }, [agentConfigInfo]);
 
   return (
     <Box width="100%" position="relative" px={4} py={2}>
@@ -62,19 +61,20 @@ const CardList = () => {
             _hover={{
               bg: 'gray.100'
             }}
+            onClick={() => (window.location.href = item.url)} // 添加点击事件
           >
             <Flex
               alignItems="center"
               justifyContent="center"
-              w="20px"
-              h="20px"
+              w="1.25rem"
+              h="1.25rem"
               borderRadius="full"
               bg="gray.100"
             >
-              <MyIcon name={item.icon} width="20px" height="20px" color="gray.600" />
+              <Image src={item.icon} alt={item.name} boxSize="1.25rem" objectFit="cover" />
             </Flex>
-            <Text fontSize="sm" fontWeight="medium" whiteSpace="nowrap">
-              {item.label}
+            <Text fontSize="0.75rem" fontWeight="medium" whiteSpace="nowrap">
+              {item.name}
             </Text>
           </Flex>
         ))}

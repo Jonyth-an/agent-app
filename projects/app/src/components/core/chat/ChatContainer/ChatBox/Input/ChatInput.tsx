@@ -18,7 +18,8 @@ import FilePreview from '../../components/FilePreview';
 import { useFileUpload } from '../hooks/useFileUpload';
 import ComplianceTip from '@/components/common/ComplianceTip/index';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-import CardList from './card-list';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import CardList, { CardItem } from './card-list';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -433,6 +434,15 @@ const ChatInput = ({
     ]
   );
 
+  const { agentConfigInfo } = useChatStore();
+
+  const cardItems: CardItem[] = useMemo(() => {
+    const agentConfig = agentConfigInfo?.agentConfig || {};
+    const cardList = (agentConfig && agentConfig.list) || [];
+    console.log('xxx cardList', cardList);
+    return cardList;
+  }, [agentConfigInfo]);
+
   return (
     <Box
       m={['0 auto', '10px auto']}
@@ -466,7 +476,7 @@ const ChatInput = ({
     >
       {/* mark卡片列表 */}
       <Box boxShadow={isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`}>
-        <CardList />
+        {cardItems.length > 0 ? <CardList cardItems={cardItems} /> : null}
         <Box
           pt={fileList.length > 0 ? '0' : ['14px', '18px']}
           pb={['14px', '18px']}
