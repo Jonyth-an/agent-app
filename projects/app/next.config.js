@@ -18,6 +18,15 @@ const nextConfig = {
   reactStrictMode: isDev ? false : true,
   // 启用响应压缩
   compress: true,
+  // 配置 API 请求代理
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*', // 匹配 /api 开头的请求
+        destination: 'http://10.5.9.219:3000/api/:path*' // 将请求重写到目标地址
+      }
+    ];
+  },
 
   // webpack 配置
   webpack(config, { isServer, nextRuntime }) {

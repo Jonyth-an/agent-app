@@ -88,6 +88,8 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   // Check model invalid
   useDebounceEffect(
     () => {
+      console.log('xxx userInfo', userInfo);
+      console.log('xxx llmModelList', llmModelList);
       if (userInfo?.username === 'root') {
         if (llmModelList.length === 0) {
           toast({
