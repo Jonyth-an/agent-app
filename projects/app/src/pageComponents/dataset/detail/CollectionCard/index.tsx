@@ -32,7 +32,7 @@ import {
   DatasetTypeEnum
 } from '@fastgpt/global/core/dataset/constants';
 import { getCollectionIcon } from '@fastgpt/global/core/dataset/utils';
-import { TabEnum } from '../../../../pages/dataset/detail/index';
+import { TabEnum } from '@/page-tpl/dataset/detail/index';
 import dynamic from 'next/dynamic';
 import SelectCollections from '@/web/core/dataset/components/SelectCollections';
 import { useToast } from '@fastgpt/web/hooks/useToast';

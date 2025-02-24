@@ -20,7 +20,7 @@ import MyIcon from '@fastgpt/web/components/common/Icon';
 import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { useRouter } from 'next/router';
-import { TabEnum } from '../../../../../pages/dataset/detail/index';
+import { TabEnum } from '@/page-tpl/dataset/detail/index';
 import {
   postCreateDatasetApiDatasetCollection,
   postCreateDatasetCsvTableCollection,
