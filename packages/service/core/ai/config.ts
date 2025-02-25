@@ -16,8 +16,8 @@ export const openaiBaseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.
 export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number }) => {
   const { userKey, timeout } = props || {};
 
-  const baseUrl = userKey?.baseUrl || global?.systemEnv?.oneapiUrl || openaiBaseUrl;
-  const apiKey = userKey?.key || global?.systemEnv?.chatApiKey || process.env.CHAT_API_KEY || '';
+  const baseUrl = process.env.CHAT_API_BASE_URL;
+  const apiKey = process.env.CHAT_API_KEY || '';
 
   return new OpenAI({
     baseURL: baseUrl,
@@ -31,8 +31,8 @@ export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number
 export const getAxiosConfig = (props?: { userKey?: OpenaiAccountType }) => {
   const { userKey } = props || {};
 
-  const baseUrl = userKey?.baseUrl || global?.systemEnv?.oneapiUrl || openaiBaseUrl;
-  const apiKey = userKey?.key || global?.systemEnv?.chatApiKey || process.env.CHAT_API_KEY || '';
+  const baseUrl = process.env.CHAT_API_BASE_URL;
+  const apiKey = process.env.CHAT_API_KEY || '';
 
   return {
     baseUrl,
