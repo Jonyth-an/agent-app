@@ -10,6 +10,7 @@ const isDev = process.env.NODE_ENV === 'development';
 const nextConfig = {
   // 设置应用的基础路径
   basePath: process.env.NEXT_PUBLIC_BASE_URL,
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
   // 国际化配置
   i18n,
   // 构建输出为独立模式
