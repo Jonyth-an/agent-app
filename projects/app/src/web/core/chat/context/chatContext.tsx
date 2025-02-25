@@ -124,7 +124,8 @@ const ChatContextProvider = ({
     (changeChatId = getNanoid(24), forbid = false) => {
       if (chatId !== changeChatId) {
         forbidLoadChat.current = forbid;
-        setChatId(changeChatId);
+        // setChatId(changeChatId);
+        setChatId('v3S0tEEeawYbnqUCkKnm8DWu');
       }
       onCloseSlider();
     },

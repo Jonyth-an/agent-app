@@ -181,7 +181,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
           <SliderApps apps={myApps} activeAppId={appId} />
         </Box>
       )}
-
       <PageContainer isLoading={loading} flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'}>
         <Flex h={'100%'} flexDirection={['column', 'row']}>
           {/* pc always show history. */}
@@ -201,7 +200,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
               history={chatRecords}
               showHistory
             /> */}
-
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
               {isPlugin ? (
@@ -270,7 +268,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   });
   // Watch appId
   useEffect(() => {
-    setAppId(appId);
+    // setAppId(appId);
+    setAppId('67b860750d1c6dfdccebab3d');
   }, [appId, setAppId]);
 
   const chatHistoryProviderParams = useMemo(

@@ -507,6 +507,7 @@ const ChatInput = ({
               }}
             />
           )}
+          {/* <open-tools/> */}
           {/* translate loading */}
           {RenderTranslateLoading}
           {/* file preview */}
@@ -515,6 +516,7 @@ const ChatInput = ({
           </Box>
           {RenderTextarea}
         </Box>
+        {/* <ChatTools/> */}
       </Box>
       <ComplianceTip type={'chat'} />
     </Box>

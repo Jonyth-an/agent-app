@@ -121,9 +121,9 @@ const Layout = ({ children }: { children: JSX.Element }) => {
               <Auth>{children}</Auth>
             ) : (
               <Auth>
-                <Box h={'100%'} position={'fixed'} left={0} top={0} w={navbarWidth}>
+                {/* <Box h={'100%'} position={'fixed'} left={0} top={0} w={navbarWidth}>
                   <Navbar unread={unread} />
-                </Box>
+                </Box> */}
                 <Box h={'100%'} ml={navbarWidth} overflow={'overlay'}>
                   {children}
                 </Box>
