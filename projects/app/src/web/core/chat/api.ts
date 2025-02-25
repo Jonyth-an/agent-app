@@ -34,12 +34,9 @@ import type {
 /**
  * 获取初始化聊天内容
  */
+
 export const getInitChatInfo = (data: InitChatProps) =>
-  GET<InitChatResponse>(`/core/chat/init`, data, {
-    headers: {
-      Authorization: 'Bearer fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr'
-    }
-  });
+  GET<InitChatResponse>(`/core/chat/init`, data);
 export const getInitOutLinkChatInfo = (data: InitOutLinkChatProps) =>
   GET<InitChatResponse>(`/core/chat/outLink/init`, data);
 export const getTeamChatInfo = (data: InitTeamChatProps) =>

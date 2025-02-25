@@ -129,7 +129,8 @@ export const streamFetch = ({
       const requestData = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr`
         },
         signal: abortCtrl.signal,
         body: JSON.stringify({

@@ -153,7 +153,9 @@ function responseError(err: any) {
 const instance = axios.create({
   timeout: 60000, // 超时时间
   headers: {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    // Authorization: `Bearer ${process.env.CHAT_API_KEY}`
+    Authorization: 'Bearer fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr'
   }
 });
 
