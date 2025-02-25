@@ -25,7 +25,7 @@ type State = {
   // 用户信息相关
   userInfo: UserType | null;
   isTeamAdmin: boolean;
-  initUserInfo: () => Promise<UserType>;
+  initUserInfo: () => Promise<UserType> | Promise<void>;
   setUserInfo: (user: UserType | null) => void;
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
 
