@@ -25,7 +25,8 @@ type State = {
   // 用户信息相关
   userInfo: UserType | null;
   isTeamAdmin: boolean;
-  initUserInfo: () => Promise<UserType>;
+  // initUserInfo: () => Promise<UserType>;
+  initUserInfo: () => Promise<{}>;
   setUserInfo: (user: UserType | null) => void;
   updateUserInfo: (user: UserUpdateParams) => Promise<void>;
 
@@ -72,10 +73,10 @@ export const useUserStore = create<State>()(
         isTeamAdmin: false,
         // 初始化用户信息
         async initUserInfo() {
-          get().initTeamPlanStatus();
-          const res = await getTokenLogin();
-          get().setUserInfo(res);
-          return res;
+          // get().initTeamPlanStatus();
+          // const res = await getTokenLogin();
+          // get().setUserInfo(res);
+          return {};
         },
         // 设置用户信息
         setUserInfo(user: UserType | null) {

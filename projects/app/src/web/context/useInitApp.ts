@@ -63,11 +63,11 @@ export const useInitApp = () => {
     };
   });
 
-  useRequest2(initFetch, {
-    refreshDeps: [userInfo?.username],
-    manual: false,
-    pollingInterval: 300000 // 5 minutes refresh
-  });
+  // useRequest2(initFetch, {
+  //   refreshDeps: [userInfo?.username],
+  //   manual: false,
+  //   pollingInterval: 300000 // 5 minutes refresh
+  // });
 
   useEffect(() => {
     hiId && localStorage.setItem('inviterId', hiId);

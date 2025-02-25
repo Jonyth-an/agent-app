@@ -47,9 +47,7 @@ const Auth = ({ children }: { children: JSX.Element | React.ReactNode }) => {
         // 打印错误信息
         console.log('error->', error);
         // 将用户重定向到登录页面，并将当前页面的路径作为参数传递
-        router.replace(
-          `/login?lastRoute=${encodeURIComponent(location.pathname + location.search)}`
-        );
+        router.replace(`/?lastRoute=${encodeURIComponent(location.pathname + location.search)}`);
         // 弹出提示框，提示用户需要登录
         toast({
           status: 'warning',

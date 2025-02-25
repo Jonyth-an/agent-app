@@ -100,7 +100,7 @@ const ModelTable = ({ Tab }: { Tab: React.ReactNode }) => {
     manual: false
   });
   const refreshModels = useCallback(async () => {
-    clientInitData();
+    // clientInitData();
     refreshSystemModelList();
   }, [refreshSystemModelList]);
 
