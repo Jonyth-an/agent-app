@@ -5,7 +5,7 @@ const fs = require('fs');
 
 // 判断是否为开发环境
 const isDev = process.env.NODE_ENV === 'development';
-console.log('-----NEXT_PUBLIC_BASE_URL', NEXT_PUBLIC_BASE_URL);
+console.log('-----NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 设置应用的基础路径
