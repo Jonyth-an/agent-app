@@ -75,15 +75,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const { loading } = useRequest2(
     async () => {
-      const agentConfigInfo = await getAgentConfigInfo({ agentId: 11 });
-      console.log('xxx getAgentConfigInfo agentConfigInfo', agentConfigInfo);
-      // 使用 setAgentConfigInfo 方法存储到 store
-      setAgentConfigInfo(agentConfigInfo);
-
-      const staffInfo = await getStaffInfo();
-      console.log('xxx staffInfo', staffInfo);
-      // 使用 setStaffInfo 方法存储到 store
-      setStaffInfo(staffInfo);
       if (!appId || forbidLoadChat.current) return;
 
       const res = await getInitChatInfo({ appId, chatId });
@@ -103,18 +94,9 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
       manual: false,
       refreshDeps: [appId, chatId],
       onError(e: any) {
+        console.log('xxx getInitChatInfo error', e);
         // reset all chat tore
-        if (e?.code === 501) {
-          setLastChatAppId('');
-          router.replace('/app/list');
-        } else {
-          router.replace({
-            query: {
-              ...router.query,
-              appId: myApps[0]?._id
-            }
-          });
-        }
+        redirectAuth();
       },
       onFinally() {
         forbidLoadChat.current = false;
@@ -242,7 +224,17 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const router = useRouter();
-  const { source, chatId, lastChatAppId, setSource, setAppId } = useChatStore();
+  const {
+    source,
+    chatId,
+    lastChatAppId,
+    redirectAuth,
+    setSource,
+    setAppId,
+    setAgentConfigInfo,
+    setStaffInfo,
+    setToken
+  } = useChatStore();
 
   const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
     () => getMyApps({ getRecentlyChat: true }),
@@ -251,21 +243,53 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     }
   );
 
-  const { redirectAuth } = useChatStore();
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
-
     if (!appId) {
       redirectAuth();
     }
     setSource('online');
   });
+
   // Watch appId
   useEffect(() => {
-    // setAppId(appId);
-    setAppId('67b860750d1c6dfdccebab3d');
+    setAppId(appId);
+    // setAppId('67b860750d1c6dfdccebab3d');
   }, [appId, setAppId]);
+
+  const { loading, error } = useRequest2(
+    async () => {
+      if (!appId) {
+        throw new Error('No appId provided');
+      }
+
+      const agentConfigInfo = await getAgentConfigInfo({ agentId: appId });
+      setAgentConfigInfo(agentConfigInfo);
+
+      if (agentConfigInfo.permissionType !== 'PUBLIC') {
+        const token = router.query.token as string;
+        if (!token) {
+          throw new Error('No token provided for non-public agent');
+        }
+        setToken(token);
+
+        const staffInfo = await getStaffInfo(token);
+        setStaffInfo(staffInfo);
+      }
+
+      setAppId(appId);
+      setSource('online');
+    },
+    {
+      manual: false,
+      onError: (error) => {
+        console.error('Error initializing chat:', error);
+        redirectAuth();
+      },
+      refreshDeps: [appId]
+    }
+  );
 
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, source: ChatSourceEnum.online }),

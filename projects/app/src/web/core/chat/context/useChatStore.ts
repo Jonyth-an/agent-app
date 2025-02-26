@@ -5,9 +5,13 @@ import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
 import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import { loginUrl } from '@/config';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
+  token: string; // 存储token
+  setToken: (token: string) => void;
+
   source?: `${ChatSourceEnum}`; // 聊天来源
   setSource: (e: `${ChatSourceEnum}`) => any; // 设置聊天来源的方法
 
@@ -80,6 +84,12 @@ export const useChatStore = create<State>()(
     persist(
       // 使用persist中间件进行持久化存储
       immer((set, get) => ({
+        token: '',
+        setToken(token) {
+          set((state) => {
+            state.token = token;
+          });
+        },
         // 使用immer中间件以不可变方式更新状态
         source: undefined,
         setSource(e) {
@@ -162,11 +172,11 @@ export const useChatStore = create<State>()(
             state.staffInfo = info;
           });
         },
-        redirectAuth({ isLogin }: { isLogin?: boolean }) {
+        redirectAuth({ isLogin }: { isLogin?: boolean } = {}) {
           if (isLogin) {
-            window.location.href = 'https://external-login-page.com';
+            window.location.href = loginUrl;
           } else {
-            window.location.href = 'https://external-activation-page.com';
+            window.location.href = loginUrl;
           }
         }
       })),
