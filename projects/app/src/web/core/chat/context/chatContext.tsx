@@ -125,7 +125,7 @@ const ChatContextProvider = ({
       if (chatId !== changeChatId) {
         forbidLoadChat.current = forbid;
         // setChatId(changeChatId);
-        setChatId('v3S0tEEeawYbnqUCkKnm8DWu');
+        setChatId('nRfDi744hfTJkWKQg4HSt3yz');
       }
       onCloseSlider();
     },
