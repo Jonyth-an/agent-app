@@ -75,6 +75,52 @@ function htmlTableToLatex(html: string) {
     \`\`\``;
 }
 
+export const formatMarkdownLink = (link: string) => {
+  // 解析 URL
+  const url = new URL(link);
+
+  // 解析查询参数
+  const queryParams = new URLSearchParams(url.search);
+
+  // 检查 showPreview 参数及其值
+  const showPreview = queryParams.get('showPreview') === '1';
+  const linkType = queryParams.get('linkType') || undefined;
+  const w = queryParams.get('w') || 200;
+  const h = queryParams.get('h') || 300;
+  if (showPreview) {
+    // 删除 showPreview 参数
+    queryParams.delete('showPreview');
+    queryParams.delete('linkType');
+    queryParams.delete('w');
+    queryParams.delete('h');
+
+    // 重新生成查询字符串
+    const newSearch = queryParams.toString();
+
+    // 构造新链接
+    const accessLink = `${url.origin}${url.pathname}${newSearch ? '?' + newSearch : ''}`;
+
+    // 返回结果
+    return {
+      showPreview: true,
+      accessLink,
+      originUrl: link,
+      linkType,
+      w,
+      h
+    };
+  } else {
+    return {
+      showPreview: false,
+      accessLink: link,
+      originUrl: link,
+      linkType,
+      w,
+      h
+    };
+  }
+};
+
 export function convertHtmlTablesToLatex(input: string) {
   const tableRegex = /<table[\s\S]*?<\/table>/gi;
   return input.replace(tableRegex, (match) => htmlTableToLatex(match));
