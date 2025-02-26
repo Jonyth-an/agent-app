@@ -7,7 +7,7 @@ import { streamFetch } from '@/web/common/api/fetch';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { useTranslation } from 'next-i18next';
-
+import Cookies from 'js-cookie';
 import type { StartChatFnProps } from '@/components/core/chat/ChatContainer/type';
 import PageContainer from '@/components/PageContainer';
 import SideBar from '@/components/SideBar';
@@ -268,8 +268,12 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       setAgentConfigInfo(agentConfigInfo);
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
-        const token = router.query.token as string;
-        if (!token) {
+        let token = router.query.token as string;
+        let cookieToken = Cookies.get('token');
+        if (!token && cookieToken) {
+          token = cookieToken;
+        }
+        if (!token && cookieToken) {
           throw new Error('No token provided for non-public agent');
         }
         setToken(token);
