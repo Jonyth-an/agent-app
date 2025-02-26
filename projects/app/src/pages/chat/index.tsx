@@ -47,8 +47,15 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const { isPc } = useSystem();
 
   const { userInfo } = useUserStore();
-  const { setLastChatAppId, chatId, appId, outLinkAuthData, setAgentConfigInfo, setStaffInfo } =
-    useChatStore();
+  const {
+    redirectAuth,
+    setLastChatAppId,
+    chatId,
+    appId,
+    outLinkAuthData,
+    setAgentConfigInfo,
+    setStaffInfo
+  } = useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -176,11 +183,11 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     <Flex h={'100%'}>
       <NextHead title={chatBoxData.app.name} icon={chatBoxData.app.avatar}></NextHead>
       {/* pc show myself apps */}
-      {isPc && (
+      {/* {isPc && (
         <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>
           <SliderApps apps={myApps} activeAppId={appId} />
         </Box>
-      )}
+      )} */}
       <PageContainer isLoading={loading} flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'}>
         <Flex h={'100%'} flexDirection={['column', 'row']}>
           {/* pc always show history. */}
@@ -244,25 +251,13 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     }
   );
 
+  const { redirectAuth } = useChatStore();
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
+
     if (!appId) {
-      const apps = await loadMyApps();
-      if (apps.length === 0) {
-        toast({
-          status: 'error',
-          title: t('common:core.chat.You need to a chat app')
-        });
-        router.replace('/app/list');
-      } else {
-        router.replace({
-          query: {
-            ...router.query,
-            appId: lastChatAppId || apps[0]._id
-          }
-        });
-      }
+      redirectAuth();
     }
     setSource('online');
   });

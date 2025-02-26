@@ -28,6 +28,7 @@ type State = {
 
   staffInfo: StaffInfo; // 存储员工信息
   setStaffInfo: (info: any) => void; // 更新员工信息的方法
+  redirectAuth: (info?: any) => void; // 重定向认证的方法
 };
 
 // 自定义存储机制，结合sessionStorage和localStorage
@@ -160,6 +161,13 @@ export const useChatStore = create<State>()(
           set((state) => {
             state.staffInfo = info;
           });
+        },
+        redirectAuth({ isLogin }: { isLogin?: boolean }) {
+          if (isLogin) {
+            window.location.href = 'https://external-login-page.com';
+          } else {
+            window.location.href = 'https://external-activation-page.com';
+          }
         }
       })),
       {
