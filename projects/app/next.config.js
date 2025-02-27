@@ -120,27 +120,11 @@ const nextConfig = {
       layers: true // 启用模块层
     };
 
-    // 优化打包配置
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            name: 'vendor',
-            test: /[\\/]node_modules[\\/]/,
-            chunks: 'all',
-            priority: 10
-          }
-        }
-      }
-    };
-
     return config;
   },
 
   // 需要转译的包
-  transpilePackages: ['@fastgpt/*', 'ahooks', '@ahooksjs/use-request'],
+  transpilePackages: ['@fastgpt/*', 'ahooks'],
 
   // 实验性功能配置
   experimental: {
@@ -154,9 +138,7 @@ const nextConfig = {
     // 设置文件追踪根目录
     outputFileTracingRoot: path.join(__dirname, '../../'),
     // 启用性能检测钩子
-    instrumentationHook: true,
-    optimizeCss: true, // 优化 CSS
-    forceSwcTransforms: true // 强制使用 SWC
+    instrumentationHook: true
   }
 };
 

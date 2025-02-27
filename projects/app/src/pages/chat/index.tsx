@@ -39,7 +39,7 @@ import ChatRecordContextProvider, {
 import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
 import useWechatShare from './hooks/useWechatShare';
 import { redirectAuth } from './hooks/utils';
-
+import { share_h5_url } from '@/config';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
@@ -49,8 +49,14 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const { isPc } = useSystem();
 
   const { userInfo } = useUserStore();
-  const { setLastChatAppId, chatId, appId, outLinkAuthData, setAgentConfigInfo, setStaffInfo } =
-    useChatStore();
+  const {
+    setLastChatAppId,
+    chatId,
+    appId,
+    outLinkAuthData,
+    setAgentConfigInfo,
+    setStaffInfo
+  } = useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -300,13 +306,12 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     title: weChatShareConfig.title,
     desc: weChatShareConfig.desc,
     imgUrl: weChatShareConfig.imgUrl,
-    link: typeof window !== 'undefined' ? `${window.location.origin}/chat?appId=${appId}` : ''
+    link: typeof window !== 'undefined' ? `${share_h5_url}/chat?appId=${appId}` : ''
   });
 
-  const chatHistoryProviderParams = useMemo(
-    () => ({ appId, source: ChatSourceEnum.online }),
-    [appId]
-  );
+  const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [
+    appId
+  ]);
   const chatRecordProviderParams = useMemo(() => {
     return {
       appId,

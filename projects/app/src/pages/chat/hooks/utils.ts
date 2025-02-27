@@ -3,7 +3,7 @@ export const redirectAuth = ({
   isEmptyPage,
   appId
 }: { appId?: string; isEmptyPage?: boolean } = {}) => {
-  const curUrl = `${window.location.origin}/chat?appId=${appId}`;
+  const curUrl = `${share_h5_url}/chat?appId=${appId}`;
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?redirect=${curUrl}`;
     console.log('xxx emptyUrl', emptyUrl);
