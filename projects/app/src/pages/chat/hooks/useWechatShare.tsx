@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { getSignatureInfo } from '@/web/core/chat/user';
+import { useEffect, useRef } from 'react';
 
 interface ShareConfig {
   title: string;
@@ -8,21 +9,41 @@ interface ShareConfig {
 }
 
 export default function useWechatShare(config: ShareConfig) {
+  const lastUrlRef = useRef('');
+
   useEffect(() => {
     if (typeof window === 'undefined' || !window.wx) return;
 
+    const curUrl = window.location.href;
+    // 只在 URL 变化时重新获取签名
+    if (lastUrlRef.current === curUrl) {
+      // URL 未变化，只更新分享内容
+      window.wx.ready(() => {
+        window.wx.updateAppMessageShareData({ ...config });
+        window.wx.updateTimelineShareData({ ...config });
+      });
+      return;
+    }
+
+    lastUrlRef.current = curUrl;
     const initShare = async () => {
       try {
-        const signatureRes = await fetch(`/api/wechat/signature?url=${window.location.href}`);
-        const signatureData = await signatureRes.json();
+        const signatureData = await getSignatureInfo({ url: curUrl });
+        console.log('xxx getSignatureInfo signatureRes', signatureData);
 
         window.wx.config({
           debug: false,
           appId: signatureData.appId,
           timestamp: signatureData.timestamp,
-          nonceStr: signatureData.noncestr,
+          nonceStr: signatureData.nonce,
           signature: signatureData.signature,
-          jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareWeibo']
+          jsApiList: [
+            'updateAppMessageShareData',
+            'updateTimelineShareData',
+            'onMenuShareAppMessage',
+            'onMenuShareTimeline',
+            'onMenuShareQQ'
+          ]
         });
 
         window.wx.ready(() => {
@@ -30,7 +51,7 @@ export default function useWechatShare(config: ShareConfig) {
           window.wx.updateAppMessageShareData({
             title: config.title,
             desc: config.desc,
-            link: config.link,
+            link: config.link || curUrl,
             imgUrl: config.imgUrl,
             success: () => console.log('分享配置成功')
           });

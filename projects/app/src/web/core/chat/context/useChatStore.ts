@@ -5,7 +5,6 @@ import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
 import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
-import { loginUrl } from '@/config';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
@@ -32,7 +31,6 @@ type State = {
 
   staffInfo: StaffInfo; // 存储员工信息
   setStaffInfo: (info: any) => void; // 更新员工信息的方法
-  redirectAuth: (info?: any) => void; // 重定向认证的方法
 };
 
 // 自定义存储机制，结合sessionStorage和localStorage
@@ -149,7 +147,10 @@ export const useChatStore = create<State>()(
           enabled: false,
           permissionType: '',
           description: '',
-          agentConfig: '',
+          agentConfig: {
+            list: [],
+            weChatShareConfig: {}
+          },
           tenantId: 0,
           status: ''
         },
@@ -173,13 +174,6 @@ export const useChatStore = create<State>()(
           set((state) => {
             state.staffInfo = info;
           });
-        },
-        redirectAuth({ isLogin }: { isLogin?: boolean } = {}) {
-          // if (isLogin) {
-          //   window.location.href = loginUrl;
-          // } else {
-          //   window.location.href = loginUrl;
-          // }
         }
       })),
       {

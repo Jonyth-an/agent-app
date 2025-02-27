@@ -18,6 +18,10 @@ export type StaffInfo = {
 export type agentConfigInfoReq = {
   appId: number | string; // 智能体ID
 };
+export type agentConfigDes = {
+  weChatShareConfig: any;
+  list: any[];
+};
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
   agentId: string; // 智能体ID

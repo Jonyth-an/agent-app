@@ -17,9 +17,7 @@ export const getStaffInfo = (token: string) =>
     {
       baseURL: '/uc-system',
       headers: {
-        token:
-          token ||
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZW5hbnRJZCI6IjEiLCJjbGllbnQiOiIxMzEiLCJ0b2tlbl90eXBlIjoidG9rZW4iLCJ1c2VyTmFtZSI6Iue9l-ael-WGmyIsInVzZXJJZCI6IjM3NTIxMzMxMDc3NzQ4NDgiLCJ1c2VyIjoiMzAwIiwiYWNjb3VudCI6IjM3NTIxMzMxMDc3NzQ4NDkiLCJpYXQiOjE3NDAyMDQ4OTYsIm5iZiI6MTc0MDIwNDg5NiwiZXhwIjoxNzQwODA5Njk2fQ.yV33tLr8Kz51XWlgmWQ2tjUKezemeO2KK-XlJD6AzvA',
+        token,
         tenantId: 1
       }
     }
@@ -31,6 +29,12 @@ export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq) =>
   });
 
 export const getSignatureInfo = (data: SignatureInfoReq) =>
-  POST<SignatureInfo>(`core/chat/getPaginationRecords?url=${data.url}`);
+  POST<SignatureInfo>(
+    `/marketing-api/api/v1/h5/wechat/getSignature?url=${data.url}`,
+    {},
+    {
+      baseURL: '/marketing'
+    }
+  );
 // export const getChatRecords = (data: getPaginationRecordsBody) =>
 //   POST<getPaginationRecordsResponse>('core/chat/getPaginationRecords', data);

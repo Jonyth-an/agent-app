@@ -37,6 +37,8 @@ import ChatRecordContextProvider, {
   ChatRecordContext
 } from '@/web/core/chat/context/chatRecordContext';
 import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
+import useWechatShare from './hooks/useWechatShare';
+import { redirectAuth } from './hooks/utils';
 
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
@@ -47,15 +49,8 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const { isPc } = useSystem();
 
   const { userInfo } = useUserStore();
-  const {
-    redirectAuth,
-    setLastChatAppId,
-    chatId,
-    appId,
-    outLinkAuthData,
-    setAgentConfigInfo,
-    setStaffInfo
-  } = useChatStore();
+  const { setLastChatAppId, chatId, appId, outLinkAuthData, setAgentConfigInfo, setStaffInfo } =
+    useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -96,7 +91,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
       onError(e: any) {
         console.log('xxx getInitChatInfo error', e);
         // reset all chat tore
-        redirectAuth();
+        redirectAuth({ isEmptyPage: false });
       },
       onFinally() {
         forbidLoadChat.current = false;
@@ -231,7 +226,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     source,
     chatId,
     lastChatAppId,
-    redirectAuth,
+    agentConfigInfo,
     setSource,
     setAppId,
     setAgentConfigInfo,
@@ -250,7 +245,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useMount(async () => {
     // pc: redirect to latest model chat
     if (!appId) {
-      redirectAuth();
+      redirectAuth({ isEmptyPage: false });
     }
     setSource('online');
   });
@@ -284,7 +279,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         const staffInfo = await getStaffInfo(token);
         setStaffInfo(staffInfo);
       }
-
       setAppId(appId);
       setSource('online');
     },
@@ -297,6 +291,17 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       refreshDeps: [appId]
     }
   );
+
+  console.log('xxx agentConfigInfo', agentConfigInfo);
+  const agentConfig = agentConfigInfo.agentConfig;
+  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
+
+  useWechatShare({
+    title: weChatShareConfig.title,
+    desc: weChatShareConfig.desc,
+    imgUrl: weChatShareConfig.imgUrl,
+    link: typeof window !== 'undefined' ? `${window.location.origin}/chat?appId=${appId}` : ''
+  });
 
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, source: ChatSourceEnum.online }),

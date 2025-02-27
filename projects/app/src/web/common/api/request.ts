@@ -25,6 +25,7 @@ interface ResponseDataType {
   code: number;
   message: string;
   data: any;
+  param: any;
 }
 
 const maxQuantityMap: Record<
@@ -96,14 +97,14 @@ function responseSuccess(response: AxiosResponse<ResponseDataType>) {
  * 响应数据检查
  */
 function checkRes(data: ResponseDataType) {
-  // console.log('xxx checkRes->data', data);
+  console.log('xxx checkRes->data', data);
   if (data === undefined) {
     console.log('error->', data, 'data is empty');
     return Promise.reject('服务器异常');
   } else if ((data.code !== 0 && data.code < 200) || (data.code !== 0 && data.code >= 400)) {
     return Promise.reject(data);
   }
-  return data.data;
+  return data.data || data.param;
 }
 
 /**
@@ -179,20 +180,23 @@ function request(
 
   const { id: signId, abortSignal } = checkMaxQuantity({ url, maxQuantity });
 
-  return instance
-    .request({
-      baseURL: getWebReqUrl('/api'),
-      url,
-      method,
-      data: ['POST', 'PUT'].includes(method) ? data : undefined,
-      params: !['POST', 'PUT'].includes(method) ? data : undefined,
-      signal: cancelToken?.signal ?? abortSignal,
-      withCredentials,
-      ...config // 用户自定义配置，可以覆盖前面的配置
-    })
-    .then((res) => checkRes(res.data))
-    .catch((err) => responseError(err))
-    .finally(() => requestFinish({ signId, url }));
+  return (
+    instance
+      .request({
+        baseURL: getWebReqUrl('/api'),
+        url,
+        method,
+        data: ['POST', 'PUT'].includes(method) ? data : undefined,
+        params: !['POST', 'PUT'].includes(method) ? data : undefined,
+        signal: cancelToken?.signal ?? abortSignal,
+        withCredentials,
+        ...config // 用户自定义配置，可以覆盖前面的配置
+      })
+      // @ts-ignore
+      .then((res) => checkRes(res.data || res.param))
+      .catch((err) => responseError(err))
+      .finally(() => requestFinish({ signId, url }))
+  );
 }
 
 /**
