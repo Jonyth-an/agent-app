@@ -178,6 +178,7 @@ export const useAudioPlay = (
 
               await new Promise((resolve) => {
                 sourceBuffer.onupdateend = resolve;
+                // @ts-ignore
                 sourceBuffer.appendBuffer(value.buffer);
               });
             }
@@ -311,6 +312,7 @@ export const useAudioPlay = (
 
             await new Promise((resolve) => {
               buffer.onupdateend = resolve;
+              // @ts-ignore
               buffer.appendBuffer(value.buffer);
             });
           }
