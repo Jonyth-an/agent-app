@@ -21,14 +21,14 @@ export const useInitApp = () => {
   const { userInfo } = useUserStore();
   const { chatId } = useChatStore();
   const [scripts, setScripts] = useState<FastGPTFeConfigsType['scripts']>([]);
-  const [title, setTitle] = useState(process.env.SYSTEM_NAME || 'AI');
+  const [title, setTitle] = useState(process.env.SYSTEM_NAME || 'Newbanker');
 
   const initFetch = useMemoizedFn(async () => {
     const {
       feConfigs: { scripts, isPlus, systemTitle }
     } = await clientInitData();
 
-    setTitle(systemTitle || 'FastGPT');
+    setTitle(systemTitle || 'Newbanker');
 
     // log fastgpt
     if (!isPlus) {

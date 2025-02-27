@@ -109,7 +109,7 @@ const ChatHistorySlider = ({ confirmClearText }: { confirmClearText: string }) =
               })
             }
           >
-            <Avatar src={appAvatar} borderRadius={'md'} />
+            <Avatar src="/icon/logo.svg" borderRadius={'md'} />
             <Box flex={'1 0 0'} w={0} ml={2} fontWeight={'bold'} className={'textEllipsis'}>
               {appName}
             </Box>
@@ -149,7 +149,7 @@ const ChatHistorySlider = ({ confirmClearText }: { confirmClearText: string }) =
           {t('common:core.chat.New Chat')}
         </Button>
         {/* Clear */}
-        {isPc && histories.length > 0 && (
+        {/* {isPc && histories.length > 0 && (
           <IconButton
             ml={3}
             h={'100%'}
@@ -164,7 +164,7 @@ const ChatHistorySlider = ({ confirmClearText }: { confirmClearText: string }) =
               })()
             }
           />
-        )}
+        )} */}
       </Flex>
 
       <ScrollData flex={'1 0 0'} h={0} px={[2, 5]} overflow={'overlay'}>
