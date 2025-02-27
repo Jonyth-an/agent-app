@@ -32,3 +32,14 @@ export type agentConfigInfo = {
   tenantId: number; // 租户ID
   status: string; // 智能体描述
 };
+
+export type SignatureInfoReq = {
+  url: string; // appId
+};
+
+export type SignatureInfo = {
+  appId: string; // appId
+  signature: string; // signature
+  timestamp: string; // timestamp
+  nonce: string; // nonce
+};

@@ -1,5 +1,10 @@
 import { GET, POST, DELETE, PUT } from '@/web/common/api/request';
-import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import {
+  agentConfigInfo,
+  SignatureInfo,
+  SignatureInfoReq,
+  StaffInfo
+} from '@/global/core/user/api';
 import { agentConfigInfoReq } from '../../../global/core/user/api';
 
 /**
@@ -25,5 +30,7 @@ export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq) =>
     baseURL: '/marketing-ai'
   });
 
+export const getSignatureInfo = (data: SignatureInfoReq) =>
+  POST<SignatureInfo>(`core/chat/getPaginationRecords?url=${data.url}`);
 // export const getChatRecords = (data: getPaginationRecordsBody) =>
 //   POST<getPaginationRecordsResponse>('core/chat/getPaginationRecords', data);

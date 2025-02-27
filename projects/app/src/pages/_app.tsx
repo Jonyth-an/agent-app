@@ -53,6 +53,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         }
         icon={getWebReqUrl(feConfigs?.favicon || process.env.SYSTEM_FAVICON)}
       />
+      <Script src={`/js/utils/jsweixin.js`}></Script>
+      <Script src={`/js/utils/vConsole.js`}></Script>
       {scripts?.map((item, i) => <Script key={i} strategy="lazyOnload" {...item}></Script>)}
 
       <QueryClientContext>

@@ -190,7 +190,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
               showHistory
             /> */}
 
-            <Demo />
+            {/* <Demo /> */}
 
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
