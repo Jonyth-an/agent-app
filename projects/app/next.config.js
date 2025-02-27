@@ -29,6 +29,10 @@ const nextConfig = {
       {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://aim-saas-share-dev.newtamp.cn/uc-system/:path*'
+      },
+      {
+        source: '/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'https://aim-saas-share-dev.newtamp.cn/marketing-ai/:path*'
       }
     ];
   },

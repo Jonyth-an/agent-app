@@ -16,17 +16,19 @@ export type StaffInfo = {
 };
 
 export type agentConfigInfoReq = {
-  agentId: number | string; // 智能体ID
+  appId: number | string; // 智能体ID
 };
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
   agentId: string; // 智能体ID
-  agentName: string; // 智能体名称
-  agentIcon: string; // 智能体图标链接
+  name: string; // 智能体名称
+  avatar: string; // 智能体图标链接
   sourceType: string; // 来源类型
+  thirdResourceId: string; // 来源类型
   enabled: boolean; // 是否启用
   permissionType: string; // 权限类型
-  agentDescription: string; // 智能体描述
+  description: string; // 智能体描述
   agentConfig: any; // 智能体配置
   tenantId: number; // 租户ID
+  status: string; // 智能体描述
 };

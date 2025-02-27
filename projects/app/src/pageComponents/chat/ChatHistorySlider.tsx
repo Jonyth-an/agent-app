@@ -46,7 +46,7 @@ const ChatHistorySlider = ({ confirmClearText }: { confirmClearText: string }) =
   const appName = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app.name);
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app.avatar);
   const showRouteToAppDetail = useContextSelector(ChatItemContext, (v) => v.showRouteToAppDetail);
-
+  const { agentConfigInfo } = useChatStore();
   const concatHistory = useMemo(() => {
     const formatHistories: HistoryItemType[] = histories.map((item) => {
       return {
@@ -109,9 +109,9 @@ const ChatHistorySlider = ({ confirmClearText }: { confirmClearText: string }) =
               })
             }
           >
-            <Avatar src="/icon/logo.svg" borderRadius={'md'} />
+            <Avatar src={agentConfigInfo.avatar || '/icon/logo.svg'} borderRadius={'md'} />
             <Box flex={'1 0 0'} w={0} ml={2} fontWeight={'bold'} className={'textEllipsis'}>
-              {appName}
+              {agentConfigInfo.name}
             </Box>
           </Flex>
         </MyTooltip>

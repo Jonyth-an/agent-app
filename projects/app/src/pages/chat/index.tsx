@@ -267,7 +267,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         throw new Error('No appId provided');
       }
 
-      const agentConfigInfo = await getAgentConfigInfo({ agentId: appId });
+      const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
       setAgentConfigInfo(agentConfigInfo);
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {

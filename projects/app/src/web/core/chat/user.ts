@@ -21,8 +21,8 @@ export const getStaffInfo = (token: string) =>
   );
 
 export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq) =>
-  GET<agentConfigInfo>(`/mobile/api/v1/ai/agent/config`, agentConfigInfoReq, {
-    baseURL: '/uc-system'
+  GET<agentConfigInfo>(`/mobile/api/v1/ai/agent/get`, agentConfigInfoReq, {
+    baseURL: '/marketing-ai'
   });
 
 // export const getChatRecords = (data: getPaginationRecordsBody) =>

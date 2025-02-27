@@ -142,14 +142,16 @@ export const useChatStore = create<State>()(
         },
         agentConfigInfo: {
           agentId: '',
-          agentName: '',
-          agentIcon: '',
+          name: '',
+          avatar: '',
           sourceType: '',
+          thirdResourceId: '',
           enabled: false,
           permissionType: '',
-          agentDescription: '',
+          description: '',
           agentConfig: '',
-          tenantId: 0
+          tenantId: 0,
+          status: ''
         },
         setAgentConfigInfo(config) {
           set((state) => {
