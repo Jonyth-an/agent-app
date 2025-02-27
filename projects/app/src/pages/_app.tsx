@@ -27,6 +27,33 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   const { feConfigs, scripts, title } = useInitApp();
   const { t } = useTranslation();
 
+  // 添加 setLog 函数
+  const setLog = (search: string) => {
+    const set = new URLSearchParams(search);
+    const devValue = set.get('dev');
+    if (devValue && devValue === '123456') {
+      // 等待 VConsole 脚本加载完成
+      const checkVConsole = () => {
+        // @ts-ignore
+        if (window.VConsole) {
+          // @ts-ignore
+          new window.VConsole();
+        } else {
+          setTimeout(checkVConsole, 100);
+        }
+      };
+      checkVConsole();
+    }
+  };
+
+  // 在页面加载完成后执行
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const { search } = window.location;
+      setLog(search);
+    }
+  }, []);
+
   // Forbid touch scale
   useEffect(() => {
     document.addEventListener(
@@ -53,9 +80,11 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         }
         icon={getWebReqUrl(feConfigs?.favicon || process.env.SYSTEM_FAVICON)}
       />
-      <Script src={`/js/utils/jsweixin.js`}></Script>
-      <Script src={`/js/utils/vConsole.js`}></Script>
-      {scripts?.map((item, i) => <Script key={i} strategy="lazyOnload" {...item}></Script>)}
+      <Script src={`/js/utils/jsweixin.js`} strategy="beforeInteractive" />
+      <Script src={`/js/utils/vConsole.js`} strategy="beforeInteractive" />
+      {scripts?.map((item, i) => (
+        <Script key={i} strategy="lazyOnload" {...item} />
+      ))}
 
       <QueryClientContext>
         <SystemStoreContextProvider device={pageProps.deviceSize}>
