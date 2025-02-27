@@ -73,7 +73,7 @@ export const useAudioPlay = (
       }
       return response.body;
     },
-    [appId, outLinkUid, shareId, t, teamId, teamToken, toast, ttsConfig]
+    [appId, outLinkUid, shareId, teamId, teamToken, ttsConfig]
   );
   const playWebAudio = useCallback((text: string) => {
     // window speech
@@ -222,7 +222,7 @@ export const useAudioPlay = (
         }
       });
     },
-    [cancelAudio, getAudioStream, playWebAudio, t, toast, ttsConfig?.type]
+    [cancelAudio, getAudioStream, playWebAudio, ttsConfig?.type]
   );
 
   // segmented params
