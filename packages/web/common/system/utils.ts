@@ -13,7 +13,7 @@ export const hasHttps = () => {
 
 export const subRoute = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const getWebReqUrl = (url: string = '') => {
+export const queryWebReqUrl = (url: string = '') => {
   if (!url) return '/';
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   if (!baseUrl) return url;
@@ -22,9 +22,9 @@ export const getWebReqUrl = (url: string = '') => {
   return `${baseUrl}${url}`;
 };
 
-// export const getWebReqUrl = (url: string = '') => {
-//   const reqPath = queryWebReqUrl(url);
-//   const hostUrl = fast_data_Url;
-//   console.log('xxxx hostUrl, reqPath', hostUrl, reqPath);
-//   return `${hostUrl}${reqPath}`;
-// };
+export const getWebReqUrl = (url: string = '') => {
+  const reqPath = queryWebReqUrl(url);
+  const hostUrl = fast_data_Url;
+  console.log('xxxx hostUrl, reqPath', hostUrl, reqPath);
+  return `${hostUrl}${reqPath}`;
+};
