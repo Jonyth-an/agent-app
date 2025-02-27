@@ -23,7 +23,7 @@ import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 
 import { useMount } from 'ahooks';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
-
+import Demo from './demo';
 import { GetChatTypeEnum } from '@/global/core/chat/constants';
 import ChatContextProvider, { ChatContext } from '@/web/core/chat/context/chatContext';
 import { AppListItemType } from '@fastgpt/global/core/app/type';
@@ -189,6 +189,9 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
               history={chatRecords}
               showHistory
             /> */}
+
+            <Demo />
+
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
               {isPlugin ? (

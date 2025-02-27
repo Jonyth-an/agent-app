@@ -7,6 +7,7 @@ import { useMemoizedFn, useMount } from 'ahooks';
 import { TrackEventName } from '../common/system/constants';
 import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 import { useUserStore } from '../support/user/useUserStore';
+import { useChatStore } from '../core/chat/context/useChatStore';
 
 export const useInitApp = () => {
   const router = useRouter();
@@ -18,6 +19,7 @@ export const useInitApp = () => {
   };
   const { loadGitStar, setInitd, feConfigs } = useSystemStore();
   const { userInfo } = useUserStore();
+  const { chatId } = useChatStore();
   const [scripts, setScripts] = useState<FastGPTFeConfigsType['scripts']>([]);
   const [title, setTitle] = useState(process.env.SYSTEM_NAME || 'AI');
 
@@ -63,11 +65,11 @@ export const useInitApp = () => {
     };
   });
 
-  // useRequest2(initFetch, {
-  //   refreshDeps: [userInfo?.username],
-  //   manual: false,
-  //   pollingInterval: 300000 // 5 minutes refresh
-  // });
+  useRequest2(initFetch, {
+    refreshDeps: [userInfo?.username, chatId],
+    manual: false,
+    pollingInterval: 300000 // 5 minutes refresh
+  });
 
   useEffect(() => {
     hiId && localStorage.setItem('inviterId', hiId);

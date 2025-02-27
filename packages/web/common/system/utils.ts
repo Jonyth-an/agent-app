@@ -1,4 +1,5 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { fast_data_Url } from '../../../../projects/app/src/config/index';
 
 export const getUserFingerprint = async () => {
   const fp = await FingerprintJS.load();
@@ -20,3 +21,10 @@ export const getWebReqUrl = (url: string = '') => {
   if (!url.startsWith('/') || url.startsWith(baseUrl)) return url;
   return `${baseUrl}${url}`;
 };
+
+// export const getWebReqUrl = (url: string = '') => {
+//   const reqPath = queryWebReqUrl(url);
+//   const hostUrl = fast_data_Url;
+//   console.log('xxxx hostUrl, reqPath', hostUrl, reqPath);
+//   return `${hostUrl}${reqPath}`;
+// };

@@ -173,11 +173,11 @@ export const useChatStore = create<State>()(
           });
         },
         redirectAuth({ isLogin }: { isLogin?: boolean } = {}) {
-          if (isLogin) {
-            window.location.href = loginUrl;
-          } else {
-            window.location.href = loginUrl;
-          }
+          // if (isLogin) {
+          //   window.location.href = loginUrl;
+          // } else {
+          //   window.location.href = loginUrl;
+          // }
         }
       })),
       {
