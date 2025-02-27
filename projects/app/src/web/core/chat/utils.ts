@@ -3,6 +3,7 @@ import { StoreNodeItemType } from '@fastgpt/global/core/workflow/type/node.d';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { NodeInputKeyEnum } from '@fastgpt/global/core/workflow/constants';
 import { getWebLLMModel } from '@/web/common/system/utils';
+import { share_h5_url } from '@/config';
 
 export function checkChatSupportSelectFileByChatModels(models: string[] = []) {
   for (const model of models) {
@@ -45,3 +46,19 @@ export function getAppQuestionGuidesByUserGuideModule(
 
   return chatInputGuide?.open ? qGuideText : [];
 }
+
+export const redirectAuth = ({
+  isEmptyPage,
+  appId
+}: { appId?: string; isEmptyPage?: boolean } = {}) => {
+  const curUrl = `${share_h5_url}/chat?appId=${appId}`;
+  if (isEmptyPage) {
+    const emptyUrl = `${share_h5_url}/share/error?redirect=${curUrl}`;
+    console.log('xxx emptyUrl', emptyUrl);
+    window.location.href = emptyUrl;
+  } else {
+    const loginUrl = `${share_h5_url}/share/advLogin?redirect=${curUrl}`;
+    console.log('xxx loginUrl', loginUrl);
+    window.location.href = loginUrl;
+  }
+};

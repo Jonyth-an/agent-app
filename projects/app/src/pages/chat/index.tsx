@@ -38,7 +38,7 @@ import ChatRecordContextProvider, {
 } from '@/web/core/chat/context/chatRecordContext';
 import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
 import useWechatShare from './hooks/useWechatShare';
-import { redirectAuth } from './hooks/utils';
+import { redirectAuth } from '@/web/core/chat/utils';
 import { share_h5_url } from '@/config';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
