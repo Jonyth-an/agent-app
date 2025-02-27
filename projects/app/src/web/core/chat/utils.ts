@@ -47,10 +47,10 @@ export function getAppQuestionGuidesByUserGuideModule(
   return chatInputGuide?.open ? qGuideText : [];
 }
 
-export const redirectAuth = ({
+export function redirectAuth({
   isEmptyPage,
   appId
-}: { appId?: string; isEmptyPage?: boolean } = {}) => {
+}: { appId?: string; isEmptyPage?: boolean } = {}) {
   const curUrl = `${share_h5_url}/chat?appId=${appId}`;
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?redirect=${curUrl}`;
@@ -61,4 +61,4 @@ export const redirectAuth = ({
     console.log('xxx loginUrl', loginUrl);
     window.location.href = loginUrl;
   }
-};
+}
