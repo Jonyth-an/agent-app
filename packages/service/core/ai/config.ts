@@ -10,21 +10,16 @@ import { addLog } from '../../common/system/log';
 import { i18nT } from '../../../web/i18n/utils';
 import { OpenaiAccountType } from '@fastgpt/global/support/user/team/type';
 import { getLLMModel } from './model';
+import { CHAT_API_KEY, CHAT_API_BASE_URL } from '../../../../projects/app/src/config/index';
 
 export const openaiBaseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
 
 export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number }) => {
   const { userKey, timeout } = props || {};
 
-  // const baseUrl = process.env.CHAT_API_BASE_URL;
-  // const apiKey = process.env.CHAT_API_KEY || '';
-
-  const baseUrl = 'http://10.5.9.219:3000/api';
-  const apiKey = 'fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr';
-
   return new OpenAI({
-    baseURL: baseUrl,
-    apiKey,
+    baseURL: CHAT_API_BASE_URL,
+    apiKey: CHAT_API_KEY,
     httpAgent: global.httpsAgent,
     timeout,
     maxRetries: 2

@@ -12,6 +12,7 @@ import { TeamErrEnum } from '@fastgpt/global/common/error/code/team';
 import { useSystemStore } from '../system/useSystemStore';
 import { formatTime2YMDHMW } from '@fastgpt/global/common/string/time';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
+import { CHAT_API_KEY } from '@/config';
 
 type StreamFetchProps = {
   url?: string;
@@ -130,7 +131,7 @@ export const streamFetch = ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr`
+          Authorization: `Bearer ${CHAT_API_KEY}`
         },
         signal: abortCtrl.signal,
         body: JSON.stringify({

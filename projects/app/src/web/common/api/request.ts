@@ -11,6 +11,7 @@ import { useSystemStore } from '../system/useSystemStore';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import { i18nT } from '@fastgpt/web/i18n/utils';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
+import { CHAT_API_KEY } from '@/config';
 
 interface ConfigType {
   baseURL?: string;
@@ -149,14 +150,13 @@ function responseError(err: any) {
   // }
   return Promise.reject(data);
 }
-
 /* 创建请求实例 */
 const instance = axios.create({
   timeout: 60000, // 超时时间
   headers: {
     'content-type': 'application/json',
     // Authorization: `Bearer ${process.env.CHAT_API_KEY}`
-    Authorization: 'Bearer fastgpt-p63AUUIP24T5MpIDDJVgDG06sva1bg7abFbQ8awRirjG5ad9jSMMr'
+    Authorization: `Bearer ${CHAT_API_KEY}`
   }
 });
 

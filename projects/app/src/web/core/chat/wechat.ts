@@ -27,11 +27,7 @@ export const initWechatShare = async (config: ShareConfig) => {
 
     // 检查缓存
     const now = Date.now();
-    if (
-      signatureCache &&
-      signatureCache.url === curUrl &&
-      now - signatureCache.timestamp < 300000
-    ) {
+    if (signatureCache && signatureCache.url === curUrl && now - signatureCache.timestamp < 60000) {
       console.log('使用缓存的签名数据:', signatureCache.data);
       await initWxConfig(signatureCache.data, config, curUrl);
       return;

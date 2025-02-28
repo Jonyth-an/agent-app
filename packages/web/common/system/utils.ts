@@ -1,5 +1,4 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { fast_data_Url } from '../../../../projects/app/src/config/index';
 
 export const getUserFingerprint = async () => {
   const fp = await FingerprintJS.load();
