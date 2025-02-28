@@ -40,6 +40,7 @@ import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
 import useWechatShare from './hooks/useWechatShare';
 import { redirectAuth } from '@/web/core/chat/utils';
 import { share_h5_url } from '@/config';
+import { initWechatShare } from '@/web/core/chat/wechat';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
@@ -306,12 +307,22 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const agentConfig = agentConfigInfo.agentConfig;
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
 
-  useWechatShare({
-    title: weChatShareConfig.title,
-    desc: weChatShareConfig.desc,
-    imgUrl: weChatShareConfig.imgUrl,
-    link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
-  });
+  useEffect(() => {
+    if (!weChatShareConfig.title) return;
+
+    initWechatShare({
+      title: weChatShareConfig.title,
+      desc: weChatShareConfig.desc,
+      imgUrl: weChatShareConfig.imgUrl,
+      link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
+    });
+  }, [weChatShareConfig, appId]);
+  // useWechatShare({
+  //   title: weChatShareConfig.title,
+  //   desc: weChatShareConfig.desc,
+  //   imgUrl: weChatShareConfig.imgUrl,
+  //   link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
+  // });
 
   const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [
     appId
