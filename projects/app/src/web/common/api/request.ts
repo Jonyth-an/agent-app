@@ -97,7 +97,7 @@ function responseSuccess(response: AxiosResponse<ResponseDataType>) {
  * 响应数据检查
  */
 function checkRes(data: ResponseDataType) {
-  console.log('xxx checkRes->data', data);
+  // console.log('xxx checkRes->data', data);
   if (data === undefined) {
     console.log('error->', data, 'data is empty');
     return Promise.reject('服务器异常');

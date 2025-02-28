@@ -290,9 +290,13 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     },
     {
       manual: false,
-      onError: (error) => {
+      onError: (error: any) => {
         console.error('Error initializing chat:', error);
-        redirectAuth();
+        if ((error as { code?: number }).code === 404) {
+          redirectAuth({ isEmptyPage: true });
+        } else {
+          redirectAuth();
+        }
       },
       refreshDeps: [appId]
     }
@@ -306,7 +310,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     title: weChatShareConfig.title,
     desc: weChatShareConfig.desc,
     imgUrl: weChatShareConfig.imgUrl,
-    link: typeof window !== 'undefined' ? `${share_h5_url}/chat?appId=${appId}` : ''
+    link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
   });
 
   const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [

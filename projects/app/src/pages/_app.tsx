@@ -80,8 +80,9 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         }
         icon={getWebReqUrl(feConfigs?.favicon || process.env.SYSTEM_FAVICON)}
       />
-      <Script src={`/js/utils/jsweixin.js`} strategy="beforeInteractive" />
-      <Script src={`/js/utils/vConsole.js`} strategy="beforeInteractive" />
+
+      <Script src={getWebReqUrl('/js/utils/jsweixin.js')} strategy="beforeInteractive" />
+      <Script src={getWebReqUrl('/js/utils/vConsole.js')} strategy="beforeInteractive" />
       {scripts?.map((item, i) => (
         <Script key={i} strategy="lazyOnload" {...item} />
       ))}
