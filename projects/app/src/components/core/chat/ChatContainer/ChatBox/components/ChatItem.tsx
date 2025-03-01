@@ -26,6 +26,7 @@ import { useSystem } from '@fastgpt/web/hooks/useSystem';
 import { formatTimeToChatItemTime } from '@fastgpt/global/common/string/time';
 import dayjs from 'dayjs';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 
 const colorMap = {
   [ChatStatusEnum.loading]: {
@@ -208,6 +209,7 @@ const ChatItem = (props: Props) => {
     return groupedValues;
   }, [chat.obj, chat.value, isChatting]);
 
+  const { agentConfigInfo} = useChatStore();
   return (
     <Box
       _hover={{
@@ -237,7 +239,8 @@ const ChatItem = (props: Props) => {
             <ChatController {...props} isLastChild={isLastChild} />
           </Flex>
         )}
-        {type === ChatRoleEnum.AI ? <ChatAvatar src={avatar} type={type} /> : null}
+        
+        {type === ChatRoleEnum.AI ? <ChatAvatar src={agentConfigInfo.avatar} type={type} /> : null}
 
         {/* Workflow status */}
         {!!chatStatusMap && statusBoxData && isLastChild && showNodeStatus && (
