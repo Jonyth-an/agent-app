@@ -83,7 +83,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
         _hover={{ bg: 'gray.200' }}
         onClick={() => albumInputRef.current?.click()}
       >
-        <MyIcon name={'image'} w={'20px'} h={'20px'} color={'myGray.900'} />
+        {/* <MyIcon name={'image'} w={'20px'} h={'20px'} color={'myGray.900'} /> */}
       </Flex>
       <Input
         ref={albumInputRef}
@@ -107,7 +107,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
         _hover={{ bg: 'gray.200' }}
         onClick={() => cameraInputRef.current?.click()}
       >
-        <MyIcon name={'camera'} w={'20px'} h={'20px'} color={'myGray.900'} />
+        {/* <MyIcon name={'camera'} w={'20px'} h={'20px'} color={'myGray.900'} /> */}
       </Flex>
       <Input
         ref={cameraInputRef}
