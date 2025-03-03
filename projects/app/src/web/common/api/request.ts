@@ -156,8 +156,8 @@ const instance = axios.create({
   headers: {
     'content-type': 'application/json',
     // Authorization: `Bearer ${process.env.}`
-    // Authorization: `Bearer ${CHAT_API_KEY}`
-    Authorization: 'Bearer fastgpt-crNagOolOA9OFRIBJAZ1a8u1qC3iJzgjljppGigs0dHXN0qTz9KMfeXJG'
+    Authorization: `Bearer ${CHAT_API_KEY}`
+    // Authorization: 'Bearer fastgpt-crNagOolOA9OFRIBJAZ1a8u1qC3iJzgjljppGigs0dHXN0qTz9KMfeXJG'
   }
 });
 
