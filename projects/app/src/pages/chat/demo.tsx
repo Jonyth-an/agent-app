@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Box } from '@chakra-ui/react';
-import ContentCard from '@/components/Markdown/ContentCard';
+import ContentCard from '@/components/Markdown/contentCard';
 
 const Demo: React.FC = () => {
   const items = [

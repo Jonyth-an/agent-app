@@ -21,6 +21,7 @@ const IframeCodeBlock = dynamic(() => import('./codeBlock/Iframe'), { ssr: false
 const IframeHtmlCodeBlock = dynamic(() => import('./codeBlock/iframe-html'), { ssr: false });
 const VideoBlock = dynamic(() => import('./codeBlock/Video'), { ssr: false });
 const AudioBlock = dynamic(() => import('./codeBlock/Audio'), { ssr: false });
+const ContentCard = dynamic(() => import('./contentCard'), { ssr: false });
 
 const ChatGuide = dynamic(() => import('./chat/Guide'), { ssr: false });
 const QuestionGuide = dynamic(() => import('./chat/QuestionGuide'), { ssr: false });
@@ -133,6 +134,9 @@ function Code(e: any) {
     }
     if (codeType === CodeClassNameEnum.iframe) {
       return <IframeCodeBlock code={strChildren} />;
+    }
+    if (codeType === CodeClassNameEnum.contentCard) {
+      return <ContentCard items={[]} />;
     }
     if (codeType && codeType.toLowerCase() === CodeClassNameEnum.html) {
       return (

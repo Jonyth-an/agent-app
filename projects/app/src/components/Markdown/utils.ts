@@ -9,6 +9,7 @@ export enum CodeClassNameEnum {
   iframe = 'iframe',
   html = 'html',
   video = 'video',
+  contentCard = 'contentCard',
   audio = 'audio'
 }
 
