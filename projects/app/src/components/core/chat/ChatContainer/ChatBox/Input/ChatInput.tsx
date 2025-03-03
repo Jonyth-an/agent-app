@@ -1,7 +1,8 @@
 import { useSpeech } from '@/web/common/hooks/useSpeech';
+import { AddIcon } from '@chakra-ui/icons';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { Box, Flex, Spinner, Textarea } from '@chakra-ui/react';
-import React, { useRef, useEffect, useCallback, useMemo } from 'react';
+import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 import MyIcon from '@fastgpt/web/components/common/Icon';
@@ -20,6 +21,8 @@ import ComplianceTip from '@/components/common/ComplianceTip/index';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import CardList, { CardItem } from './card-list';
+import ChatTools from './chat-tools';
+import OpenTools from './open-tools';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -209,7 +212,6 @@ const ChatInput = ({
             <File onSelect={(files) => onSelectFile({ files })} />
           </Flex>
         )}
-
         {/* input area */}
         <Textarea
           ref={TextareaDom}
@@ -224,8 +226,8 @@ const ChatInput = ({
             isSpeaking
               ? t('common:core.chat.Speaking')
               : isPc
-                ? t('common:core.chat.Type a message')
-                : t('chat:input_placeholder_phone')
+              ? t('common:core.chat.Type a message')
+              : t('chat:input_placeholder_phone')
           }
           resize={'none'}
           rows={1}
@@ -291,6 +293,7 @@ const ChatInput = ({
             }
           }}
         />
+        {/* <Flex alignItems={'center'} position={'absolute'} right={[2, 14]} bottom={['10px', '12px']}></Flex> */}
         <Flex alignItems={'center'} position={'absolute'} right={[2, 4]} bottom={['10px', '12px']}>
           {/* voice-input */}
           {whisperConfig?.open && !inputValue && !isChatting && (
@@ -370,8 +373,8 @@ const ChatInput = ({
                 isSpeaking || isChatting
                   ? ''
                   : !havInput || hasFileUploading
-                    ? '#E5E5E5'
-                    : 'primary.500'
+                  ? '#E5E5E5'
+                  : 'primary.500'
               }
               cursor={havInput ? 'pointer' : 'not-allowed'}
               lineHeight={1}
@@ -404,6 +407,27 @@ const ChatInput = ({
             </Flex>
           )}
         </Flex>
+        {/* mark */}
+        {/* <Flex
+          alignItems={'center'}
+          justifyContent={'center'}
+          flexShrink={0}
+          h={['28px', '32px']}
+          w={['28px', '32px']}
+          borderRadius={'md'}
+          bg={'#E5E5E5'}
+          position={'absolute'}
+          right={[2, 4]}
+          bottom={['10px', '12px']}
+          onClick={() => setIsShowTools(true)}
+        >
+          <AddIcon
+            name={'history'}
+            color={'white'}
+            width={['18px', '20px']}
+            height={['18px', '20px']}
+          />
+        </Flex> */}
       </Flex>
     ),
     [
@@ -442,6 +466,33 @@ const ChatInput = ({
     console.log('xxx cardList', cardList);
     return cardList;
   }, [agentConfigInfo]);
+
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [isShowTools, setIsShowTools] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
+  const handleImageSelect = (files: FileList) => {
+    // 将文件转换为预览URL
+    const newImages = Array.from(files).map((file) => URL.createObjectURL(file));
+    setSelectedImages((prev: any) => [...prev, ...newImages]);
+  };
+
+  const handleImageDelete = (index: number) => {
+    setSelectedImages((prev: any) => {
+      const newImages = [...prev];
+      // 释放被删除图片的 URL
+      URL.revokeObjectURL(newImages[index]);
+      newImages.splice(index, 1);
+      return newImages;
+    });
+  };
+
+  // 组件卸载时清理创建的 URL
+  useEffect(() => {
+    return () => {
+      selectedImages.forEach((url: any) => URL.revokeObjectURL(url));
+    };
+  }, [selectedImages]);
 
   return (
     <Box
@@ -507,16 +558,31 @@ const ChatInput = ({
               }}
             />
           )}
-          {/* <open-tools/> */}
+
           {/* translate loading */}
           {RenderTranslateLoading}
+
           {/* file preview */}
           <Box px={[1, 3]}>
             <FilePreview fileList={fileList} removeFiles={removeFiles} />
           </Box>
           {RenderTextarea}
         </Box>
-        {/* <ChatTools/> */}
+        {/* <open-tools/> mark */}
+        {/* {isShowTools ? (
+          <OpenTools
+            isOpen={isToolsOpen}
+            onToggle={() => setIsToolsOpen(!isToolsOpen)}
+            onImageSelect={handleImageSelect}
+          />
+        ) : null} */}
+        {/* <ChatTools/> mark */}
+        {/* <ChatTools
+          isOpen={isToolsOpen}
+          onClose={() => setIsToolsOpen(false)}
+          selectedImages={selectedImages}
+          onImageDelete={handleImageDelete}
+        /> */}
       </Box>
       <ComplianceTip type={'chat'} />
     </Box>
