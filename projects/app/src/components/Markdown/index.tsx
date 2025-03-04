@@ -9,7 +9,7 @@ import RehypeExternalLinks from 'rehype-external-links';
 
 import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
-import { Box, Flex, Text, Link, Divider } from '@chakra-ui/react';
+import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import { CodeClassNameEnum } from './utils';
 
 const CodeLight = dynamic(() => import('./codeBlock/CodeLight'), { ssr: false });
@@ -61,7 +61,6 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
                   <Image
                     src={item.imageUrl || '/placeholder.svg'}
-                    // @ts-ignore
                     alt={item.title as string}
                     objectFit="cover"
                     width="100%"
@@ -102,23 +101,27 @@ const isValidDataFormat = (input: string) => {
 };
 
 const parseData = (source: string) => {
-  const regex = /avatar:\!\[.*?\]\((.*?)\s*\)\s*title:\[(.*?)\]\((.*?)\s*\)/g;
+  const regex = /codeClassNameEnum:(.*?)\s+avatar:\!\[.*?\]\((.*?)\s*\)\s*title:\[(.*?)\]\((.*?)\s*\)/g;
 
   let match;
   const entries = [];
-
+  let index = 0;
   while ((match = regex.exec(source)) !== null) {
-    const avatarUrl = match[1].trim();
-    const titleText = match[2].trim();
-    const titleLink = match[3].trim();
+    const codeClassNameEnumValue = match[1].trim();
+    const avatarUrl = match[2].trim();
+    const titleText = match[3].trim();
+    const titleLink = match[4].trim();
 
     entries.push({
-      id: String(1 + Math.random()),
+      id: String('key' + index),
+      codeClassNameEnum: codeClassNameEnumValue,
       imageUrl: avatarUrl,
       title: titleText,
       link: titleLink
     });
+    index += 1;
   }
+
   return entries;
 };
 
@@ -129,6 +132,7 @@ const Markdown = (props: Props) => {
   console.log('xxx aaa Markdown source ret', ret);
   console.log('xxx aaa Markdown source parseData(source)', parseData(source));
   const contentCardData = parseData(source);
+
   if (contentCardData && contentCardData.length && contentCardData.length > 0) {
     return <ContentCard items={contentCardData} />;
   }
@@ -149,7 +153,7 @@ const MarkdownRender = ({ source = '', showAnimation, isDisabled, forbidZhFormat
   const components = useMemo<any>(
     () => ({
       p: Paragraph, // 自定义段落渲染
-      img: Image,
+      img: MarkdownImage,
       pre: RewritePre,
       code: Code,
       a: A
@@ -266,7 +270,7 @@ function Code(e: any) {
   return Component;
 }
 
-function Image({ src }: { src?: string }) {
+function MarkdownImage({ src }: { src?: string }) {
   return <MdImage src={src} />;
 }
 
