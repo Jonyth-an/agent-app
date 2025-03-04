@@ -9,8 +9,7 @@ import RehypeExternalLinks from 'rehype-external-links';
 
 import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
-
-import { Box } from '@chakra-ui/react';
+import { Box, Flex, Text, Link, Image, Divider } from '@chakra-ui/react';
 import { CodeClassNameEnum } from './utils';
 
 const CodeLight = dynamic(() => import('./codeBlock/CodeLight'), { ssr: false });
@@ -26,9 +25,6 @@ const AudioBlock = dynamic(() => import('./codeBlock/Audio'), { ssr: false });
 const ChatGuide = dynamic(() => import('./chat/Guide'), { ssr: false });
 const QuestionGuide = dynamic(() => import('./chat/QuestionGuide'), { ssr: false });
 const A = dynamic(() => import('./A'), { ssr: false });
-
-import type React from 'react';
-import { Box, Flex, Text, Link, Image, Divider } from '@chakra-ui/react';
 
 interface ContentItem {
   id: string;
