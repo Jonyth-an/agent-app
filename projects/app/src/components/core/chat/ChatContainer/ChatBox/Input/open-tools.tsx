@@ -14,9 +14,8 @@ interface OpenToolsProps {
 }
 
 const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }) => {
-  const albumInputRef = useRef<HTMLInputElement>(null);
-  const cameraInputRef = useRef<HTMLInputElement>(null);
   const onOpenSlider = useContextSelector(ChatContext, (v) => v.onOpenSlider);
+  const onChangeChatId = useContextSelector(ChatContext, (v) => v.onChangeChatId);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -65,58 +64,10 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
         bg={'#E5E5E5'}
         cursor="pointer"
         _hover={{ bg: 'gray.200' }}
-        onClick={onToggle}
+        onClick={() => onChangeChatId()}
       >
         <AddIcon w={'20px'} h={'20px'} color={'myGray.900'} />
       </Flex>
-
-      {/* 相册 */}
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        flexShrink={0}
-        h={['28px', '32px']}
-        w={['28px', '32px']}
-        borderRadius={'md'}
-        bg={'#E5E5E5'}
-        cursor="pointer"
-        _hover={{ bg: 'gray.200' }}
-        onClick={() => albumInputRef.current?.click()}
-      >
-        {/* <MyIcon name={'image'} w={'20px'} h={'20px'} color={'myGray.900'} /> */}
-      </Flex>
-      <Input
-        ref={albumInputRef}
-        type="file"
-        accept="image/*"
-        multiple
-        display="none"
-        onChange={handleFileSelect}
-      />
-
-      {/* 拍照 */}
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        flexShrink={0}
-        h={['28px', '32px']}
-        w={['28px', '32px']}
-        borderRadius={'md'}
-        bg={'#E5E5E5'}
-        cursor="pointer"
-        _hover={{ bg: 'gray.200' }}
-        onClick={() => cameraInputRef.current?.click()}
-      >
-        {/* <MyIcon name={'camera'} w={'20px'} h={'20px'} color={'myGray.900'} /> */}
-      </Flex>
-      <Input
-        ref={cameraInputRef}
-        type="file"
-        accept="image/*"
-        capture="environment"
-        display="none"
-        onChange={handleFileSelect}
-      />
     </Flex>
   );
 };

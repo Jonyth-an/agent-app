@@ -51,13 +51,7 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
         {displayItems.map((item, index) => (
           <>
             <Link key={item.id} href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
-              <Flex
-                alignItems="start"
-                gap={3}
-                borderRadius="md"
-                transition="background 0.2s"
-                _hover={{ bg: 'gray.100' }}
-              >
+              <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
                   <Image
                     src={item.imageUrl || '/placeholder.svg'}
@@ -68,12 +62,7 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
                   />
                 </Box>
                 <Box flex={1} minWidth={0}>
-                  <Text
-                    fontSize="14px"
-                    noOfLines={2}
-                    color="rgb(46, 48, 57)"
-                    _groupHover={{ color: 'blue.500' }}
-                  >
+                  <Text fontSize="14px" noOfLines={2} color="rgb(46, 48, 57)">
                     {item.title}
                   </Text>
                 </Box>

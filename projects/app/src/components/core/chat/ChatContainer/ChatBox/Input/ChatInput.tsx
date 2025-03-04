@@ -61,6 +61,10 @@ const ChatInput = ({
   const chatInputGuide = useContextSelector(ChatBoxContext, (v) => v.chatInputGuide);
   const fileSelectConfig = useContextSelector(ChatBoxContext, (v) => v.fileSelectConfig);
 
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
+  const [isShowTools, setIsShowTools] = useState(false);
+  const [selectedImages, setSelectedImages] = useState<string[]>([]);
+
   const fileCtrl = useFieldArray({
     control,
     name: 'files'
@@ -293,8 +297,13 @@ const ChatInput = ({
             }
           }}
         />
-        {/* <Flex alignItems={'center'} position={'absolute'} right={[2, 14]} bottom={['10px', '12px']}></Flex> */}
-        <Flex alignItems={'center'} position={'absolute'} right={[2, 4]} bottom={['10px', '12px']}>
+
+        <Flex
+          alignItems={'center'}
+          position={'absolute'}
+          right={[2, isPc ? 4 : 14]}
+          bottom={['10px', '12px']}
+        >
           {/* voice-input */}
           {whisperConfig?.open && !inputValue && !isChatting && (
             <>
@@ -366,6 +375,7 @@ const ChatInput = ({
               alignItems={'center'}
               justifyContent={'center'}
               flexShrink={0}
+              mr={isPc ? 0 : 10}
               h={['28px', '32px']}
               w={['28px', '32px']}
               borderRadius={'md'}
@@ -408,26 +418,29 @@ const ChatInput = ({
           )}
         </Flex>
         {/* mark */}
-        {/* <Flex
-          alignItems={'center'}
-          justifyContent={'center'}
-          flexShrink={0}
-          h={['28px', '32px']}
-          w={['28px', '32px']}
-          borderRadius={'md'}
-          bg={'#E5E5E5'}
-          position={'absolute'}
-          right={[2, 4]}
-          bottom={['10px', '12px']}
-          onClick={() => setIsShowTools(true)}
-        >
-          <AddIcon
-            name={'history'}
-            color={'white'}
-            width={['18px', '20px']}
-            height={['18px', '20px']}
-          />
-        </Flex> */}
+        {!isPc ? (
+          <Flex
+            alignItems={'center'}
+            justifyContent={'center'}
+            flexShrink={0}
+            h={['28px', '32px']}
+            w={['28px', '32px']}
+            borderRadius={'md'}
+            bg={'#E5E5E5'}
+            position={'absolute'}
+            right={[2, 4]}
+            bottom={['10px', '12px']}
+            onClick={() => setIsShowTools(!isShowTools)}
+            // onClick={() => setIsToolsOpen(!isToolsOpen)}
+          >
+            <AddIcon
+              name={'history'}
+              color={'white'}
+              width={['18px', '20px']}
+              height={['18px', '20px']}
+            />
+          </Flex>
+        ) : null}
       </Flex>
     ),
     [
@@ -466,10 +479,6 @@ const ChatInput = ({
     console.log('xxx cardList', cardList);
     return cardList;
   }, [agentConfigInfo]);
-
-  const [isToolsOpen, setIsToolsOpen] = useState(false);
-  const [isShowTools, setIsShowTools] = useState(false);
-  const [selectedImages, setSelectedImages] = useState<string[]>([]);
 
   const handleImageSelect = (files: FileList) => {
     // 将文件转换为预览URL
@@ -569,13 +578,13 @@ const ChatInput = ({
           {RenderTextarea}
         </Box>
         {/* <open-tools/> mark */}
-        {/* {isShowTools ? (
+        {isShowTools ? (
           <OpenTools
             isOpen={isToolsOpen}
             onToggle={() => setIsToolsOpen(!isToolsOpen)}
             onImageSelect={handleImageSelect}
           />
-        ) : null} */}
+        ) : null}
         {/* <ChatTools/> mark */}
         {/* <ChatTools
           isOpen={isToolsOpen}
