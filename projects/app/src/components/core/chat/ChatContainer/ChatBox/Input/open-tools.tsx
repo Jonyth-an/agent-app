@@ -1,7 +1,6 @@
-import { Box, Flex, IconButton, Input } from '@chakra-ui/react';
-import Avatar from '@fastgpt/web/components/common/Avatar';
+import { Flex, Text, Input } from '@chakra-ui/react';
 import MyIcon from '@fastgpt/web/components/common/Icon';
-import { AddIcon } from '@chakra-ui/icons';
+import { AddIcon, HamburgerIcon } from '@chakra-ui/icons';
 import type React from 'react';
 import { useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
@@ -16,6 +15,8 @@ interface OpenToolsProps {
 const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }) => {
   const onOpenSlider = useContextSelector(ChatContext, (v) => v.onOpenSlider);
   const onChangeChatId = useContextSelector(ChatContext, (v) => v.onChangeChatId);
+  const albumInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -25,49 +26,74 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
     e.target.value = '';
   };
 
+  const ToolItem = ({
+    icon,
+    label,
+    onClick
+  }: {
+    icon: string | React.ReactNode;
+    label: string;
+    onClick: () => void;
+  }) => (
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      w="65px"
+      h="65px"
+      bg="gray.100"
+      borderRadius="md"
+      cursor="pointer"
+      onClick={onClick}
+    >
+      {icon}
+      <Text fontSize="12px" color="gray.600" textAlign="center">
+        {label}
+      </Text>
+    </Flex>
+  );
+
   return (
     <Flex
-      justify="start"
+      justify="flex-start"
       align="center"
       w="100%"
-      py={4}
-      px={4}
-      gap={4}
+      py={3}
+      px={3}
+      gap={3}
       borderTop="1px solid"
       borderColor="gray.200"
       bg="white"
     >
-      {/* 历史对话 */}
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        flexShrink={0}
-        h={['28px', '32px']}
-        w={['28px', '32px']}
-        borderRadius={'md'}
-        bg={'#E5E5E5'}
-        cursor="pointer"
-        _hover={{ bg: 'gray.200' }}
+      <ToolItem
+        icon={<HamburgerIcon w="26px" h="26px" color="gray.600" mb={1.5} />}
+        label="历史对话"
         onClick={onOpenSlider}
-      >
-        <MyIcon name={'menu'} w={'20px'} h={'20px'} color={'myGray.900'} />
-      </Flex>
-
-      {/* 新对话 */}
-      <Flex
-        alignItems={'center'}
-        justifyContent={'center'}
-        flexShrink={0}
-        h={['28px', '32px']}
-        w={['28px', '32px']}
-        borderRadius={'md'}
-        bg={'#E5E5E5'}
-        cursor="pointer"
-        _hover={{ bg: 'gray.200' }}
+      />
+      <ToolItem
+        icon={<AddIcon w="26px" h="26px" color="gray.600" mb={1.5} />}
+        label="新对话"
         onClick={() => onChangeChatId()}
-      >
-        <AddIcon w={'20px'} h={'20px'} color={'myGray.900'} />
-      </Flex>
+      />
+      {/* <ToolItem icon="image" label="相册" onClick={() => albumInputRef.current?.click()} />
+      <ToolItem icon="camera" label="拍照" onClick={() => cameraInputRef.current?.click()} />
+
+      <Input
+        ref={albumInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        display="none"
+        onChange={handleFileSelect}
+      />
+      <Input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        display="none"
+        onChange={handleFileSelect}
+      /> */}
     </Flex>
   );
 };

@@ -11,6 +11,7 @@ import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import { CodeClassNameEnum } from './utils';
+import { cloneDeep } from 'lodash';
 
 const CodeLight = dynamic(() => import('./codeBlock/CodeLight'), { ssr: false });
 const MermaidCodeBlock = dynamic(() => import('./img/MermaidCodeBlock'), { ssr: false });
@@ -90,11 +91,12 @@ const isValidDataFormat = (input: string) => {
 };
 
 const parseData = (source: string) => {
-  const regex = /codeClassNameEnum:(.*?)\s+avatar:\!\[.*?\]\((.*?)\s*\)\s*title:\[(.*?)\]\((.*?)\s*\)/g;
+  const regex = /codeClassNameEnum:\s*(\w+)\s+avatar:\s*!\[.*?\]\((.*?)\)\s+title:\s*\[(.*?)\]\((.*?)\)/g;
 
   let match;
   const entries = [];
   let index = 0;
+
   while ((match = regex.exec(source)) !== null) {
     const codeClassNameEnumValue = match[1].trim();
     const avatarUrl = match[2].trim();
@@ -102,7 +104,7 @@ const parseData = (source: string) => {
     const titleLink = match[4].trim();
 
     entries.push({
-      id: String('key' + index),
+      id: 'key' + index,
       codeClassNameEnum: codeClassNameEnumValue,
       imageUrl: avatarUrl,
       title: titleText,
@@ -116,11 +118,12 @@ const parseData = (source: string) => {
 
 const Markdown = (props: Props) => {
   const source = props.source || '';
+  const cardSource = cloneDeep(source);
   console.log('xxx aaa Markdown source', source, props);
-  const ret = isValidDataFormat(source);
-  console.log('xxx aaa Markdown source ret', ret);
-  console.log('xxx aaa Markdown source parseData(source)', parseData(source));
-  const contentCardData = parseData(source);
+  // const ret = isValidDataFormat(source);
+  // console.log('xxx aaa Markdown source ret', ret);
+  const contentCardData = parseData(cardSource);
+  console.log('xxx aaa Markdown source contentCardData', contentCardData);
 
   if (contentCardData && contentCardData.length && contentCardData.length > 0) {
     return <ContentCard items={contentCardData} />;
@@ -141,7 +144,6 @@ function Paragraph(props: any) {
 const MarkdownRender = ({ source = '', showAnimation, isDisabled, forbidZhFormat }: Props) => {
   const components = useMemo<any>(
     () => ({
-      p: Paragraph, // 自定义段落渲染
       img: MarkdownImage,
       pre: RewritePre,
       code: Code,
