@@ -477,7 +477,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
         speakingTimeString,
         stopSpeak,
         t,
-        whisperConfig?.open
+        whisperConfig?.open,
+        isShowTools
       ]
     );
 
@@ -608,5 +609,6 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
     );
   }
 );
+ChatInput.displayName = 'ChatInput';
 
 export default React.memo(ChatInput);
