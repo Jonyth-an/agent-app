@@ -31,7 +31,7 @@ import type { AdminMarkType } from './components/SelectMarkCollection';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 
 import { postQuestionGuide } from '@/web/core/ai/api';
-import type { ChatBoxInputType, ChatBoxInputFormType, SendPromptFnType } from './type.d';
+import type { ChatBoxInputType, ChatBoxInputFormType, SendPromptFnType, ChatInputRefType } from './type.d';
 import type { StartChatFnProps, generatingMessageProps } from '../type';
 import ChatInput from './Input/ChatInput';
 import ChatBoxDivider from '../../Divider';
@@ -73,6 +73,7 @@ const SelectMarkCollection = dynamic(() => import('./components/SelectMarkCollec
 const Empty = dynamic(() => import('./components/Empty'));
 const WelcomeBox = dynamic(() => import('./components/WelcomeBox'));
 const VariableInput = dynamic(() => import('./components/VariableInput'));
+
 
 enum FeedbackTypeEnum {
   user = 'user',
@@ -890,10 +891,12 @@ const ChatBox = ({
       scrollToBottom(behavior, 500);
     }
   }));
-
+  const chatInputRef = useRef<ChatInputRefType>(null);
+ 
   const RenderRecords = useMemo(() => {
     return (
       <ScrollData
+        onClick={() => chatInputRef.current?.closeTools()} 
         ScrollContainerRef={ScrollContainerRef}
         flex={'1 0 0'}
         h={0}
@@ -1026,6 +1029,7 @@ const ChatBox = ({
     welcomeText
   ]);
 
+
   return (
     <MyBox
       isLoading={isLoading}
@@ -1040,6 +1044,7 @@ const ChatBox = ({
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
         <ChatInput
+          ref={chatInputRef}
           onSendMessage={sendPrompt}
           onStop={() => chatController.current?.abort('stop')}
           TextareaDom={TextareaDom}

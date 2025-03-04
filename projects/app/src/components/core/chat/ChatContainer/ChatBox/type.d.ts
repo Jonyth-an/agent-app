@@ -6,7 +6,9 @@ import {
   ToolModuleResponseItemType
 } from '@fastgpt/global/core/chat/type';
 import { SseResponseEventEnum } from '@fastgpt/global/core/workflow/runtime/constants';
-
+export interface ChatInputRefType {
+  closeTools: () => void;
+}
 export type UserInputFileItemType = {
   id: string;
   rawFile?: File;

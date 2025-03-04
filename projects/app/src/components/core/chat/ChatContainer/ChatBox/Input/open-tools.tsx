@@ -52,7 +52,10 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
       </Text>
     </Flex>
   );
-
+  const onFnWrapper = (cb: Function) => {
+    cb();
+    onToggle();
+  };
   return (
     <Flex
       justify="flex-start"
@@ -68,12 +71,12 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
       <ToolItem
         icon={<HamburgerIcon w="26px" h="26px" color="gray.600" mb={1.5} />}
         label="历史对话"
-        onClick={onOpenSlider}
+        onClick={() => onFnWrapper(onOpenSlider)}
       />
       <ToolItem
         icon={<AddIcon w="26px" h="26px" color="gray.600" mb={1.5} />}
         label="新对话"
-        onClick={() => onChangeChatId()}
+        onClick={() => onFnWrapper(onChangeChatId)}
       />
       {/* <ToolItem icon="image" label="相册" onClick={() => albumInputRef.current?.click()} />
       <ToolItem icon="camera" label="拍照" onClick={() => cameraInputRef.current?.click()} />
