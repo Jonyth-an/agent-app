@@ -91,7 +91,7 @@ const isValidDataFormat = (input: string) => {
 };
 
 const parseData = (source: string) => {
-  const regex = /codeClassNameEnum:\s*(\w+)\s+avatar:\s*!\[.*?\]\((.*?)\)\s+title:\s*\[(.*?)\]\((.*?)\)/g;
+  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
 
   let match;
   const entries = [];
