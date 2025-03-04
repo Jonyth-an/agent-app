@@ -91,6 +91,7 @@ const AIContentCard = React.memo(function AIContentCard({
   isChatting: boolean;
   questionGuides: string[];
 }) {
+  console.log("xxx aaa questionGuides", questionGuides)
   return (
     <Flex flexDirection={'column'} gap={2}>
       {chatValue.map((value, i) => {

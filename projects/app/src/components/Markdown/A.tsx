@@ -22,13 +22,10 @@ import { getCollectionSourceData } from '@fastgpt/global/core/dataset/collection
 import Markdown from '.';
 
 const A = ({ children, ...props }: any) => {
+  console.log('xxx aaa props', children, props);
   const { t } = useTranslation();
 
-  const {
-    data: quoteData,
-    loading,
-    runAsync
-  } = useRequest2(getQuoteData, {
+  const { data: quoteData, loading, runAsync } = useRequest2(getQuoteData, {
     manual: true
   });
 

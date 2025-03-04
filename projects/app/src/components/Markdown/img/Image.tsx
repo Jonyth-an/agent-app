@@ -4,6 +4,7 @@ import MyPhotoView from '@fastgpt/web/components/common/Image/PhotoView';
 import { useBoolean } from 'ahooks';
 
 const MdImage = ({ src, ...props }: { src?: string } & ImageProps) => {
+  console.log('xxx aaa MdImage', src, props);
   const [isLoaded, { setTrue }] = useBoolean(false);
 
   const [renderSrc, setRenderSrc] = useState(src);

@@ -9,3 +9,9 @@ export type EditApiKeyProps = {
   name: string;
   limit: OpenApiSchema['limit'];
 };
+
+export declare module './contentCard' {
+  import React from 'react';
+  const ContentCard: React.FC;
+  export default ContentCard;
+}
