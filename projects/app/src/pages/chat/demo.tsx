@@ -1,6 +1,6 @@
 import type React from 'react';
 import { Box } from '@chakra-ui/react';
-import ContentCard from '@/components/Markdown/contentCard';
+// import ContentCard from '@/components/Markdown/contentCard';
 
 const Demo: React.FC = () => {
   const items = [
@@ -29,7 +29,7 @@ const Demo: React.FC = () => {
 
   return (
     <Box maxWidth="md" mx="auto" p={4}>
-      <ContentCard items={items} maxItems={5} />
+      {/* <ContentCard items={items} maxItems={5} /> */}
     </Box>
   );
 };
