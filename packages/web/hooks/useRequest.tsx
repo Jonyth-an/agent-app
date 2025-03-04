@@ -62,14 +62,15 @@ export const useRequest2 = <TData, TParams extends any[]>(
       manual: true,
       ...rest,
       onError: (err, params) => {
+        console.log("xxx rrr useRequest2 params err", params, err)
         rest?.onError?.(err, params);
         if (errorToast !== '') {
           const errText = t(getErrText(err, errorToast || '') as any);
           if (errText) {
-            toast({
-              title: errText,
-              status: 'error'
-            });
+            // toast({
+            //   title: errText,
+            //   status: 'error'
+            // });
           }
         }
       },

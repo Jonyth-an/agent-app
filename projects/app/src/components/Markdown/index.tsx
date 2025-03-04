@@ -91,7 +91,7 @@ const isValidDataFormat = (input: string) => {
 };
 
 const parseData = (source: string) => {
-  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
+  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
 
   let match;
   const entries = [];
@@ -99,7 +99,7 @@ const parseData = (source: string) => {
 
   while ((match = regex.exec(source)) !== null) {
     const codeClassNameEnumValue = match[1].trim();
-    const avatarUrl = match[2].trim();
+    const avatarUrl = match[2] ? match[2].trim() : match[3].trim(); // 判断捕获的URL位置
     const titleText = match[3].trim();
     const titleLink = match[4].trim();
 
