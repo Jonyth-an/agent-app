@@ -9,7 +9,7 @@ import RehypeExternalLinks from 'rehype-external-links';
 
 import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
-import { Box, Flex, Text, Link, Image, Divider } from '@chakra-ui/react';
+import { Box, Flex, Text, Link, Divider } from '@chakra-ui/react';
 import { CodeClassNameEnum } from './utils';
 
 const CodeLight = dynamic(() => import('./codeBlock/CodeLight'), { ssr: false });
@@ -61,7 +61,8 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
                   <Image
                     src={item.imageUrl || '/placeholder.svg'}
-                    alt=""
+                    // @ts-ignore
+                    alt={item.title as string}
                     objectFit="cover"
                     width="100%"
                     height="100%"
