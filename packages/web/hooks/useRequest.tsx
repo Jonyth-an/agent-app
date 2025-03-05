@@ -25,7 +25,7 @@ export const useRequest = ({ successToast, errorToast, onSuccess, onError, ...pr
     },
     onError(err: any, variables: void, context: unknown) {
       onError?.(err, variables, context);
-
+      console.log("xxx rrr useRequest err, variables, context", err, variables, context);
       if (errorToast !== undefined) {
         const errText = t(getErrText(err, errorToast || '') as any);
         if (errText) {
