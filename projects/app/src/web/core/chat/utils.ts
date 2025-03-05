@@ -63,10 +63,12 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
       window.location.href = emptyUrl;
     }
   } else {
-    const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&dev=123456&redirect=${encodedCurUrl}`;
+    const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&dev=123456&redirect=${curUrl}`;
+    const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
     console.log('xxx loginUrl', loginUrl);
+    console.log('xxx loginUrl authorizeUrl', authorizeUrl);
     if (process.env.NODE_ENV !== 'development') {
-      window.location.href = loginUrl;
+      window.location.href = authorizeUrl;
     }
   }
 }
