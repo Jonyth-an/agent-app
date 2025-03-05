@@ -50,14 +50,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const { isPc } = useSystem();
 
   const { userInfo } = useUserStore();
-  const {
-    setLastChatAppId,
-    chatId,
-    appId,
-    outLinkAuthData,
-    setAgentConfigInfo,
-    setStaffInfo
-  } = useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -72,7 +64,19 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const chatRecords = useContextSelector(ChatRecordContext, (v) => v.chatRecords);
   const totalRecordsCount = useContextSelector(ChatRecordContext, (v) => v.totalRecordsCount);
-
+  const {
+    setLastChatAppId,
+    chatId,
+    appId,
+    agentConfigInfo,
+    outLinkAuthData,
+    setAgentConfigInfo,
+    setStaffInfo
+  } = useChatStore();
+  console.log('xxx agentConfigInfo', agentConfigInfo);
+  const agentConfig = agentConfigInfo.agentConfig;
+  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
+  const tenantId = agentConfigInfo.tenantId;
   // Load chat init data
 
   const { loading } = useRequest2(
@@ -98,7 +102,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
       onError(e: any) {
         console.log('xxx getInitChatInfo error', e);
         // reset all chat tore
-        redirectAuth({ isEmptyPage: false });
+        redirectAuth({ appId, isEmptyPage: false, tenantId });
       },
       onFinally() {
         forbidLoadChat.current = false;
@@ -166,7 +170,8 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   return (
     <Flex h={'100%'}>
       <NextHead title={chatBoxData.app.name} icon={chatBoxData.app.avatar}></NextHead>
-      {/* pc show myself apps */}
+      {/* pc show myself apps mark */}
+
       {/* {isPc && (
         <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>
           <SliderApps apps={myApps} activeAppId={appId} />
@@ -241,18 +246,22 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     setToken
   } = useChatStore();
 
+  console.log('xxx agentConfigInfo', agentConfigInfo);
+  const agentConfig = agentConfigInfo.agentConfig;
+  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
+  const tenantId = agentConfigInfo.tenantId;
+
   const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
     () => getMyApps({ getRecentlyChat: true }),
     {
       manual: false
     }
   );
-
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
     if (!appId) {
-      redirectAuth({ isEmptyPage: false });
+      redirectAuth({ isEmptyPage: false, appId, tenantId });
     }
     setSource('online');
   });
@@ -292,20 +301,16 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     {
       manual: false,
       onError: (error: any) => {
-        console.error('Error initializing chat:', error);
+        console.log('Error initializing chat:', error);
         if ((error as { code?: number }).code === 404) {
-          redirectAuth({ isEmptyPage: true });
+          redirectAuth({ isEmptyPage: true, appId, tenantId });
         } else {
-          redirectAuth();
+          redirectAuth({ appId, tenantId });
         }
       },
       refreshDeps: [appId]
     }
   );
-
-  console.log('xxx agentConfigInfo', agentConfigInfo);
-  const agentConfig = agentConfigInfo.agentConfig;
-  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
 
   useEffect(() => {
     if (!weChatShareConfig.title) return;

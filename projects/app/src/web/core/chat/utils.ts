@@ -47,17 +47,21 @@ export function getAppQuestionGuidesByUserGuideModule(
   return chatInputGuide?.open ? qGuideText : [];
 }
 
-export function redirectAuth({
-  isEmptyPage,
-  appId
-}: { appId?: string; isEmptyPage?: boolean } = {}) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
+export type RedirectAuthParams = {
+  appId: string;
+  tenantId: number;
+  isEmptyPage?: boolean;
+};
+
+export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&tenantId=${tenantId}`;
+  const encodedCurUrl = encodeURIComponent(curUrl);
   if (isEmptyPage) {
-    const emptyUrl = `${share_h5_url}/share/error?redirect=${curUrl}`;
+    const emptyUrl = `${share_h5_url}/share/error?redirect=${encodedCurUrl}`;
     console.log('xxx emptyUrl', emptyUrl);
     window.location.href = emptyUrl;
   } else {
-    const loginUrl = `${share_h5_url}/share/advLogin?redirect=${curUrl}`;
+    const loginUrl = `${share_h5_url}/share/advLogin?redirect=${encodedCurUrl}`;
     console.log('xxx loginUrl', loginUrl);
     window.location.href = loginUrl;
   }
