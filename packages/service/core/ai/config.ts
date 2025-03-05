@@ -10,8 +10,7 @@ import { addLog } from '../../common/system/log';
 import { i18nT } from '../../../web/i18n/utils';
 import { OpenaiAccountType } from '@fastgpt/global/support/user/team/type';
 import { getLLMModel } from './model';
-import { CHAT_API_BASE_URL } from '../../../../projects/app/src/config/index';
-
+import { CHAT_API_BASE_URL, CHAT_API_KEY } from '../../../../projects/app/src/config/index';
 export const openaiBaseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
 
 export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number }) => {
@@ -19,7 +18,8 @@ export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number
 
   return new OpenAI({
     baseURL: CHAT_API_BASE_URL,
-    apiKey: process.env.CHAT_API_KEY,
+    apiKey: CHAT_API_KEY,
+    // apiKey: process.env.CHAT_API_KEY,
     httpAgent: global.httpsAgent,
     timeout,
     maxRetries: 2
@@ -34,7 +34,8 @@ export const getAxiosConfig = (props?: { userKey?: OpenaiAccountType }) => {
 
   return {
     baseUrl: CHAT_API_BASE_URL,
-    authorization: `Bearer ${process.env.CHAT_API_KEY}`
+    authorization: `Bearer ${CHAT_API_KEY}`
+    // authorization: `Bearer ${process.env.CHAT_API_KEY}`
   };
 };
 

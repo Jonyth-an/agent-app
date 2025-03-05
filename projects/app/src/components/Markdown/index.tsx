@@ -128,14 +128,25 @@ const parseData = (source: string) => {
 
 const Markdown = (props: Props) => {
   const source = props.source || '';
-  const cardSource = cloneDeep(source);
-  console.log('xxx aaa Markdown source', source, props);
-  // const ret = isValidDataFormat(source);
-  // console.log('xxx aaa Markdown source ret', ret);
-  const contentCardData = parseData(cardSource);
-  console.log('xxx aaa Markdown source contentCardData', contentCardData);
+  // 移除 cloneDeep，因为 source 是字符串类型，不需要深拷贝
+  // const cardSource = cloneDeep(source);
 
-  if (contentCardData && contentCardData.length && contentCardData.length > 0) {
+  // 使用 useMemo 缓存解析结果
+  const contentCardData = useMemo(() => {
+    try {
+      return parseData(source);
+    } catch (error) {
+      console.error('Parse content card data error:', error);
+      return [];
+    }
+  }, [source]); // 只在 source 变化时重新计算
+
+  // 使用 useMemo 缓存渲染判断
+  const shouldRenderCard = useMemo(() => {
+    return Array.isArray(contentCardData) && contentCardData.length > 0;
+  }, [contentCardData]);
+
+  if (shouldRenderCard) {
     return <ContentCard items={contentCardData} />;
   }
 
@@ -145,6 +156,17 @@ const Markdown = (props: Props) => {
 
   return <Box whiteSpace={'pre-wrap'}>{source}</Box>;
 };
+
+// 确保组件被正确地记忆化
+export default React.memo(Markdown, (prevProps, nextProps) => {
+  // 只在 source 或其他必要属性发生变化时重新渲染
+  return (
+    prevProps.source === nextProps.source &&
+    prevProps.showAnimation === nextProps.showAnimation &&
+    prevProps.isDisabled === nextProps.isDisabled &&
+    prevProps.forbidZhFormat === nextProps.forbidZhFormat
+  );
+});
 
 function Paragraph(props: any) {
   const { node, children }: { node: any; children: React.ReactNode } = props;
@@ -217,8 +239,6 @@ const MarkdownRender = ({ source = '', showAnimation, isDisabled, forbidZhFormat
     </Box>
   );
 };
-
-export default React.memo(Markdown);
 
 /* Custom dom */
 function Code(e: any) {
