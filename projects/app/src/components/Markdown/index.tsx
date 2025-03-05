@@ -91,26 +91,36 @@ const isValidDataFormat = (input: string) => {
 };
 
 const parseData = (source: string) => {
-  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
+  if (typeof source !== 'string') {
+    return [];
+  }
 
-  let match;
+  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
   const entries = [];
   let index = 0;
 
-  while ((match = regex.exec(source)) !== null) {
-    const codeClassNameEnumValue = match[1].trim();
-    const avatarUrl = match[2] ? match[2].trim() : match[3].trim(); // 判断捕获的URL位置
-    const titleText = match[3].trim();
-    const titleLink = match[4].trim();
+  try {
+    let match;
+    while ((match = regex.exec(source)) !== null) {
+      const codeClassNameEnumValue = match[1]?.trim();
+      const avatarUrl = match[2] ? match[2].trim() : match[3]?.trim();
+      const titleText = match[3]?.trim();
+      const titleLink = match[4]?.trim();
 
-    entries.push({
-      id: 'key' + index,
-      codeClassNameEnum: codeClassNameEnumValue,
-      imageUrl: avatarUrl,
-      title: titleText,
-      link: titleLink
-    });
-    index += 1;
+      // 确保所有必需的字段都存在
+      if (codeClassNameEnumValue && avatarUrl && titleText && titleLink) {
+        entries.push({
+          id: 'key' + index,
+          codeClassNameEnum: codeClassNameEnumValue,
+          imageUrl: avatarUrl,
+          title: titleText,
+          link: titleLink
+        });
+        index += 1;
+      }
+    }
+  } catch (error) {
+    console.error('Error parsing content card data:', error);
   }
 
   return entries;
