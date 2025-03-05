@@ -54,15 +54,15 @@ export type RedirectAuthParams = {
 };
 
 export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&tenantId=${tenantId}`;
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&tenantId=${tenantId}&dev=123456`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   if (isEmptyPage) {
-    const emptyUrl = `${share_h5_url}/share/error?redirect=${encodedCurUrl}`;
+    const emptyUrl = `${share_h5_url}/share/error?dev=123456&redirect=${encodedCurUrl}`;
     console.log('xxx emptyUrl', emptyUrl);
-    window.location.href = emptyUrl;
+    // window.location.href = emptyUrl;
   } else {
-    const loginUrl = `${share_h5_url}/share/advLogin?redirect=${encodedCurUrl}`;
+    const loginUrl = `${share_h5_url}/share/advLogin?dev=123456&redirect=${encodedCurUrl}`;
     console.log('xxx loginUrl', loginUrl);
-    window.location.href = loginUrl;
+    // window.location.href = loginUrl;
   }
 }
