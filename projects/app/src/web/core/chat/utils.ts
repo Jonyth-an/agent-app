@@ -59,10 +59,10 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?dev=123456&redirect=${encodedCurUrl}`;
     console.log('xxx emptyUrl', emptyUrl);
-    // window.location.href = emptyUrl;
+    window.location.href = emptyUrl;
   } else {
     const loginUrl = `${share_h5_url}/share/advLogin?dev=123456&redirect=${encodedCurUrl}`;
     console.log('xxx loginUrl', loginUrl);
-    // window.location.href = loginUrl;
+    window.location.href = loginUrl;
   }
 }
