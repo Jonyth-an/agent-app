@@ -14,13 +14,12 @@ import SideBar from '@/components/SideBar';
 import ChatHistorySlider from '@/pageComponents/chat/ChatHistorySlider';
 import SliderApps from '@/pageComponents/chat/SliderApps';
 import ChatHeader from '@/pageComponents/chat/ChatHeader';
-import { useUserStore } from '@/web/support/user/useUserStore';
 import { serviceSideProps } from '@fastgpt/web/common/system/nextjs';
 import { getChatTitleFromChatMessage } from '@fastgpt/global/core/chat/utils';
 import { GPTMessages2Chats } from '@fastgpt/global/core/chat/adapt';
 import { getMyApps } from '@/web/core/app/api';
 import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
-
+import { useUserStore } from '@/web/support/user/useUserStore';
 import { useMount } from 'ahooks';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import Demo from './demo';
@@ -243,9 +242,10 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     setAppId,
     setAgentConfigInfo,
     setStaffInfo,
-    setToken
+    setToken,
+    setShareToken
   } = useChatStore();
-
+  const { setUserInfo } = useUserStore();
   const agentConfig = agentConfigInfo.agentConfig;
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
   const tenantId = agentConfigInfo.tenantId;
@@ -280,23 +280,26 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
       setAgentConfigInfo(agentConfigInfo);
 
-      await postLogin({
+      const res = await postLogin({
         username: 'root',
         password: '123456'
       });
+      console.log('xxx res', res);
+      setUserInfo(res?.user);
+      setToken(res?.token);
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
-        let token = router.query.token as string;
+        let shareToken = router.query.token as string;
         let cookieToken = Cookies.get('token');
-        if (!token && cookieToken) {
-          token = cookieToken;
+        if (!shareToken && cookieToken) {
+          shareToken = cookieToken;
         }
-        if (!token && cookieToken) {
+        if (!shareToken && cookieToken) {
           throw new Error('No token provided for non-public agent');
         }
-        setToken(token);
+        setShareToken(shareToken);
 
-        const staffInfo = await getStaffInfo(token);
+        const staffInfo = await getStaffInfo(shareToken, agentConfigInfo.tenantId);
         setStaffInfo(staffInfo);
       }
       setAppId(appId);

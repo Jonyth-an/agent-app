@@ -50,7 +50,7 @@ export const streamFetch = ({
     // First res
     const timeoutId = setTimeout(() => {
       abortCtrl.abort('Time out');
-    }, 60000);
+    }, 90000);
 
     // response data
     let responseText = '';
@@ -130,8 +130,8 @@ export const streamFetch = ({
       const requestData = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
-          // Authorization: `Bearer ${CHAT_API_KEY}`
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${CHAT_API_KEY}`
           // Authorization: `Bearer ${process.env.CHAT_API_KEY}`
         },
         signal: abortCtrl.signal,

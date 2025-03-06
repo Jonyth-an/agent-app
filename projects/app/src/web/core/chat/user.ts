@@ -10,7 +10,7 @@ import { agentConfigInfoReq } from '../../../global/core/user/api';
 /**
  * 获取用户信息
  */
-export const getStaffInfo = (token: string) =>
+export const getStaffInfo = (token: string, tenantId: number) =>
   GET<StaffInfo>(
     `/mobile/api/v1/org/staff/getStaffInfo`,
     {},
@@ -18,7 +18,7 @@ export const getStaffInfo = (token: string) =>
       baseURL: '/uc-system',
       headers: {
         token,
-        tenantId: 1
+        tenantId
       }
     }
   );

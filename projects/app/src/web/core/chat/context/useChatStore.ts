@@ -8,6 +8,9 @@ import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
+  shareToken: string; // 存储token
+  setShareToken: (token: string) => void;
+
   token: string; // 存储token
   setToken: (token: string) => void;
 
@@ -86,6 +89,12 @@ export const useChatStore = create<State>()(
         setToken(token) {
           set((state) => {
             state.token = token;
+          });
+        },
+        shareToken: '',
+        setShareToken(shareToken) {
+          set((state) => {
+            state.shareToken = shareToken;
           });
         },
         // 使用immer中间件以不可变方式更新状态
