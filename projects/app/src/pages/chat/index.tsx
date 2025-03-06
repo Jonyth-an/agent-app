@@ -274,17 +274,22 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   // 添加登录请求
   const { data: loginData } = useRequest2(
     async () => {
-      const fastgpt_token = Cookies.get('fastgpt_token');
-      if (fastgpt_token) {
+      const fastgpt_token = window.localStorage.getItem('fastgpt_token');
+      console.log('xxx fastgpt_token', fastgpt_token);
+      if (fastgpt_token && fastgpt_token.length > 0) {
         setToken(fastgpt_token);
-        return { token: fastgpt_token };
+        return null; // 直接返回，不继续执行后续代码
       }
+
+      // 只有在没有 token 的情况下才执行登录
       const res = await postLogin({
         username: USER_NAME,
         password: USER_PWD
       });
+      console.log('xxx postLogin res', res);
       if (res?.token) {
         setToken(res.token);
+        window.localStorage.setItem('fastgpt_token', res.token);
         if (res?.user) {
           setUserInfo(res.user);
         }
@@ -297,6 +302,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       onError: (error: any) => {
         console.error('---> Error fastgpt chat error remove:', error);
         Cookies.remove('token');
+        window.localStorage.setItem('fastgpt_token', '');
         redirectAuth({ appId, tenantId });
       }
     }
