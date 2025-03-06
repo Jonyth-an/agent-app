@@ -41,6 +41,7 @@ import { redirectAuth } from '@/web/core/chat/utils';
 import { share_h5_url, USER_NAME, USER_PWD } from '@/config';
 import { initWechatShare } from '@/web/core/chat/wechat';
 import { postLogin } from '@/web/support/user/api';
+import { agentConfigInfo } from '@/global/core/user/api';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
@@ -228,6 +229,15 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   );
 };
 
+const getTenantTokenKey = (agentConfigInfo: agentConfigInfo) => {
+  if (agentConfigInfo == null || !agentConfigInfo.tenantId) {
+    return 'token';
+  }
+  const tenantId = agentConfigInfo.tenantId;
+  const tenantTokenKey = `${tenantId}token`;
+  return tenantTokenKey;
+};
+
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
   const { t } = useTranslation();
@@ -274,10 +284,10 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   // 添加登录请求
   const { data: loginData } = useRequest2(
     async () => {
-      const fastgpt_token = window.localStorage.getItem('fastgpt_token');
-      console.log('xxx fastgpt_token', fastgpt_token);
-      if (fastgpt_token && fastgpt_token.length > 0) {
-        setToken(fastgpt_token);
+      const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
+      console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
+      if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
+        setToken(nb_fastgpt_token);
         return null; // 直接返回，不继续执行后续代码
       }
 
@@ -289,7 +299,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       console.log('xxx postLogin res', res);
       if (res?.token) {
         setToken(res.token);
-        window.localStorage.setItem('fastgpt_token', res.token);
+        Cookies.set('nb_fastgpt_token', res.token, { expires: 2, path: '/' });
         if (res?.user) {
           setUserInfo(res.user);
         }
@@ -301,8 +311,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       manual: false,
       onError: (error: any) => {
         console.error('---> Error fastgpt chat error remove:', error);
-        Cookies.remove('token');
-        window.localStorage.setItem('fastgpt_token', '');
+        const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
+        Cookies.remove(tenantTokenKey);
         redirectAuth({ appId, tenantId });
       }
     }
@@ -315,20 +325,21 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       }
 
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
+      const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
       setAgentConfigInfo(agentConfigInfo);
 
       // 移除登录相关代码
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
-        let shareToken = router.query.token as string;
-        let cookieToken = Cookies.get('token');
+        let shareToken = router.query[tenantTokenKey] as string;
+        let cookieToken = Cookies.get(tenantTokenKey);
         if (!shareToken && cookieToken) {
           shareToken = cookieToken;
         }
-        if (!shareToken && cookieToken) {
+        if (!shareToken) {
           throw new Error('No token provided for non-public agent');
         }
         setShareToken(shareToken);
-        const staffInfo = await getStaffInfo(shareToken, agentConfigInfo.tenantId);
+        const staffInfo = await getStaffInfo(shareToken, tenantId);
         setStaffInfo(staffInfo);
       }
       setAppId(appId);
@@ -342,7 +353,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         if ((error as { code?: number }).code === 404) {
           redirectAuth({ isEmptyPage: true, appId, tenantId });
         } else {
-          Cookies.remove('token');
+          const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
+          Cookies.remove(tenantTokenKey);
           redirectAuth({ appId, tenantId });
         }
       }
