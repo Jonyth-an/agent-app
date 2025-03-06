@@ -292,7 +292,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
       if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
         setToken(nb_fastgpt_token);
-        return null; // 直接返回，不继续执行后续代码
       } else {
         // 只有在没有 token 的情况下才执行登录
         const res = await postLogin({
