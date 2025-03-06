@@ -318,7 +318,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       setAgentConfigInfo(agentConfigInfo);
 
       // 移除登录相关代码
-
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
         let shareToken = router.query.token as string;
         let cookieToken = Cookies.get('token');
@@ -329,7 +328,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
           throw new Error('No token provided for non-public agent');
         }
         setShareToken(shareToken);
-
         const staffInfo = await getStaffInfo(shareToken, agentConfigInfo.tenantId);
         setStaffInfo(staffInfo);
       }
@@ -344,6 +342,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         if ((error as { code?: number }).code === 404) {
           redirectAuth({ isEmptyPage: true, appId, tenantId });
         } else {
+          Cookies.remove('token');
           redirectAuth({ appId, tenantId });
         }
       }
