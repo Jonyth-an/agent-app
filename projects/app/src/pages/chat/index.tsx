@@ -295,7 +295,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       refreshDeps: [appId],
       manual: false,
       onError: (error: any) => {
-        console.error('Error fastgpt chat error :', error);
+        console.error('---> Error fastgpt chat error remove:', error);
+        Cookies.remove('token');
         redirectAuth({ appId, tenantId });
       }
     }
