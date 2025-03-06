@@ -14,7 +14,8 @@ import { getLLMModel } from './model';
 const aiProxyBaseUrl = process.env.AIPROXY_API_ENDPOINT
   ? `${process.env.AIPROXY_API_ENDPOINT}/v1`
   : undefined;
-const openaiBaseUrl = aiProxyBaseUrl || process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+export const openaiBaseUrl =
+  aiProxyBaseUrl || process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
 const openaiBaseKey = process.env.AIPROXY_API_TOKEN || process.env.CHAT_API_KEY || '';
 
 export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number }) => {

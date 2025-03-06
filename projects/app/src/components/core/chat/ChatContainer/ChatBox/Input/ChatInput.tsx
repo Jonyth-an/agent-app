@@ -487,7 +487,6 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
     const cardItems: CardItem[] = useMemo(() => {
       const agentConfig = agentConfigInfo?.agentConfig || {};
       const cardList = (agentConfig && agentConfig.list) || [];
-      console.log('xxx cardList', cardList);
       return cardList;
     }, [agentConfigInfo]);
 
