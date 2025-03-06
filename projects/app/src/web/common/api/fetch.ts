@@ -130,8 +130,8 @@ export const streamFetch = ({
       const requestData = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${CHAT_API_KEY}`
+          'Content-Type': 'application/json'
+          // Authorization: `Bearer ${CHAT_API_KEY}`
           // Authorization: `Bearer ${process.env.CHAT_API_KEY}`
         },
         signal: abortCtrl.signal,

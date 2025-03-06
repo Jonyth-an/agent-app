@@ -31,7 +31,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   const setLog = (search: string) => {
     const set = new URLSearchParams(search);
     const devValue = set.get('dev');
-    if (devValue && devValue === '123456') {
+    if (devValue && devValue === '12345678') {
       // 等待 VConsole 脚本加载完成
       const checkVConsole = () => {
         // @ts-ignore

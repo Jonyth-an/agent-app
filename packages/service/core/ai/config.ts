@@ -10,16 +10,36 @@ import { addLog } from '../../common/system/log';
 import { i18nT } from '../../../web/i18n/utils';
 import { OpenaiAccountType } from '@fastgpt/global/support/user/team/type';
 import { getLLMModel } from './model';
-import { CHAT_API_BASE_URL, CHAT_API_KEY } from '../../../../projects/app/src/config/index';
-export const openaiBaseUrl = process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+
+const aiProxyBaseUrl = process.env.AIPROXY_API_ENDPOINT
+  ? `${process.env.AIPROXY_API_ENDPOINT}/v1`
+  : undefined;
+const openaiBaseUrl = aiProxyBaseUrl || process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1';
+const openaiBaseKey = process.env.AIPROXY_API_TOKEN || process.env.CHAT_API_KEY || '';
 
 export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number }) => {
   const { userKey, timeout } = props || {};
+  console.log('xxx bbb 111 getAIApi', userKey, timeout);
 
+  const baseUrl = userKey?.baseUrl || global?.systemEnv?.oneapiUrl || openaiBaseUrl;
+  console.log(
+    'xxx bbb 111 getAIApi userKey?.baseUrl , global?.systemEnv?.oneapiUrl , openaiBaseUrl',
+    userKey?.baseUrl,
+    global?.systemEnv?.oneapiUrl,
+    openaiBaseUrl
+  );
+  console.log('xxx bbb 111 getAIApi baseUrl', baseUrl);
+  const apiKey = userKey?.key || global?.systemEnv?.chatApiKey || openaiBaseKey;
+  console.log(
+    'xxx bbb 111 getAIApi userKey?.key , global?.systemEnv?.chatApiKey , openaiBaseKey',
+    userKey?.key,
+    global?.systemEnv?.chatApiKey,
+    openaiBaseKey
+  );
+  console.log('xxx bbb getAIApi  apiKey', apiKey);
   return new OpenAI({
-    baseURL: CHAT_API_BASE_URL,
-    apiKey: CHAT_API_KEY,
-    // apiKey: process.env.CHAT_API_KEY,
+    baseURL: baseUrl,
+    apiKey,
     httpAgent: global.httpsAgent,
     timeout,
     maxRetries: 2
@@ -28,14 +48,29 @@ export const getAIApi = (props?: { userKey?: OpenaiAccountType; timeout?: number
 
 export const getAxiosConfig = (props?: { userKey?: OpenaiAccountType }) => {
   const { userKey } = props || {};
+  console.log('xxx bbb 222 getAxiosConfig props userKey', props, userKey);
 
-  // const baseUrl = process.env.CHAT_API_BASE_URL;
-  // const apiKey = process.env.CHAT_API_KEY || '';
+  const baseUrl = userKey?.baseUrl || global?.systemEnv?.oneapiUrl || openaiBaseUrl;
+  console.log(
+    'xxx bbb 222 getAIApi userKey?.baseUrl , global?.systemEnv?.oneapiUrl , openaiBaseUrl',
+    userKey?.baseUrl,
+    global?.systemEnv?.oneapiUrl,
+    openaiBaseUrl
+  );
+  console.log('xxx bbb 222 getAIApi baseUrl', baseUrl);
+
+  const apiKey = userKey?.key || global?.systemEnv?.chatApiKey || openaiBaseKey;
+  console.log(
+    'xxx bbb 222 getAIApi userKey?.key , global?.systemEnv?.chatApiKey , openaiBaseKey',
+    userKey?.key,
+    global?.systemEnv?.chatApiKey,
+    openaiBaseKey
+  );
+  console.log('xxx bbb 222 getAIApi  apiKey', apiKey);
 
   return {
-    baseUrl: CHAT_API_BASE_URL,
-    authorization: `Bearer ${CHAT_API_KEY}`
-    // authorization: `Bearer ${process.env.CHAT_API_KEY}`
+    baseUrl,
+    authorization: `Bearer ${apiKey}`
   };
 };
 
@@ -71,6 +106,7 @@ export const createChatCompletion = async ({
       userKey,
       timeout: formatTimeout
     });
+
     const response = await ai.chat.completions.create(body, {
       ...options,
       ...(modelConstantsData.requestUrl ? { path: modelConstantsData.requestUrl } : {}),

@@ -41,6 +41,7 @@ import useWechatShare from './hooks/useWechatShare';
 import { redirectAuth } from '@/web/core/chat/utils';
 import { share_h5_url } from '@/config';
 import { initWechatShare } from '@/web/core/chat/wechat';
+import { postLogin } from '@/web/support/user/api';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
@@ -73,7 +74,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     setAgentConfigInfo,
     setStaffInfo
   } = useChatStore();
-  console.log('xxx agentConfigInfo', agentConfigInfo);
   const agentConfig = agentConfigInfo.agentConfig;
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
   const tenantId = agentConfigInfo.tenantId;
@@ -246,7 +246,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     setToken
   } = useChatStore();
 
-  console.log('xxx agentConfigInfo', agentConfigInfo);
   const agentConfig = agentConfigInfo.agentConfig;
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
   const tenantId = agentConfigInfo.tenantId;
@@ -280,6 +279,11 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
 
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
       setAgentConfigInfo(agentConfigInfo);
+
+      await postLogin({
+        username: 'root',
+        password: '123456'
+      });
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
         let token = router.query.token as string;
