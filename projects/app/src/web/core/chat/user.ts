@@ -36,5 +36,3 @@ export const getSignatureInfo = (data: SignatureInfoReq) =>
       baseURL: '/marketing'
     }
   );
-// export const getChatRecords = (data: getPaginationRecordsBody) =>
-//   POST<getPaginationRecordsResponse>('core/chat/getPaginationRecords', data);

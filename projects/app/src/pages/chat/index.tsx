@@ -66,6 +66,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const chatRecords = useContextSelector(ChatRecordContext, (v) => v.chatRecords);
   const totalRecordsCount = useContextSelector(ChatRecordContext, (v) => v.totalRecordsCount);
   const {
+    token,
     setLastChatAppId,
     chatId,
     appId,
@@ -98,6 +99,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     },
     {
       manual: false,
+      ready: !!token,
       refreshDeps: [appId, chatId],
       onError(e: any) {
         console.log('xxx getInitChatInfo error', e);
@@ -252,6 +254,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     setAppId,
     setAgentConfigInfo,
     setStaffInfo,
+    token,
     setToken,
     setShareToken
   } = useChatStore();
@@ -260,12 +263,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
   const tenantId = agentConfigInfo.tenantId;
 
-  const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
-    () => getMyApps({ getRecentlyChat: true }),
-    {
-      manual: false
-    }
-  );
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
@@ -281,43 +278,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     // setAppId('67b860750d1c6dfdccebab3d');
   }, [appId, setAppId]);
 
-  // 添加登录请求
-  const { data: loginData } = useRequest2(
-    async () => {
-      const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
-      console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
-      if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
-        setToken(nb_fastgpt_token);
-        return null; // 直接返回，不继续执行后续代码
-      }
-
-      // 只有在没有 token 的情况下才执行登录
-      const res = await postLogin({
-        username: USER_NAME,
-        password: USER_PWD
-      });
-      console.log('xxx postLogin res', res);
-      if (res?.token) {
-        setToken(res.token);
-        Cookies.set('nb_fastgpt_token', res.token, { expires: 2, path: '/' });
-        if (res?.user) {
-          setUserInfo(res.user);
-        }
-      }
-      return res;
-    },
-    {
-      refreshDeps: [appId],
-      manual: false,
-      onError: (error: any) => {
-        console.error('---> Error fastgpt chat error remove:', error);
-        const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
-        Cookies.remove(tenantTokenKey);
-        redirectAuth({ appId, tenantId });
-      }
-    }
-  );
-
   const { loading, error } = useRequest2(
     async () => {
       if (!appId) {
@@ -327,6 +287,27 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
       const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
       setAgentConfigInfo(agentConfigInfo);
+
+      const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
+      console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
+      if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
+        setToken(nb_fastgpt_token);
+        return null; // 直接返回，不继续执行后续代码
+      } else {
+        // 只有在没有 token 的情况下才执行登录
+        const res = await postLogin({
+          username: USER_NAME,
+          password: USER_PWD
+        });
+        console.log('xxx postLogin res', res);
+        if (res?.token) {
+          setToken(res.token);
+          Cookies.set('nb_fastgpt_token', res.token, { expires: 2, path: '/' });
+          if (res?.user) {
+            setUserInfo(res.user);
+          }
+        }
+      }
 
       // 移除登录相关代码
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
@@ -355,9 +336,20 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         } else {
           const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
           Cookies.remove(tenantTokenKey);
+          if (error.code === 401 || error.code === 403) {
+            Cookies.remove('nb_fastgpt_token');
+          }
           redirectAuth({ appId, tenantId });
         }
       }
+    }
+  );
+
+  const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
+    () => getMyApps({ getRecentlyChat: true }),
+    {
+      manual: false,
+      ready: !!token
     }
   );
 
@@ -371,6 +363,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
     });
   }, [weChatShareConfig, appId]);
+
   // useWechatShare({
   //   title: weChatShareConfig.title,
   //   desc: weChatShareConfig.desc,
@@ -389,7 +382,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
   }, [appId, chatId]);
 
-  return source === ChatSourceEnum.online ? (
+  return source === ChatSourceEnum.online && token ? (
     <ChatContextProvider params={chatHistoryProviderParams}>
       <ChatItemContextProvider
         showRouteToAppDetail={isStandalone !== '1'}
