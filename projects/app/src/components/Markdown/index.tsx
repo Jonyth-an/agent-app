@@ -142,13 +142,13 @@ const Markdown = (props: Props) => {
   }, [source]); // 只在 source 变化时重新计算
 
   // 使用 useMemo 缓存渲染判断
-  // const shouldRenderCard = useMemo(() => {
-  //   return Array.isArray(contentCardData) && contentCardData.length > 0;
-  // }, [contentCardData]);
+  const shouldRenderCard = useMemo(() => {
+    return Array.isArray(contentCardData) && contentCardData.length > 0;
+  }, [contentCardData]);
 
-  // if (shouldRenderCard) {
-  //   return <ContentCard items={contentCardData} />;
-  // }
+  if (shouldRenderCard) {
+    return <ContentCard items={contentCardData} />;
+  }
 
   if (source.length < 200000) {
     return <MarkdownRender {...props} />;
