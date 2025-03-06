@@ -38,7 +38,7 @@ import ChatRecordContextProvider, {
 import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
 import useWechatShare from './hooks/useWechatShare';
 import { redirectAuth } from '@/web/core/chat/utils';
-import { share_h5_url } from '@/config';
+import { share_h5_url, USER_NAME, USER_PWD } from '@/config';
 import { initWechatShare } from '@/web/core/chat/wechat';
 import { postLogin } from '@/web/support/user/api';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
@@ -281,8 +281,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       setAgentConfigInfo(agentConfigInfo);
 
       const res = await postLogin({
-        username: 'root',
-        password: '123456'
+        username: USER_NAME,
+        password: USER_PWD
       });
       console.log('xxx res', res);
       setUserInfo(res?.user);
