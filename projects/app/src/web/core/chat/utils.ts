@@ -54,7 +54,7 @@ export type RedirectAuthParams = {
 };
 
 export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&dev=12345678`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;

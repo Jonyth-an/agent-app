@@ -271,6 +271,36 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     // setAppId('67b860750d1c6dfdccebab3d');
   }, [appId, setAppId]);
 
+  // 添加登录请求
+  const { data: loginData } = useRequest2(
+    async () => {
+      const fastgpt_token = Cookies.get('fastgpt_token');
+      if (fastgpt_token) {
+        setToken(fastgpt_token);
+        return { token: fastgpt_token };
+      }
+      const res = await postLogin({
+        username: USER_NAME,
+        password: USER_PWD
+      });
+      if (res?.token) {
+        setToken(res.token);
+        if (res?.user) {
+          setUserInfo(res.user);
+        }
+      }
+      return res;
+    },
+    {
+      refreshDeps: [appId],
+      manual: false,
+      onError: (error: any) => {
+        console.error('Error fastgpt chat error :', error);
+        redirectAuth({ appId, tenantId });
+      }
+    }
+  );
+
   const { loading, error } = useRequest2(
     async () => {
       if (!appId) {
@@ -280,13 +310,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
       setAgentConfigInfo(agentConfigInfo);
 
-      const res = await postLogin({
-        username: USER_NAME,
-        password: USER_PWD
-      });
-      console.log('xxx res', res);
-      setUserInfo(res?.user);
-      setToken(res?.token);
+      // 移除登录相关代码
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
         let shareToken = router.query.token as string;
@@ -307,6 +331,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     },
     {
       manual: false,
+      refreshDeps: [appId],
       onError: (error: any) => {
         console.log('Error initializing chat:', error);
         if ((error as { code?: number }).code === 404) {
@@ -314,8 +339,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         } else {
           redirectAuth({ appId, tenantId });
         }
-      },
-      refreshDeps: [appId]
+      }
     }
   );
 

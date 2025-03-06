@@ -28,7 +28,7 @@ export const jsonRes = <T = any>(
   if (ERROR_RESPONSE[errResponseKey]) {
     // login is expired
     if (errResponseKey === ERROR_ENUM.unAuthorization) {
-      // clearCookie(res);
+      clearCookie(res);
     }
 
     addLog.error(`Api response error: ${url}`, ERROR_RESPONSE[errResponseKey]);
@@ -76,7 +76,7 @@ export const sseErrRes = (res: NextApiResponse, error: any) => {
   if (ERROR_RESPONSE[errResponseKey]) {
     // login is expired
     if (errResponseKey === ERROR_ENUM.unAuthorization) {
-      // clearCookie(res);
+      clearCookie(res);
     }
 
     return responseWrite({
