@@ -57,8 +57,10 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&dev=12345678`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
-  if (queryParams.get('debugger') === 'nb1234') {
+  console.log("queryParams.get('debugger')", queryParams.get('debugger'));
+  if (queryParams.get('debugger') == 'nb1234') {
     debugger;
+    return false;
   }
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
