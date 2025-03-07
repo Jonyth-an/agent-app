@@ -160,7 +160,7 @@ export const useChatStore = create<State>()(
             list: [],
             weChatShareConfig: {}
           },
-          tenantId: 0,
+          tenantId: -1,
           status: ''
         },
         setAgentConfigInfo(config) {

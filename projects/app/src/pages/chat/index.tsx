@@ -349,7 +349,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         const tenantId = agentConfigInfo.tenantId;
         console.log('Error initializing chat:', error);
         if ((error as { code?: number }).code === 404) {
-          redirectAuth({ isEmptyPage: true, appId, tenantId });
+          redirectAuth({ isEmptyPage: true, appId, tenantId: -1 });
         } else {
           if (error.code === 401 || error.code === 403) {
             Cookies.remove('nb_fastgpt_token');
