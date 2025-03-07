@@ -557,11 +557,11 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
             {...(isPc
               ? {
                   border: '1px solid',
-                  borderColor: 'rgba(0,0,0,0.12)'
+                  borderColor: 'rgba(0,0,0,0.07)'
                 }
               : {
                   borderTop: '1px solid',
-                  borderTopColor: 'rgba(0,0,0,0.15)'
+                  borderTopColor: 'rgba(0,0,0,0.07)'
                 })}
           >
             {/* Chat input guide box */}

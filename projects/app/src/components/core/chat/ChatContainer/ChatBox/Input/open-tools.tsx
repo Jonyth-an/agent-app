@@ -65,7 +65,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
       px={3}
       gap={3}
       borderTop="1px solid"
-      borderColor="gray.200"
+      borderColor="rgba(0,0,0,0.07)"
       bg="white"
     >
       <ToolItem
