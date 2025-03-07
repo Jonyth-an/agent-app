@@ -40,23 +40,19 @@ interface ContentCardProps {
 }
 
 const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
-  // const displayItems = items.slice(0, maxItems);
   const displayItems = items;
 
   return (
-    <Box borderWidth="1px" borderRadius="lg" p={4} bgColor={'white'}>
-      {/* <Text fontSize="md" fontWeight="medium" mb={4}>
-        以下是你可能的内容：
-      </Text> */}
+    <Box borderWidth="1px" borderRadius="lg" p={4} bgColor="white">
       <Flex direction="column" gap={3}>
         {displayItems.map((item, index) => (
-          <>
-            <Link key={item.id} href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
+          <React.Fragment key={item.id}>
+            <Link href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
               <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
                   <Image
                     src={item.imageUrl || '/placeholder.svg'}
-                    alt={item.title as string}
+                    alt={item.title}
                     objectFit="cover"
                     width="100%"
                     height="100%"
@@ -69,9 +65,8 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
                 </Box>
               </Flex>
             </Link>
-            {/* 在最后一个项目后不添加分割线 */}
             {index < displayItems.length - 1 && <Divider borderColor="gray.200" />}
-          </>
+          </React.Fragment>
         ))}
       </Flex>
     </Box>
