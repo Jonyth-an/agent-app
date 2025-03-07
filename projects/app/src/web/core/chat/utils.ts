@@ -56,17 +56,21 @@ export type RedirectAuthParams = {
 export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
   const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&dev=12345678`;
   const encodedCurUrl = encodeURIComponent(curUrl);
+  const queryParams = new URLSearchParams(window.location.search);
+  if (queryParams.get('debugger') === 'nb1234') {
+    debugger;
+  }
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
-    console.log('xxx emptyUrl', emptyUrl);
+    console.error('xxx emptyUrl', emptyUrl);
     if (process.env.NODE_ENV !== 'development') {
       window.location.href = emptyUrl;
     }
   } else {
     const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
     const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
-    console.log('xxx loginUrl', loginUrl);
-    console.log('xxx loginUrl authorizeUrl', authorizeUrl);
+    console.error('xxx loginUrl', loginUrl);
+    console.error('xxx loginUrl authorizeUrl', authorizeUrl);
     if (process.env.NODE_ENV !== 'development') {
       window.location.href = authorizeUrl;
     }
