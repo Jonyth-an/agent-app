@@ -291,7 +291,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useMount(async () => {
     // pc: redirect to latest model chat
     if (!appId) {
-      redirectAuth({ isEmptyPage: false, appId, tenantId: agentConfig.tenantId });
+      redirectAuth({ isEmptyPage: false, appId, tenantId: -1 });
     }
     setSource('online');
   });
