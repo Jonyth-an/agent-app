@@ -65,6 +65,7 @@ import { ChatRecordContext } from '@/web/core/chat/context/chatRecordContext';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import TimeBox from './components/TimeBox';
 import MyBox from '@fastgpt/web/components/common/MyBox';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
@@ -126,6 +127,7 @@ const ChatBox = ({
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
+  const { agentConfigInfo } = useChatStore();
   const userAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.userAvatar);
   const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
@@ -927,7 +929,7 @@ const ChatBox = ({
                   {item.obj === ChatRoleEnum.Human && !item.hideInUI && (
                     <ChatItem
                       type={item.obj}
-                      avatar={userAvatar}
+                      avatar={agentConfigInfo.avatar}
                       chat={item}
                       onRetry={retryInput(item.dataId)}
                       onDelete={delOneMessage(item.dataId)}
@@ -937,7 +939,7 @@ const ChatBox = ({
                   {item.obj === ChatRoleEnum.AI && (
                     <ChatItem
                       type={item.obj}
-                      avatar={appAvatar}
+                      avatar={agentConfigInfo.avatar}
                       chat={item}
                       isLastChild={index === chatRecords.length - 1}
                       {...{

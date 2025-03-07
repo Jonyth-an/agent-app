@@ -379,13 +379,13 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   );
 
   useEffect(() => {
-    if (!weChatShareConfig.title) return;
+    if (!agentConfigInfo.name) return;
 
     initWechatShare({
-      title: weChatShareConfig.title,
-      desc: weChatShareConfig.desc,
-      imgUrl: weChatShareConfig.imgUrl,
-      link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
+      title: agentConfigInfo.name,
+      desc: agentConfigInfo.description,
+      imgUrl: agentConfigInfo.avatar,
+      link: agentConfigInfo.url || `${share_h5_url}/chat?appId=${appId}`
     });
   }, [weChatShareConfig, appId]);
 

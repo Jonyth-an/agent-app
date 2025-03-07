@@ -10,11 +10,12 @@ export const clientInitData = async (
   feConfigs: FastGPTFeConfigsType;
 }> => {
   try {
-    const res = await getSystemInitData(useSystemStore.getState().initDataBufferId);
-    useSystemStore.getState().initStaticData(res);
+    // const res = await getSystemInitData(useSystemStore.getState().initDataBufferId);
+    // useSystemStore.getState().initStaticData(res);
 
     return {
-      feConfigs: res.feConfigs || useSystemStore.getState().feConfigs || {}
+      // feConfigs: res.feConfigs || useSystemStore.getState().feConfigs || {}
+      feConfigs: {}
     };
   } catch (error) {
     if (retry > 0) {

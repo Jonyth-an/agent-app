@@ -5,14 +5,15 @@ import Markdown from '@/components/Markdown';
 import ChatAvatar from './ChatAvatar';
 import { useContextSelector } from 'use-context-selector';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 
 const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
-
+  const { agentConfigInfo } = useChatStore();
   return (
     <Box py={3}>
       {/* avatar */}
-      <ChatAvatar src={appAvatar} type={'AI'} />
+      <ChatAvatar src={agentConfigInfo.avatar} type={'AI'} />
       {/* message */}
       <Box textAlign={'left'}>
         <Card
