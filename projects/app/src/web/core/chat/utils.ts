@@ -54,7 +54,7 @@ export type RedirectAuthParams = {
 };
 
 export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&dev=12345678`;
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
   console.log("queryParams.get('debugger')", queryParams.get('debugger'));

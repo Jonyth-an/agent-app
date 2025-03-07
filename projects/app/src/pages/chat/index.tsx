@@ -232,12 +232,37 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 };
 
 const getTenantTokenKey = (agentConfigInfo: agentConfigInfo) => {
+  let host = window.location.host;
+  host = host.split('.')[0];
   if (agentConfigInfo == null || !agentConfigInfo.tenantId) {
-    return 'token';
+    return ['token', `${host}token`];
   }
   const tenantId = agentConfigInfo.tenantId;
   const tenantTokenKey = `${tenantId}token`;
-  return tenantTokenKey;
+
+  const domainTenantTokenKey = `${host}${tenantId}token`;
+  return [tenantTokenKey, domainTenantTokenKey];
+};
+
+const getShareToken = (agentConfigInfo: agentConfigInfo) => {
+  const queryParams = new URLSearchParams(window.location.search);
+  const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
+  console.log('xxx [tenantTokenKey, domainTenantTokenKey]', [tenantTokenKey, domainTenantTokenKey]);
+  let shareToken = queryParams.get(tenantTokenKey) || queryParams.get(domainTenantTokenKey);
+  let cookieToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
+  if (!shareToken && cookieToken) {
+    shareToken = cookieToken;
+  }
+  if (!shareToken) {
+    throw new Error('No token provided for non-public agent');
+  }
+  return shareToken as string;
+};
+
+const clearShareToken = (agentConfigInfo: agentConfigInfo) => {
+  const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
+  Cookies.remove(tenantTokenKey);
+  Cookies.remove(domainTenantTokenKey);
 };
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
@@ -261,13 +286,12 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const { setUserInfo } = useUserStore();
   const agentConfig = agentConfigInfo.agentConfig;
   const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
-  const tenantId = agentConfigInfo.tenantId;
 
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
     if (!appId) {
-      redirectAuth({ isEmptyPage: false, appId, tenantId });
+      redirectAuth({ isEmptyPage: false, appId, tenantId: agentConfig.tenantId });
     }
     setSource('online');
   });
@@ -285,9 +309,9 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       }
 
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
-      const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
       setAgentConfigInfo(agentConfigInfo);
-
+      console.log('agentConfigInfo324', agentConfigInfo);
+      const tenantId = agentConfigInfo.tenantId;
       const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
       console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
       if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
@@ -310,14 +334,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
 
       // 移除登录相关代码
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
-        let shareToken = router.query[tenantTokenKey] as string;
-        let cookieToken = Cookies.get(tenantTokenKey);
-        if (!shareToken && cookieToken) {
-          shareToken = cookieToken;
-        }
-        if (!shareToken) {
-          throw new Error('No token provided for non-public agent');
-        }
+        const shareToken = getShareToken(agentConfigInfo);
         setShareToken(shareToken);
         const staffInfo = await getStaffInfo(shareToken, tenantId);
         setStaffInfo(staffInfo);
@@ -329,15 +346,16 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       manual: false,
       refreshDeps: [appId],
       onError: (error: any) => {
+        const tenantId = agentConfigInfo.tenantId;
         console.log('Error initializing chat:', error);
         if ((error as { code?: number }).code === 404) {
           redirectAuth({ isEmptyPage: true, appId, tenantId });
         } else {
-          const tenantTokenKey = getTenantTokenKey(agentConfigInfo);
-          Cookies.remove(tenantTokenKey);
           if (error.code === 401 || error.code === 403) {
             Cookies.remove('nb_fastgpt_token');
           }
+          clearShareToken(agentConfigInfo);
+
           redirectAuth({ appId, tenantId });
         }
       }
