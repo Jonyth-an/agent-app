@@ -134,7 +134,7 @@ const ContentCardSkeleton = () => (
           bg="gray.200"
           animation="pulse 1.5s infinite"
         />
-        <Box flex={1} minWidth={0} width="110px" height="30px">
+        <Box flex={1} minWidth={0} width="170px" height="30px">
           <Box
             height="14px"
             width="80%"
@@ -159,11 +159,14 @@ const ContentCardSkeleton = () => (
 
 const Markdown = (props: Props) => {
   const source = props.source || '';
-  const CONTENT_CARD_MARK = 'codeClassNameEnum:CONTENT_CARD';
+  const CONTENT_CARD_MARK = 'codeClassNameEnum';
+  const CONTENT_CARD_TYPE = 'CONTENT_CARD';
 
   // 检查是否包含 ContentCard 标记
   const hasContentCardMark = useMemo(() => {
-    return source.includes(CONTENT_CARD_MARK);
+    // 使用正则表达式匹配，允许中间有空格、换行等
+    const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
+    return source.includes(CONTENT_CARD_MARK) || regex.test(source);
   }, [source]);
 
   // 检查数据是否完整
@@ -191,7 +194,7 @@ const Markdown = (props: Props) => {
   }
 
   // 检测到 ContentCard 标记但数据不完整，显示骨架屏
-  if (hasContentCardMark && !isDataComplete) {
+  if (hasContentCardMark && contentCardData.length === 0) {
     return (
       <Box>
         <ContentCardSkeleton />
@@ -199,9 +202,7 @@ const Markdown = (props: Props) => {
     );
   }
 
-  // 数据完整且解析成功，显示 ContentCard
   if (contentCardData.length > 0) {
-    // return <ContentCardSkeleton />;
     return <ContentCard items={contentCardData} />;
   }
 
