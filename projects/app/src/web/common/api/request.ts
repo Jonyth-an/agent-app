@@ -11,7 +11,6 @@ import { useSystemStore } from '../system/useSystemStore';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import { i18nT } from '@fastgpt/web/i18n/utils';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
-import { CHAT_API_KEY } from '@/config';
 
 interface ConfigType {
   baseURL?: string;
