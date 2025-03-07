@@ -248,11 +248,18 @@ const getShareToken = (agentConfigInfo: agentConfigInfo) => {
   const queryParams = new URLSearchParams(window.location.search);
   const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
   console.log('xxx [tenantTokenKey, domainTenantTokenKey]', [tenantTokenKey, domainTenantTokenKey]);
-  let shareToken = queryParams.get(tenantTokenKey) || queryParams.get(domainTenantTokenKey);
-  let cookieToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
-  if (!shareToken && cookieToken) {
-    shareToken = cookieToken;
+  let shareToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
+  if (!shareToken) {
+    shareToken =
+      (queryParams.get(tenantTokenKey) as string) ||
+      (queryParams.get(domainTenantTokenKey) as string) ||
+      (queryParams.get('token') as string);
   }
+  // let shareToken = queryParams.get(tenantTokenKey) || queryParams.get(domainTenantTokenKey);
+  // let cookieToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
+  // if (!shareToken && cookieToken) {
+  //   shareToken = cookieToken;
+  // }
   if (!shareToken) {
     throw new Error('No token provided for non-public agent');
   }
@@ -263,6 +270,7 @@ const clearShareToken = (agentConfigInfo: agentConfigInfo) => {
   const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
   Cookies.remove(tenantTokenKey);
   Cookies.remove(domainTenantTokenKey);
+  Cookies.remove('token');
 };
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
