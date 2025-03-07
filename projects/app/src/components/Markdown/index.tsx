@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import 'katex/dist/katex.min.css';
 import RemarkMath from 'remark-math'; // Math syntax
@@ -121,30 +121,91 @@ const parseData = (source: string) => {
   return entries;
 };
 
+// 添加骨架屏组件
+const ContentCardSkeleton = () => (
+  <Box borderWidth="1px" borderRadius="lg" p={4} bgColor="white">
+    <Flex direction="column">
+      <Flex alignItems="start" gap={3} borderRadius="md">
+        <Box
+          flexShrink={0}
+          width="65px"
+          height="50px"
+          borderRadius="md"
+          bg="gray.200"
+          animation="pulse 1.5s infinite"
+        />
+        <Box flex={1} minWidth={0} width="110px" height="30px">
+          <Box
+            height="14px"
+            width="80%"
+            bg="gray.200"
+            borderRadius="md"
+            animation="pulse 1.5s infinite"
+            mb={2}
+          />
+          <Box
+            height="14px"
+            width="60%"
+            minWidth="40%"
+            bg="gray.200"
+            borderRadius="md"
+            animation="pulse 1.5s infinite"
+          />
+        </Box>
+      </Flex>
+    </Flex>
+  </Box>
+);
+
 const Markdown = (props: Props) => {
   const source = props.source || '';
-  // 移除 cloneDeep，因为 source 是字符串类型，不需要深拷贝
-  // const cardSource = cloneDeep(source);
+  const CONTENT_CARD_MARK = 'codeClassNameEnum:CONTENT_CARD';
+
+  // 检查是否包含 ContentCard 标记
+  const hasContentCardMark = useMemo(() => {
+    return source.includes(CONTENT_CARD_MARK);
+  }, [source]);
+
+  // 检查数据是否完整
+  const isDataComplete = useMemo(() => {
+    if (!hasContentCardMark) return false;
+    // 检查是否包含完整的 avatar 和 title
+    return source.includes('avatar:') && source.includes('title:');
+  }, [source, hasContentCardMark]);
 
   // 使用 useMemo 缓存解析结果
   const contentCardData = useMemo(() => {
+    if (!hasContentCardMark || !isDataComplete) return [];
+
     try {
       return parseData(source);
     } catch (error) {
       console.error('Parse content card data error:', error);
       return [];
     }
-  }, [source]); // 只在 source 变化时重新计算
+  }, [source, hasContentCardMark, isDataComplete]);
 
-  // 使用 useMemo 缓存渲染判断
-  const shouldRenderCard = useMemo(() => {
-    return Array.isArray(contentCardData) && contentCardData.length > 0;
-  }, [contentCardData]);
+  // 渲染逻辑
+  if (source.length < CONTENT_CARD_MARK.length) {
+    return <MarkdownRender {...props} />;
+  }
 
-  if (shouldRenderCard) {
+  // 检测到 ContentCard 标记但数据不完整，显示骨架屏
+  if (hasContentCardMark && !isDataComplete) {
+    return (
+      <Box>
+        <ContentCardSkeleton />
+      </Box>
+    );
+  }
+
+  // 数据完整且解析成功，显示 ContentCard
+  if (contentCardData.length > 0) {
+    // return <ContentCardSkeleton />;
     return <ContentCard items={contentCardData} />;
   }
 
+  // 其他情况使用默认的 Markdown 渲染
   if (source.length < 200000) {
     return <MarkdownRender {...props} />;
   }
