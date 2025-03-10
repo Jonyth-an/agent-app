@@ -161,6 +161,7 @@ const Markdown = (props: Props) => {
   const source = props.source || '';
   const CONTENT_CARD_MARK = 'codeClassNameEnum';
   const CONTENT_CARD_TYPE = 'CONTENT_CARD';
+  const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
 
   // 检查是否包含 ContentCard 标记
   const hasContentCardMark = useMemo(() => {
@@ -188,31 +189,16 @@ const Markdown = (props: Props) => {
     }
   }, [source, hasContentCardMark, isDataComplete]);
 
-  // 渲染逻辑
-  if (source.length < CONTENT_CARD_MARK.length) {
-    return <MarkdownRender {...props} />;
-  }
-
-  // 检测到 ContentCard 标记但数据不完整，显示骨架屏
-  if (hasContentCardMark && contentCardData.length === 0) {
-    return (
-      <Box>
-        <ContentCardSkeleton />
-      </Box>
-    );
-  }
-
-  const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
-
   useEffect(() => {
-    if (contentCardData.length === 0) return;
+    setVisibleItems([]); // 重置状态
+    if (!hasContentCardMark || contentCardData.length === 0) return;
 
     const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 450 : 300;
     let currentIndex = 0;
 
     const timer = setInterval(() => {
       if (currentIndex < contentCardData.length) {
-        setVisibleItems((prev) => [...prev, contentCardData[currentIndex]]);
+        setVisibleItems(prev => [...prev, contentCardData[currentIndex]]);
         currentIndex++;
       } else {
         clearInterval(timer);
@@ -220,18 +206,23 @@ const Markdown = (props: Props) => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [contentCardData]);
+  }, [contentCardData, hasContentCardMark]);
 
-  if (contentCardData.length > 0) {
-    return <ContentCard items={visibleItems} />;
-  }
-
-  // 其他情况使用默认的 Markdown 渲染
-  if (source.length < 200000) {
+  // 渲染逻辑
+  if (!hasContentCardMark || source.length < CONTENT_CARD_MARK.length) {
     return <MarkdownRender {...props} />;
   }
 
-  return <Box whiteSpace={'pre-wrap'}>{source}</Box>;
+  // 检测到 ContentCard 标记但数据不完整，显示骨架屏
+  if (contentCardData.length === 0) {
+    return (
+      <Box>
+        <ContentCardSkeleton />
+      </Box>
+    );
+  }
+
+  return <ContentCard items={visibleItems} />;
 };
 
 // 确保组件被正确地记忆化
