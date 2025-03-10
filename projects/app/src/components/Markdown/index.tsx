@@ -202,8 +202,28 @@ const Markdown = (props: Props) => {
     );
   }
 
+  const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
+
+  useEffect(() => {
+    if (contentCardData.length === 0) return;
+
+    const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 450 : 300;
+    let currentIndex = 0;
+
+    const timer = setInterval(() => {
+      if (currentIndex < contentCardData.length) {
+        setVisibleItems((prev) => [...prev, contentCardData[currentIndex]]);
+        currentIndex++;
+      } else {
+        clearInterval(timer);
+      }
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [contentCardData]);
+
   if (contentCardData.length > 0) {
-    return <ContentCard items={contentCardData} />;
+    return <ContentCard items={visibleItems} />;
   }
 
   // 其他情况使用默认的 Markdown 渲染
