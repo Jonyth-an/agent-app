@@ -193,12 +193,12 @@ const Markdown = (props: Props) => {
     setVisibleItems([]); // 重置状态
     if (!hasContentCardMark || contentCardData.length === 0) return;
 
-    const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 450 : 300;
+    const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 600 : 400;
     let currentIndex = 0;
 
     const timer = setInterval(() => {
       if (currentIndex < contentCardData.length) {
-        setVisibleItems(prev => [...prev, contentCardData[currentIndex]]);
+        setVisibleItems((prev) => [...prev, contentCardData[currentIndex]]);
         currentIndex++;
       } else {
         clearInterval(timer);
