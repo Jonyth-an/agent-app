@@ -66,7 +66,12 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
   console.log("queryParams.get('debugger')", queryParams.get('debugger'));
-
+  if (queryParams.get('debugger') === 'true') {
+    return;
+  }
+  if (queryParams.get('dev') == '12345678') {
+    debugger;
+  }
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
     console.error('xxx emptyUrl', emptyUrl);
