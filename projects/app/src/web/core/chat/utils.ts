@@ -70,12 +70,16 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   if (isEmptyPage) {
     const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
     console.error('xxx emptyUrl', emptyUrl);
-    window.location.href = emptyUrl;
+    if (process.env.NODE_ENV !== 'development') {
+      window.location.href = emptyUrl;
+    }
   } else {
     const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
     const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
     console.error('xxx loginUrl', loginUrl);
     console.error('xxx loginUrl authorizeUrl', authorizeUrl);
-    window.location.href = authorizeUrl;
+    if (process.env.NODE_ENV !== 'development') {
+      window.location.href = authorizeUrl;
+    }
   }
 }
