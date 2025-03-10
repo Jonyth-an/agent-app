@@ -261,7 +261,9 @@ const getShareToken = (agentConfigInfo: agentConfigInfo) => {
   //   shareToken = cookieToken;
   // }
   if (!shareToken) {
-    throw new Error('No token provided for non-public agent');
+    const error = new Error('No token provided for non-public agent');
+    (error as any).code = 407;
+    throw error;
   }
   return shareToken as string;
 };
@@ -313,7 +315,9 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const { loading, error } = useRequest2(
     async () => {
       if (!appId) {
-        throw new Error('No appId provided');
+        const error = new Error('No appId provided');
+        (error as any).code = 406;
+        throw error;
       }
 
       const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
@@ -356,16 +360,31 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       onError: (error: any) => {
         const tenantId = agentConfigInfo.tenantId;
         console.log('Error initializing chat:', error);
-        if ((error as { code?: number }).code === 404) {
-          redirectAuth({ isEmptyPage: true, appId, tenantId: -1 });
-        } else {
-          if (error.code === 401 || error.code === 403) {
-            Cookies.remove('nb_fastgpt_token');
-          }
-          clearShareToken(agentConfigInfo);
+        const errorCode = (error as { code?: number }).code;
 
-          redirectAuth({ appId, tenantId });
+        // 处理 404 错误
+        if (errorCode === 404) {
+          redirectAuth({ isEmptyPage: true, appId, tenantId: -1 });
+          return;
         }
+
+        // 处理 401/403 认证错误
+        const errorCodes = [401, 403, 406, 407];
+        if (errorCode && errorCodes.includes(errorCode as number)) {
+          Cookies.remove('nb_fastgpt_token');
+          clearShareToken(agentConfigInfo);
+          redirectAuth({ appId, tenantId });
+          return;
+        }
+
+        // 其他错误跳转到错误页面
+        router.push({
+          pathname: '/login', // 改用一个普通的路由名称
+          query: {
+            code: errorCode || '',
+            message: encodeURIComponent(error.message || '未知错误')
+          }
+        });
       }
     }
   );

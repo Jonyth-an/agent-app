@@ -4,7 +4,9 @@ import { useSystemStore } from '@/web/common/system/useSystemStore';
 import { NodeInputKeyEnum } from '@fastgpt/global/core/workflow/constants';
 import { getWebLLMModel } from '@/web/common/system/utils';
 import { share_h5_url } from '@/config';
-
+export function getShareUrl() {
+  return window.location.origin;
+}
 export function checkChatSupportSelectFileByChatModels(models: string[] = []) {
   for (const model of models) {
     const modelData = getWebLLMModel(model);
@@ -54,6 +56,12 @@ export type RedirectAuthParams = {
 };
 
 export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParams) {
+  if (typeof window !== 'undefined') {
+    console.log('window 不存在');
+    // return;
+  }
+  console.log('xxx getShareUrl()', getShareUrl());
+  // const share_h5_url = window.location.origin;
   const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
