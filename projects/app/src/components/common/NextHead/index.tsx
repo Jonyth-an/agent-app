@@ -27,7 +27,13 @@ const NextHead = ({ title, icon, desc }: { title?: string; icon?: string; desc?:
       />
       <meta httpEquiv="Content-Security-Policy" content="img-src * data:;" />
       {desc && <meta name="description" content={desc} />}
-      {icon && <link rel="icon" href={formatIcon} />}
+      {icon && (
+        <>
+          <link rel="icon" sizes="any" href={formatIcon} />
+          <link rel="icon" sizes="any" href={formatIcon} />
+          <link rel="apple-touch-icon" sizes="any" href={formatIcon} />
+        </>
+      )}
     </Head>
   );
 };

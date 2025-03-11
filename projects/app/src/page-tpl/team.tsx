@@ -52,7 +52,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   const theme = useTheme();
   const { isPc } = useSystem();
 
-  const { outLinkAuthData, appId, chatId } = useChatStore();
+  const { outLinkAuthData, appId, chatId, agentConfigInfo } = useChatStore();
 
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -66,7 +66,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const chatRecords = useContextSelector(ChatRecordContext, (v) => v.chatRecords);
   const totalRecordsCount = useContextSelector(ChatRecordContext, (v) => v.totalRecordsCount);
-
   // get chat app info
   const { loading } = useRequest2(
     async () => {
@@ -180,7 +179,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   return (
     <Flex h={'100%'}>
-      <NextHead title={chatBoxData.app.name} icon={chatBoxData.app.avatar}></NextHead>
+      <NextHead title={agentConfigInfo.name} icon={agentConfigInfo.avatar} desc={agentConfigInfo.description}></NextHead>
       {/* pc show myself apps */}
       {isPc && (
         <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>

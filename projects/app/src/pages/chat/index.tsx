@@ -143,7 +143,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
         ...state,
         title: newTitle
       }));
-
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [appId, chatId, onUpdateHistoryTitle, setChatBoxData, forbidLoadChat]
@@ -171,7 +170,11 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   return (
     <Flex h={'100%'}>
-      <NextHead title={chatBoxData.app.name} icon={chatBoxData.app.avatar}></NextHead>
+      <NextHead
+        title={agentConfigInfo.name}
+        icon={agentConfigInfo.avatar}
+        desc={agentConfigInfo.description}
+      ></NextHead>
       {/* pc show myself apps mark */}
 
       {/* {isPc && (
