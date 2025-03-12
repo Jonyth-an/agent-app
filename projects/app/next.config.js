@@ -36,6 +36,10 @@ function writeWebpackConfigToFile(config, isServer) {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  devIndicators: {
+    // 将 build activity 指示器关闭
+    autoPrerender: isDev
+  },
   // 设置应用的基础路径
   basePath: process.env.NEXT_PUBLIC_BASE_URL,
   assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
@@ -50,10 +54,6 @@ const nextConfig = {
   // 配置 API 请求代理
   async rewrites() {
     return [
-      {
-        source: '/api/:path*',
-        destination: 'http://10.5.9.219:3000/api/:path*'
-      },
       {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://aim-saas-share-dev.newtamp.cn/uc-system/:path*'

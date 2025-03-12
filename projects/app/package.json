@@ -3,8 +3,8 @@
   "version": "4.8.22",
   "private": false,
   "scripts": {
-    "dev": "node server.js",
-    "dev2": "next dev -p 3003",
+    "dev": "nodemon ./server/index.js  --watch server",
+    "dev2": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

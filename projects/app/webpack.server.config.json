@@ -67,6 +67,10 @@
     ],
     "modules": [
       "node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules/nodemon/bin/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules/nodemon/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/node_modules",
       "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/projects/app"
     ],
     "alias": {
@@ -201,7 +205,11 @@
       "next-barrel-loader": "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/next@14.2.5_@babel+core@7.24.9_babel-plugin-macros@3.1.0_react-dom@18.3.1_react@18.3.1__react@18.3.1_sass@1.77.8/node_modules/next/dist/build/webpack/loaders/next-barrel-loader"
     },
     "modules": [
-      "node_modules"
+      "node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules/nodemon/bin/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules/nodemon/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/nodemon@3.1.9/node_modules",
+      "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/node_modules/.pnpm/node_modules"
     ],
     "plugins": []
   },
@@ -407,7 +415,8 @@
                   },
                   "devIndicators": {
                     "buildActivity": true,
-                    "buildActivityPosition": "bottom-right"
+                    "buildActivityPosition": "bottom-right",
+                    "autoPrerender": true
                   },
                   "onDemandEntries": {
                     "maxInactiveAge": 60000,
@@ -624,10 +633,6 @@
                     "beforeFiles": [],
                     "afterFiles": [
                       {
-                        "source": "/api/:path*",
-                        "destination": "http://10.5.9.219:3000/api/:path*"
-                      },
-                      {
                         "source": "/uc-system/:path*",
                         "destination": "https://aim-saas-share-dev.newtamp.cn/uc-system/:path*"
                       },
@@ -823,7 +828,8 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right"
+                      "buildActivityPosition": "bottom-right",
+                      "autoPrerender": true
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -1039,10 +1045,6 @@
                     "_originalRewrites": {
                       "beforeFiles": [],
                       "afterFiles": [
-                        {
-                          "source": "/api/:path*",
-                          "destination": "http://10.5.9.219:3000/api/:path*"
-                        },
                         {
                           "source": "/uc-system/:path*",
                           "destination": "https://aim-saas-share-dev.newtamp.cn/uc-system/:path*"
@@ -1240,7 +1242,8 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right"
+                      "buildActivityPosition": "bottom-right",
+                      "autoPrerender": true
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -1456,10 +1459,6 @@
                     "_originalRewrites": {
                       "beforeFiles": [],
                       "afterFiles": [
-                        {
-                          "source": "/api/:path*",
-                          "destination": "http://10.5.9.219:3000/api/:path*"
-                        },
                         {
                           "source": "/uc-system/:path*",
                           "destination": "https://aim-saas-share-dev.newtamp.cn/uc-system/:path*"
@@ -1657,7 +1656,8 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right"
+                      "buildActivityPosition": "bottom-right",
+                      "autoPrerender": true
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -1873,10 +1873,6 @@
                     "_originalRewrites": {
                       "beforeFiles": [],
                       "afterFiles": [
-                        {
-                          "source": "/api/:path*",
-                          "destination": "http://10.5.9.219:3000/api/:path*"
-                        },
                         {
                           "source": "/uc-system/:path*",
                           "destination": "https://aim-saas-share-dev.newtamp.cn/uc-system/:path*"
@@ -2395,11 +2391,6 @@
         "beforeFiles": [],
         "afterFiles": [
           {
-            "source": "/:nextInternalLocale(en|zh\\-CN|zh\\-Hant)/api/:path*",
-            "destination": "http://10.5.9.219:3000/api/:path*",
-            "check": true
-          },
-          {
             "source": "/:nextInternalLocale(en|zh\\-CN|zh\\-Hant)/uc-system/:path*",
             "destination": "https://aim-saas-share-dev.newtamp.cn/uc-system/:path*",
             "check": true
@@ -2428,8 +2419,8 @@
         },
         "status": "stopped",
         "id": 2,
-        "_start": "3847174194247",
-        "now": 1741750117610
+        "_start": "28528091225923",
+        "now": 1741774797813
       },
       "rootDir": "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/projects/app"
     },
@@ -2463,6 +2454,5 @@
     "web",
     "es6"
   ],
-  "devtool": "eval-source-map",
-  "devServer": {}
+  "devtool": "eval-source-map"
 }
