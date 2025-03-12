@@ -33,6 +33,9 @@
   },
   "dependencies": {
     "@types/js-cookie": "^3.0.5",
-    "js-cookie": "^3.0.5"
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^3.0.3",
+    "js-cookie": "^3.0.5",
+    "katex": "^0.16.21"
   }
 }

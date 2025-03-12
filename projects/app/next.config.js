@@ -6,6 +6,34 @@ const fs = require('fs');
 // 判断是否为开发环境
 const isDev = process.env.NODE_ENV === 'development';
 console.log('-----NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
+/**
+ * 将 Webpack 配置对象写入文件。
+ * @param {Object} config - Webpack 配置对象。
+ * @param {boolean} isServer - 是否为服务器端配置。
+ */
+function writeWebpackConfigToFile(config, isServer) {
+  if (!dev) return;
+  // 自定义 replacer 函数，用于将 BigInt 转换为字符串
+  const stringifyWithBigIntSupport = (key, value) => {
+    return typeof value === 'bigint' ? value.toString() : value;
+  };
+
+  // 将配置序列化为字符串，以便可以写入文件
+  const configString = JSON.stringify(config, stringifyWithBigIntSupport, 2); // 使用自定义 replacer
+
+  // 定义输出文件路径，根据需要更改
+  const outputPath = path.join(
+    __dirname,
+    isServer ? 'webpack.server.config.json' : 'webpack.client.config.json'
+  );
+
+  // 写入文件
+  fs.writeFileSync(outputPath, configString, 'utf-8');
+
+  // 打印日志（可选）
+  console.log(`Webpack configuration has been written to ${outputPath}`);
+}
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // 设置应用的基础路径
@@ -119,7 +147,7 @@ const nextConfig = {
       asyncWebAssembly: true, // 支持异步 WebAssembly
       layers: true // 启用模块层
     };
-
+    writeWebpackConfigToFile(config, isServer);
     return config;
   },
 

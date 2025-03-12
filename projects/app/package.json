@@ -3,7 +3,8 @@
   "version": "4.8.22",
   "private": false,
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "node server.js",
+    "dev2": "next dev -p 3003",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
