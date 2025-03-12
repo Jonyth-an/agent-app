@@ -12,7 +12,7 @@ console.log('-----NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
  * @param {boolean} isServer - 是否为服务器端配置。
  */
 function writeWebpackConfigToFile(config, isServer) {
-  if (!dev) return;
+  if (!isDev) return;
   // 自定义 replacer 函数，用于将 BigInt 转换为字符串
   const stringifyWithBigIntSupport = (key, value) => {
     return typeof value === 'bigint' ? value.toString() : value;
