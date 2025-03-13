@@ -362,8 +362,7 @@
                   },
                   "devIndicators": {
                     "buildActivity": true,
-                    "buildActivityPosition": "bottom-right",
-                    "autoPrerender": true
+                    "buildActivityPosition": "bottom-right"
                   },
                   "onDemandEntries": {
                     "maxInactiveAge": 60000,
@@ -775,8 +774,7 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right",
-                      "autoPrerender": true
+                      "buildActivityPosition": "bottom-right"
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -1189,8 +1187,7 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right",
-                      "autoPrerender": true
+                      "buildActivityPosition": "bottom-right"
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -1604,8 +1601,7 @@
                     },
                     "devIndicators": {
                       "buildActivity": true,
-                      "buildActivityPosition": "bottom-right",
-                      "autoPrerender": true
+                      "buildActivityPosition": "bottom-right"
                     },
                     "onDemandEntries": {
                       "maxInactiveAge": 60000,
@@ -2655,8 +2651,8 @@
         },
         "status": "stopped",
         "id": 2,
-        "_start": "28528091225923",
-        "now": 1741774797813
+        "_start": "109183268591554",
+        "now": 1741855450706
       },
       "rootDir": "/Users/droden/dirs/new_banker_pro/found-pro/fastGpt-pro/off-fastgpt/nbagent-h5/projects/app"
     },
