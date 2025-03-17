@@ -13,7 +13,8 @@ import { authChatCrud } from '@/service/support/permission/auth/chat';
 import { authDataset } from '@fastgpt/service/support/permission/dataset/auth';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { WritePermissionVal } from '@fastgpt/global/support/permission/constant';
-
+import { getCustomLogger } from '@fastgpt/service/common/system/logger';
+const logger = getCustomLogger('file-upload');
 export type UploadChatFileProps = {
   appId: string;
 } & OutLinkChatAuthProps;
@@ -82,7 +83,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
       throw new Error('bucketName is empty');
     }
 
-    const fileId = await uploadFile({
+    const uploadParam = {
       teamId,
       uid,
       bucketName,
@@ -90,9 +91,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
       filename: file.originalname,
       contentType: file.mimetype,
       metadata: metadata
-    });
-
-    jsonRes(res, {
+    };
+    const fileId = await uploadFile(uploadParam);
+    addLog.debug(
+      'projects/app/src/pages/api/common/file/upload.ts -> handler upload pre',
+      uploadParam
+    );
+    logger.debug(' handler upload pre uploadParam', uploadParam);
+    const uploadRes = {
       data: {
         fileId,
         previewUrl: `${ReadFileBaseUrl}/${file.originalname}?token=${await createFileToken({
@@ -102,7 +108,13 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
           fileId
         })}`
       }
-    });
+    };
+    jsonRes(res, uploadRes);
+    addLog.debug(
+      'projects/app/src/pages/api/common/file/upload.ts -> handler upload after',
+      uploadRes
+    );
+    logger.debug(' handler upload after uploadRes', uploadRes);
   } catch (error) {
     jsonRes(res, {
       code: 500,

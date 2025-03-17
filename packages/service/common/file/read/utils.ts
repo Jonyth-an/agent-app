@@ -8,7 +8,8 @@ import axios from 'axios';
 import { addLog } from '../../system/log';
 import { batchRun } from '@fastgpt/global/common/fn/utils';
 import { matchMdImgTextAndUpload } from '@fastgpt/global/common/string/markdown';
-
+import { getLogger } from 'log4js';
+const logger = getLogger('packages/service/common/file/read/utils.ts');
 export type readRawTextByLocalFileParams = {
   teamId: string;
   path: string;
@@ -16,6 +17,8 @@ export type readRawTextByLocalFileParams = {
   metadata?: Record<string, any>;
 };
 export const readRawTextByLocalFile = async (params: readRawTextByLocalFileParams) => {
+  addLog.debug('packages/service/common/file/read/utils.ts -> readRawTextByLocalFile', params);
+  logger.debug('readRawTextByLocalFile', params);
   const { path } = params;
 
   const extension = path?.split('.')?.pop()?.toLowerCase() || '';

@@ -19,36 +19,82 @@ export async function uploadMongoImg({
   teamId: string;
   forever?: Boolean;
 }) {
-  if (base64Img.length > maxImgSize) {
-    return Promise.reject('Image too large');
+  try {
+    console.log('Starting image upload, teamId:', teamId);
+    if (base64Img.length > maxImgSize) {
+      return Promise.reject('Image too large');
+    }
+
+    const [base64Mime, base64Data] = base64Img.split(',');
+    // Check if mime type is valid
+    if (!base64MimeRegex.test(base64Mime)) {
+      return Promise.reject('Invalid image base64');
+    }
+
+    const mime = `image/${base64Mime.match(base64MimeRegex)?.[1] ?? 'image/jpeg'}`;
+    const binary = Buffer.from(base64Data, 'base64');
+    let extension = mime.split('/')[1];
+    if (extension.startsWith('x-')) {
+      extension = extension.substring(2); // Remove 'x-' prefix
+    }
+
+    if (!extension || !imageFileType.includes(`.${extension}`)) {
+      return Promise.reject(`Invalid image file type: ${mime}`);
+    }
+
+    const doc = {
+      teamId,
+      binary,
+      metadata: Object.assign({ mime }, metadata),
+      shareId,
+      expiredTime: forever ? undefined : addHours(new Date(), 1)
+    };
+    console.log('Attempting to create image document:', { 
+      teamId: doc.teamId,
+      hasData: !!doc.binary,
+      metadata: doc.metadata,
+      expireAt: doc.expiredTime
+    });
+
+    const { _id } = await MongoImage.create(doc);
+    console.log('Image created successfully with ID:', _id);
+    
+    // Verify the image was saved
+    const savedImage = await MongoImage.findById(_id);
+    console.log('Image verification:', { 
+      found: !!savedImage,
+      hasData: !!savedImage?.binary
+    });
+
+    return `${process.env.NEXT_PUBLIC_BASE_URL || ''}${imageBaseUrl}${String(_id)}.${extension}`;
+  } catch (error) {
+    console.error('Error uploading image:', error);
+    throw error;
   }
+}
 
-  const [base64Mime, base64Data] = base64Img.split(',');
-  // Check if mime type is valid
-  if (!base64MimeRegex.test(base64Mime)) {
-    return Promise.reject('Invalid image base64');
+export async function readMongoImg({ id }: { id: string }) {
+  try {
+    const formatId = id.replace(/\.[^/.]+$/, '');
+    console.log('Reading image with ID:', formatId);
+
+    const data = await MongoImage.findById(formatId, undefined, {
+      ...readFromSecondary
+    });
+    console.log('Image found:', !!data);
+
+    if (!data) {
+      return Promise.reject('Image not found');
+    }
+
+    return {
+      binary: data.binary,
+      mime: data.metadata?.mime ?? guessBase64ImageType(data.binary.toString('base64'))
+    };
+  } catch (error) {
+    console.error('Error reading image:', error);
+    throw error;
   }
-
-  const mime = `image/${base64Mime.match(base64MimeRegex)?.[1] ?? 'image/jpeg'}`;
-  const binary = Buffer.from(base64Data, 'base64');
-  let extension = mime.split('/')[1];
-  if (extension.startsWith('x-')) {
-    extension = extension.substring(2); // Remove 'x-' prefix
-  }
-
-  if (!extension || !imageFileType.includes(`.${extension}`)) {
-    return Promise.reject(`Invalid image file type: ${mime}`);
-  }
-
-  const { _id } = await MongoImage.create({
-    teamId,
-    binary,
-    metadata: Object.assign({ mime }, metadata),
-    shareId,
-    expiredTime: forever ? undefined : addHours(new Date(), 1)
-  });
-
-  return `${process.env.NEXT_PUBLIC_BASE_URL || ''}${imageBaseUrl}${String(_id)}.${extension}`;
 }
 
 const getIdFromPath = (path?: string) => {
@@ -94,22 +140,6 @@ export const removeImageByPath = (path?: string, session?: ClientSession) => {
 
   return MongoImage.deleteOne({ _id: id }, { session });
 };
-
-export async function readMongoImg({ id }: { id: string }) {
-  const formatId = id.replace(/\.[^/.]+$/, '');
-
-  const data = await MongoImage.findById(formatId, undefined, {
-    ...readFromSecondary
-  });
-  if (!data) {
-    return Promise.reject('Image not found');
-  }
-
-  return {
-    binary: data.binary,
-    mime: data.metadata?.mime ?? guessBase64ImageType(data.binary.toString('base64'))
-  };
-}
 
 export async function delImgByRelatedId({
   teamId,

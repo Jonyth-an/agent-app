@@ -41,7 +41,7 @@ const CardList = ({ cardItems }: { cardItems: CardItem[] }) => {
             display: 'none'
           },
           scrollbarWidth: 'none',
-          '-ms-overflow-style': 'none'
+          msOverflowStyle: 'none'  // 修改这里：从 '-ms-overflow-style' 改为 'msOverflowStyle'
         }}
       >
         {cardItems.map((item, index) => (

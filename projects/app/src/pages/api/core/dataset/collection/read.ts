@@ -13,7 +13,10 @@ import { authChatCrud } from '@/service/support/permission/auth/chat';
 import { getCollectionWithDataset } from '@fastgpt/service/core/dataset/controller';
 import { useApiDatasetRequest } from '@fastgpt/service/core/dataset/apiDataset/api';
 import { POST } from '@fastgpt/service/common/api/plusRequest';
+import { addLog } from '@fastgpt/service/common/system/log';
+import { getLogger } from 'log4js';
 
+const logger = getLogger();
 export type readCollectionSourceQuery = {};
 
 export type readCollectionSourceBody = {
@@ -41,6 +44,14 @@ const authCollectionInChat = async ({
   chatItemId: string;
 }) => {
   try {
+    addLog.debug('api/dataset/collection/read -> authCollectionInChat', {
+      collectionId,
+      appId,
+      chatId,
+      chatItemId
+    });
+    logger.debug('authCollectionInChat start', { collectionId, appId, chatId, chatItemId });
+
     const chatItem = (await MongoChatItem.findOne(
       {
         appId,
@@ -50,7 +61,11 @@ const authCollectionInChat = async ({
       'responseData'
     ).lean()) as AIChatItemType;
 
-    if (!chatItem) return Promise.reject(DatasetErrEnum.unAuthDatasetFile);
+    if (!chatItem) {
+      addLog.warn('api/dataset/collection/read -> chatItem not found', { collectionId, chatId });
+      logger.warn('chatItem not found', { collectionId, chatId });
+      return Promise.reject(DatasetErrEnum.unAuthDatasetFile);
+    }
 
     // 找 responseData 里，是否有该文档 id
     const responseData = chatItem.responseData || [];
@@ -76,13 +91,19 @@ const authCollectionInChat = async ({
     ) {
       return true;
     }
-  } catch (error) {}
-  return Promise.reject(DatasetErrEnum.unAuthDatasetFile);
+  } catch (error) {
+    addLog.error('api/dataset/collection/read -> authCollectionInChat error', error);
+    logger.error('authCollectionInChat error', { error, collectionId });
+    return Promise.reject(DatasetErrEnum.unAuthDatasetFile);
+  }
 };
 
 async function handler(
   req: ApiRequestProps<readCollectionSourceBody, readCollectionSourceQuery>
 ): Promise<readCollectionSourceResponse> {
+  addLog.debug('api/dataset/collection/read -> handler start', req.body);
+  logger.debug('handler start', req.body);
+
   const { collectionId, appId, chatId, chatItemId, shareId, outLinkUid, teamId, teamToken } =
     req.body;
 
@@ -93,6 +114,9 @@ async function handler(
     authType
   } = await (async () => {
     if (!appId || !chatId || !chatItemId) {
+      addLog.debug('api/dataset/collection/read -> direct dataset access', { collectionId });
+      logger.debug('direct dataset access', { collectionId });
+
       return authDatasetCollection({
         req,
         authToken: true,
@@ -107,6 +131,8 @@ async function handler(
       2. auth collection quote in chat
       3. auth outlink open show quote
     */
+    addLog.debug('api/dataset/collection/read -> chat dataset access', { collectionId, appId });
+    logger.debug('chat dataset access', { collectionId, appId });
     const [authRes, collection] = await Promise.all([
       authChatCrud({
         req,
@@ -123,6 +149,8 @@ async function handler(
     ]);
 
     if (!authRes.showRawSource) {
+      addLog.warn('api/dataset/collection/read -> no raw source permission', { collectionId });
+      logger.warn('no raw source permission', { collectionId });
       return Promise.reject(DatasetErrEnum.unAuthDatasetFile);
     }
 
@@ -133,6 +161,13 @@ async function handler(
   })();
 
   const sourceUrl = await (async () => {
+    addLog.debug('api/dataset/collection/read -> getting source URL', {
+      type: collection.type,
+      fileId: collection.fileId,
+      name: collection.name
+    });
+    logger.debug('getting source URL', { type: collection.type, fileId: collection.fileId });
+
     if (collection.type === DatasetCollectionTypeEnum.file && collection.fileId) {
       const token = await createFileToken({
         bucketName: BucketNameEnum.dataset,
@@ -142,7 +177,10 @@ async function handler(
         customExpireMinutes: authType === 'outLink' ? 5 : undefined
       });
 
-      return `${ReadFileBaseUrl}/${collection.name}?token=${token}`;
+      const url = `${ReadFileBaseUrl}/${collection.name}?token=${token}`;
+      addLog.debug('api/dataset/collection/read -> file URL generated', { url });
+      logger.debug('file URL generated', { url });
+      return url;
     }
     if (collection.type === DatasetCollectionTypeEnum.link && collection.rawLink) {
       return collection.rawLink;
@@ -180,6 +218,9 @@ async function handler(
 
     return '';
   })();
+
+  addLog.info('api/dataset/collection/read -> success', { collectionId, sourceUrl });
+  logger.info('handler success', { collectionId, sourceUrl });
 
   return {
     type: 'url',
