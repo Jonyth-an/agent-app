@@ -147,7 +147,7 @@ const nextConfig = {
       asyncWebAssembly: true, // 支持异步 WebAssembly
       layers: true // 启用模块层
     };
-    writeWebpackConfigToFile(config, isServer);
+    // writeWebpackConfigToFile(config, isServer);
     return config;
   },
 
