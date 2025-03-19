@@ -1,19 +1,12 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import NextHead from '@/components/common/NextHead';
-import { useRouter } from 'next/router';
-import { getInitChatInfo } from '@/web/core/chat/api';
 import { Box, Flex, Drawer, DrawerOverlay, DrawerContent, useTheme } from '@chakra-ui/react';
 import { streamFetch } from '@/web/common/api/fetch';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { useTranslation } from 'next-i18next';
-import Cookies from 'js-cookie';
 import type { StartChatFnProps } from '@/components/core/chat/ChatContainer/type';
 import PageContainer from '@/components/PageContainer';
 import SideBar from '@/components/SideBar';
 import ChatHistorySlider from '@/pageComponents/chat/ChatHistorySlider';
-import SliderApps from '@/pageComponents/chat/SliderApps';
-import ChatHeader from '@/pageComponents/chat/ChatHeader';
 import { serviceSideProps } from '@fastgpt/web/common/system/nextjs';
 import { getChatTitleFromChatMessage } from '@fastgpt/global/core/chat/utils';
 import { GPTMessages2Chats } from '@fastgpt/global/core/chat/adapt';
@@ -22,7 +15,6 @@ import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useMount } from 'ahooks';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
-import Demo from './demo';
 import { GetChatTypeEnum } from '@/global/core/chat/constants';
 import ChatContextProvider, { ChatContext } from '@/web/core/chat/context/chatContext';
 import { AppListItemType } from '@fastgpt/global/core/app/type';
@@ -32,26 +24,17 @@ import ChatBox from '@/components/core/chat/ChatContainer/ChatBox';
 import { useSystem } from '@fastgpt/web/hooks/useSystem';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
 import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
-import ChatRecordContextProvider, {
-  ChatRecordContext
-} from '@/web/core/chat/context/chatRecordContext';
-import { getAgentConfigInfo, getStaffInfo } from '@/web/core/chat/user';
-import useWechatShare from './hooks/useWechatShare';
-import { redirectAuth } from '@/web/core/chat/utils';
-import { share_h5_url, USER_NAME, USER_PWD } from '@/config';
-import { initWechatShare } from '@/web/core/chat/wechat';
-import { postLogin } from '@/web/support/user/api';
-import { agentConfigInfo } from '@/global/core/user/api';
+import ChatRecordContextProvider from '@/web/core/chat/context/chatRecordContext';
+import { redirectAuth } from '@/web/core/chat/context/utils';
+import useChatInitialization from '@/web/core/chat/context/useChatInitialization';
+import { useTranslation } from 'next-i18next';
+import { getInitChatInfo } from '@/web/core/chat/api';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
-  const router = useRouter();
-  const theme = useTheme();
   const { t } = useTranslation();
   const { isPc } = useSystem();
-
   const { userInfo } = useUserStore();
-
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
   const forbidLoadChat = useContextSelector(ChatContext, (v) => v.forbidLoadChat);
@@ -60,23 +43,9 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const resetVariables = useContextSelector(ChatItemContext, (v) => v.resetVariables);
   const isPlugin = useContextSelector(ChatItemContext, (v) => v.isPlugin);
-  const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const setChatBoxData = useContextSelector(ChatItemContext, (v) => v.setChatBoxData);
 
-  const chatRecords = useContextSelector(ChatRecordContext, (v) => v.chatRecords);
-  const totalRecordsCount = useContextSelector(ChatRecordContext, (v) => v.totalRecordsCount);
-  const {
-    token,
-    setLastChatAppId,
-    chatId,
-    appId,
-    agentConfigInfo,
-    outLinkAuthData,
-    setAgentConfigInfo,
-    setStaffInfo
-  } = useChatStore();
-  const agentConfig = agentConfigInfo.agentConfig;
-  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
+  const { chatId, appId, agentConfigInfo, outLinkAuthData } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
   // Load chat init data
 
@@ -87,10 +56,8 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
       const res = await getInitChatInfo({ appId, chatId });
       console.log('xxx getInitChatInfo res2', res);
       res.userAvatar = userInfo?.avatar;
-
       // Wait for state update to complete
       setChatBoxData(res);
-
       // reset chat variables
       resetVariables({
         variables: res.variables,
@@ -99,7 +66,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     },
     {
       manual: false,
-      ready: !!token,
+      ready: !!appId,
       refreshDeps: [appId, chatId],
       onError(e: any) {
         console.log('xxx getInitChatInfo error', e);
@@ -176,12 +143,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
         desc={agentConfigInfo.description}
       ></NextHead>
       {/* pc show myself apps mark */}
-
-      {/* {isPc && (
-        <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>
-          <SliderApps apps={myApps} activeAppId={appId} />
-        </Box>
-      )} */}
       <PageContainer isLoading={loading} flex={'1 0 0'} w={0} p={[0, '16px']} position={'relative'}>
         <Flex h={'100%'} flexDirection={['column', 'row']}>
           {/* pc always show history. */}
@@ -194,16 +155,6 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
             flex={'1 0 0'}
             flexDirection={'column'}
           >
-            {/* header */}
-            {/* <ChatHeader
-              totalRecordsCount={totalRecordsCount}
-              apps={myApps}
-              history={chatRecords}
-              showHistory
-            /> */}
-
-            {/* <Demo /> */}
-
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
               {isPlugin ? (
@@ -234,71 +185,10 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
   );
 };
 
-const getTenantTokenKey = (agentConfigInfo: agentConfigInfo) => {
-  let host = window.location.host;
-  host = host.split('.')[0];
-  if (agentConfigInfo == null || !agentConfigInfo.tenantId) {
-    return ['token', `${host}token`];
-  }
-  const tenantId = agentConfigInfo.tenantId;
-  const tenantTokenKey = `${tenantId}token`;
-
-  const domainTenantTokenKey = `${host}${tenantId}token`;
-  return [tenantTokenKey, domainTenantTokenKey];
-};
-
-const getShareToken = (agentConfigInfo: agentConfigInfo) => {
-  const queryParams = new URLSearchParams(window.location.search);
-  const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
-  console.log('xxx [tenantTokenKey, domainTenantTokenKey]', [tenantTokenKey, domainTenantTokenKey]);
-  let shareToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
-  if (!shareToken) {
-    shareToken =
-      (queryParams.get(tenantTokenKey) as string) ||
-      (queryParams.get(domainTenantTokenKey) as string) ||
-      (queryParams.get('token') as string);
-  }
-  // let shareToken = queryParams.get(tenantTokenKey) || queryParams.get(domainTenantTokenKey);
-  // let cookieToken = Cookies.get(tenantTokenKey) || Cookies.get(domainTenantTokenKey);
-  // if (!shareToken && cookieToken) {
-  //   shareToken = cookieToken;
-  // }
-  if (!shareToken) {
-    const error = new Error('No token provided for non-public agent');
-    (error as any).code = 407;
-    throw error;
-  }
-  return shareToken as string;
-};
-
-const clearShareToken = (agentConfigInfo: agentConfigInfo) => {
-  const [tenantTokenKey, domainTenantTokenKey] = getTenantTokenKey(agentConfigInfo);
-  Cookies.remove(tenantTokenKey);
-  Cookies.remove(domainTenantTokenKey);
-  Cookies.remove('token');
-};
-
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const { t } = useTranslation();
-  const { toast } = useToast();
-  const router = useRouter();
-  const {
-    source,
-    chatId,
-    lastChatAppId,
-    agentConfigInfo,
-    setSource,
-    setAppId,
-    setAgentConfigInfo,
-    setStaffInfo,
-    token,
-    setToken,
-    setShareToken
-  } = useChatStore();
-  const { setUserInfo } = useUserStore();
+  const { source, chatId, agentConfigInfo, setSource, setAppId } = useChatStore();
   const agentConfig = agentConfigInfo.agentConfig;
-  const weChatShareConfig = useMemo(() => agentConfig?.weChatShareConfig || {}, [agentConfig]);
 
   // 初始化聊天框
   useMount(async () => {
@@ -312,111 +202,16 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   // Watch appId
   useEffect(() => {
     setAppId(appId);
-    // setAppId('67b860750d1c6dfdccebab3d');
   }, [appId, setAppId]);
 
-  const { loading, error } = useRequest2(
-    async () => {
-      if (!appId) {
-        const error = new Error('No appId provided');
-        (error as any).code = 406;
-        throw error;
-      }
-
-      const agentConfigInfo = await getAgentConfigInfo({ appId: appId });
-      setAgentConfigInfo(agentConfigInfo);
-      console.log('agentConfigInfo324', agentConfigInfo);
-      const tenantId = agentConfigInfo.tenantId;
-      const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
-      console.log('xxx nb_fastgpt_token', nb_fastgpt_token);
-      if (nb_fastgpt_token && nb_fastgpt_token.length > 0) {
-        setToken(nb_fastgpt_token);
-      } else {
-        // 只有在没有 token 的情况下才执行登录
-        const res = await postLogin({
-          username: USER_NAME,
-          password: USER_PWD
-        });
-        console.log('xxx postLogin res', res);
-        if (res?.token) {
-          setToken(res.token);
-          Cookies.set('nb_fastgpt_token', res.token, { expires: 2, path: '/' });
-          if (res?.user) {
-            setUserInfo(res.user);
-          }
-        }
-      }
-
-      // 移除登录相关代码
-      if (agentConfigInfo.permissionType !== 'PUBLIC') {
-        const shareToken = getShareToken(agentConfigInfo);
-        setShareToken(shareToken);
-        const staffInfo = await getStaffInfo(shareToken, tenantId);
-        setStaffInfo(staffInfo);
-      }
-      setAppId(appId);
-      setSource('online');
-    },
-    {
-      manual: false,
-      refreshDeps: [appId],
-      onError: (error: any) => {
-        const tenantId = agentConfigInfo.tenantId;
-        console.log('Error initializing chat:', error);
-        const errorCode = (error as { code?: number }).code;
-
-        // 处理 404 错误
-        if (errorCode === 404) {
-          redirectAuth({ isEmptyPage: true, appId, tenantId: -1 });
-          return;
-        }
-
-        // 处理 401/403 认证错误
-        const errorCodes = [401, 403, 406, 407];
-        if (errorCode && errorCodes.includes(errorCode as number)) {
-          Cookies.remove('nb_fastgpt_token');
-          clearShareToken(agentConfigInfo);
-          redirectAuth({ appId, tenantId });
-          return;
-        }
-
-        // 其他错误跳转到错误页面
-        router.push({
-          pathname: '/login', // 改用一个普通的路由名称
-          query: {
-            code: errorCode || '',
-            message: encodeURIComponent(error.message || '未知错误')
-          }
-        });
-      }
-    }
-  );
-
+  useChatInitialization(appId);
   const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
     () => getMyApps({ getRecentlyChat: true }),
     {
       manual: false,
-      ready: !!token
+      ready: !!appId
     }
   );
-
-  useEffect(() => {
-    if (!agentConfigInfo.name) return;
-
-    initWechatShare({
-      title: agentConfigInfo.name,
-      desc: agentConfigInfo.description,
-      imgUrl: agentConfigInfo.avatar,
-      link: agentConfigInfo.url || `${share_h5_url}/chat?appId=${appId}`
-    });
-  }, [weChatShareConfig, appId]);
-
-  // useWechatShare({
-  //   title: weChatShareConfig.title,
-  //   desc: weChatShareConfig.desc,
-  //   imgUrl: weChatShareConfig.imgUrl,
-  //   link: weChatShareConfig.link || `${share_h5_url}/chat?appId=${appId}`
-  // });
 
   const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [
     appId
@@ -429,7 +224,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
   }, [appId, chatId]);
 
-  return source === ChatSourceEnum.online && token ? (
+  return source === ChatSourceEnum.online ? (
     <ChatContextProvider params={chatHistoryProviderParams}>
       <ChatItemContextProvider
         showRouteToAppDetail={isStandalone !== '1'}
@@ -446,6 +241,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
 };
 
 export async function getServerSideProps(context: any) {
+  console.log('ccc getServerSideProps context', context);
   return {
     props: {
       appId: context?.query?.appId || '',
