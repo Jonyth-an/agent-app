@@ -14,6 +14,7 @@ import { splitCombinePluginId } from '../../../core/app/plugin/controller';
 import { PluginSourceEnum } from '@fastgpt/global/core/plugin/constants';
 import { AuthModeType, AuthResponseType } from '../type';
 import { AppDefaultPermissionVal } from '@fastgpt/global/support/permission/app/constant';
+import { addLog } from '../../../common/system/log';
 
 export const authPluginByTmbId = async ({
   tmbId,
@@ -154,7 +155,7 @@ export const authApp = async ({
     per,
     isRoot: result.isRoot
   });
-
+  addLog.info(`authApp appId:${appId}, app:`, app);
   return {
     ...result,
     permission: app.permission,

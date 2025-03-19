@@ -6,6 +6,7 @@ import { useToast } from '@fastgpt/web/hooks/useToast';
 
 const unAuthPage: { [key: string]: boolean } = {
   '/': true,
+  '/pageError': true,
   '/login': true,
   '/chat': true,
   '/login/provider': true,

@@ -26,6 +26,7 @@ const UpdateContact = dynamic(() => import('@/components/support/user/inform/Upd
 const pcUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,
   '/login': true,
+  '/pageError': true,
   '/login/provider': true,
   '/login/fastlogin': true,
   '/chat/share': true,
@@ -38,6 +39,7 @@ const pcUnShowLayoutRoute: Record<string, boolean> = {
 const phoneUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,
   '/login': true,
+  '/pageError': true,
   '/login/provider': true,
   '/login/fastlogin': true,
   '/chat/share': true,
@@ -53,8 +55,13 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
   const { Loading } = useLoading();
-  const { loading, feConfigs, notSufficientModalType, llmModelList, embeddingModelList } =
-    useSystemStore();
+  const {
+    loading,
+    feConfigs,
+    notSufficientModalType,
+    llmModelList,
+    embeddingModelList
+  } = useSystemStore();
   const { isPc } = useSystem();
   const { userInfo, isUpdateNotification, setIsUpdateNotification } = useUserStore();
   const { setUserDefaultLng } = useI18nLng();

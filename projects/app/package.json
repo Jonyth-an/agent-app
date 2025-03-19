@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "prod": "nodemon ./server/index.js  --watch server",
     "test": "jest"
   },
   "dependencies": {
