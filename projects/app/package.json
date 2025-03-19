@@ -3,7 +3,7 @@
   "version": "4.8.22",
   "private": false,
   "scripts": {
-    "dev": "nodemon ./server/index.js  --watch server",
+    "dev": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
     "dev2": "next dev",
     "build": "next build",
     "start": "next start",
