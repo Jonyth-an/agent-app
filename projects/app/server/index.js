@@ -6,7 +6,7 @@ const port = 3000;
 // 判断是否为开发环境
 const dev = process.env.NODE_ENV !== 'production';
 // 初始化 app
-const app = next({ dev });
+const app = next();
 const handle = app.getRequestHandler();
 console.log('-----------server---------');
 // 代理配置表，这里和一般的 webpack 配置是一样的。
