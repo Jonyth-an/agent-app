@@ -131,7 +131,7 @@ export const streamFetch = ({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${Cookies.get('nb_fast_token')}`
+          Authorization: `Bearer ${Cookies.get('nb_fastgpt_token')}`
           // Authorization: `Bearer ${CHAT_API_KEY}`
           // Auth1: `Bearer ${process.env.CHAT_API_KEY}`,
           // Auth2: `Bearer ${process.env.NEXT_PUBLIC_CHAT_API_KEY}`
