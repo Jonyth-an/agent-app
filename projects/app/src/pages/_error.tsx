@@ -6,6 +6,7 @@ import { useToast } from '@fastgpt/web/hooks/useToast';
 import React, { useEffect, useState } from 'react';
 import { Box, Flex, Text, Button, Image, useTheme } from '@chakra-ui/react';
 import NextHead from '@/components/common/NextHead';
+import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 function Error() {
   const router = useRouter();
   const { toast } = useToast();
@@ -77,7 +78,13 @@ function Error() {
         <Flex minH="100vh" alignItems="center" justifyContent="center" bg="white" p={4}>
           <Box maxW="600px" w="100%" bg="white" borderRadius="lg" p={8}>
             <Flex direction="column" alignItems="center" textAlign="center">
-              <Image src="/imgs/pageError.png" alt="Error" width={120} height={120} mb={6} />
+              <Image
+                src={getWebReqUrl('/imgs/pageError.png')}
+                alt="Error"
+                width={120}
+                height={120}
+                mb={6}
+              />
 
               <Text fontSize="14px" color="rgb(150, 150, 150)" mb={6} maxW="400px">
                 {errorInfo.message}
