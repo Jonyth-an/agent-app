@@ -142,7 +142,7 @@ export const streamFetch = ({
           variables,
           detail: true,
           stream: true,
-          customUid: 'oFAIb64Q3QisFEhILV8UjxVfa18E'
+          customUid: `${Cookies.get('unionid')}`
         })
       };
 
