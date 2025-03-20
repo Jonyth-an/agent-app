@@ -34,12 +34,13 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     const set = new URLSearchParams(search);
     const devValue = set.get('dev');
     if (devValue && devValue === '12345678') {
+      localStorage.setItem('dev', devValue);
       // 等待 VConsole 脚本加载完成
       const checkVConsole = () => {
         if (window.VConsole) {
           new window.VConsole();
         } else {
-          setTimeout(checkVConsole, 100);
+          setTimeout(checkVConsole, 500);
         }
       };
       checkVConsole();
