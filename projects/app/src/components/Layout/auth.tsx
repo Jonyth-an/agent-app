@@ -7,16 +7,8 @@ import { useToast } from '@fastgpt/web/hooks/useToast';
 const unAuthPage: { [key: string]: boolean } = {
   '/': true,
   '/pageError': true,
-  '/login': true,
   '/chat': true,
-  '/login/provider': true,
-  '/login/fastlogin': true,
-  '/login/sso': true,
-  '/appStore': true,
-  '/chat/share': true,
-  '/chat/team': true,
-  '/tools/price': true,
-  '/price': true
+  '/appStore': true
 };
 
 // 定义一个Auth组件，接收一个children参数，类型为JSX.Element或React.ReactNode

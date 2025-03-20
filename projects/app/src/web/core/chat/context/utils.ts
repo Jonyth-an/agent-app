@@ -83,3 +83,10 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
     }
   }
 }
+
+export const isMiniProgram = () => {
+  const ua = navigator.userAgent.toLowerCase();
+  const bool = /miniprogram/.test(ua);
+  console.log('xxx isMiniProgram', bool);
+  return bool;
+};

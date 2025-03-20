@@ -15,6 +15,7 @@ import { ReactElement, useEffect } from 'react';
 import { NextPage } from 'next';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import SystemStoreContextProvider from '@fastgpt/web/context/useSystem';
+import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
 
 type NextPageWithLayout = NextPage & {
   setLayout?: (page: ReactElement) => JSX.Element;
@@ -35,9 +36,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
     if (devValue && devValue === '12345678') {
       // 等待 VConsole 脚本加载完成
       const checkVConsole = () => {
-        // @ts-ignore
         if (window.VConsole) {
-          // @ts-ignore
           new window.VConsole();
         } else {
           setTimeout(checkVConsole, 100);
@@ -54,6 +53,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       setLog(search);
     }
   }, []);
+  useWechatAuth();
 
   // Forbid touch scale
   useEffect(() => {

@@ -11,6 +11,7 @@ import { useUserStore } from '@/web/support/user/useUserStore';
 import Cookies from 'js-cookie';
 import { agentConfigInfo } from '@/global/core/user/api';
 import { clearShareToken, getShareToken, redirectAuth } from './utils';
+import { redirectToErrorPage } from './errorRedirect';
 const useChatInitialization = (appId: string) => {
   const router = useRouter();
   const { agentConfigInfo, setAgentConfigInfo, setStaffInfo, setToken, setShareToken } =
@@ -57,30 +58,13 @@ const useChatInitialization = (appId: string) => {
         const tenantId = agentConfigInfo.tenantId;
         const errorCode = (error as { code?: number }).code;
 
-        if (errorCode === 404) {
-          router.push({
-            pathname: '/pageError',
-            query: {
-              code: errorCode || '',
-              message: encodeURIComponent(error.message || error.msg || '未知错误')
-            }
-          });
-          return;
-        }
         if ([401, 403, 406, 407].includes(errorCode as number)) {
           Cookies.remove('nb_fastgpt_token');
           clearShareToken(agentConfigInfo);
           redirectAuth({ appId, tenantId });
           return;
         }
-
-        router.push({
-          pathname: '/pageError',
-          query: {
-            code: errorCode || '',
-            message: encodeURIComponent(error.message || '未知错误')
-          }
-        });
+        redirectToErrorPage(router, error);
       }
     }
   );

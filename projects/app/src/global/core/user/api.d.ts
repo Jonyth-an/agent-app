@@ -48,3 +48,28 @@ export type SignatureInfo = {
   timestamp: string; // timestamp
   nonce: string; // nonce
 };
+
+export enum AgentAccessType {
+  PUBLIC = 'PUBLIC', // 公开
+  PRIVATE = 'PRIVATE', // 仅激活用户
+  FEE_OR_MEMBERSHIP = 'FEE_OR_MEMBERSHIP', //单独付费或会员
+  EXTRA_FEE = 'EXTRA_FEE' // 额外付费
+}
+
+// 微信授权信息
+export interface WechatAuthInfo {
+  avatar: string;
+  city: string;
+  country: string;
+  headimgurl: string;
+  id: string;
+  nickname: string;
+  openid: string;
+  privilege: string[];
+  province: string;
+  sex: number;
+  timeCreated: string;
+  timeLastUpdated: string;
+  unionid: string;
+  wechatExtends: any; // 如果有具体结构，可以替换为具体类型
+}
