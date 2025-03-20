@@ -19,6 +19,7 @@ function Error() {
 
   useEffect(() => {
     if (router.isReady) {
+      console.log(router.query);
       const { code, message } = router.query;
       setErrorInfo({
         code: (code as string) || '',
