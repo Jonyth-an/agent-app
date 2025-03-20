@@ -11,6 +11,7 @@ import { useSystemStore } from '../system/useSystemStore';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import { i18nT } from '@fastgpt/web/i18n/utils';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
+import Cookies from 'js-cookie';
 
 interface ConfigType {
   baseURL?: string;
@@ -153,7 +154,9 @@ function responseError(err: any) {
 const instance = axios.create({
   timeout: 60000, // 超时时间
   headers: {
-    'content-type': 'application/json'
+    'content-type': 'application/json',
+    Authorization: `Bearer ${Cookies.get('nb_fast_token')}`
+    // Authorization: `Bearer fastgpt-ab1UGyTMpY9V8iDDWU7LUl8ldFUGC6Ji028gzYmlpjeMxwFxXadFn`
     // Authorization: `Bearer ${CHAT_API_KEY}`
     // Authorization: `Bearer ${process.env.CHAT_API_KEY}`
     // Authorization: 'Bearer fastgpt-crNagOolOA9OFRIBJAZ1a8u1qC3iJzgjljppGigs0dHXN0qTz9KMfeXJG'

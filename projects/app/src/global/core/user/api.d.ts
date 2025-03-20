@@ -27,7 +27,7 @@ export type agentConfigInfo = {
   agentId: string; // 智能体ID
   name: string; // 智能体名称
   avatar: string; // 智能体图标链接
-  sourceType: string; // 来源类型
+  sourceType: AgentAccessType; // 来源类型
   thirdResourceId: string; // 来源类型
   enabled: boolean; // 是否启用
   permissionType: string; // 权限类型
@@ -36,6 +36,7 @@ export type agentConfigInfo = {
   tenantId: number; // 租户ID
   status: string; // 智能体描述
   url: string;
+  agentkey: string;
 };
 
 export type SignatureInfoReq = {
@@ -50,6 +51,7 @@ export type SignatureInfo = {
 };
 
 export enum AgentAccessType {
+  DEFAULT = 'DEFAULT',
   PUBLIC = 'PUBLIC', // 公开
   PRIVATE = 'PRIVATE', // 仅激活用户
   FEE_OR_MEMBERSHIP = 'FEE_OR_MEMBERSHIP', //单独付费或会员

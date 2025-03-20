@@ -6,7 +6,7 @@ import { getWechatAuthInfo } from '../user';
 import { getWechatAuthCode } from '../user';
 import { share_h5_url } from '@/config';
 import { redirectToErrorPage } from './errorRedirect';
-
+import { useToast } from '@fastgpt/web/hooks/useToast';
 export type WechatAuthRedirectOptions = {
   url: string;
   useMiniJump?: boolean;
@@ -17,12 +17,13 @@ function constructNewUrl(originalUrl: string, newDomain: string) {
   let urlObj = new URL(originalUrl);
   let pathname = urlObj.pathname;
   let search = urlObj.search;
-  let newUrl = `${newDomain}${pathname}${search}`;
+  let newUrl = `${newDomain}/share-agent${pathname}${search}`;
   return newUrl;
 }
 
 const useWechatAuth = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const pathname = router.pathname;
   console.log('ddd router', router);
 
@@ -64,8 +65,12 @@ const useWechatAuth = () => {
 
           console.log('WeChat authorization successful');
         } catch (error) {
-          redirectToErrorPage(router, error);
+          toast({
+            status: 'error',
+            title: '微信授权失败'
+          });
           console.error('Error during WeChat authorization:', error);
+          redirectToErrorPage(router, error);
         }
       } else {
         // 未获取到 code，进行重定向获取 code

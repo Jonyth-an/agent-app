@@ -33,6 +33,11 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   const setLog = (search: string) => {
     const set = new URLSearchParams(search);
     const devValue = set.get('dev');
+    const isDebugger = set.get('debugger');
+
+    if (isDebugger && isDebugger === 'true') {
+      localStorage.setItem('debugger', 'true');
+    }
     if (devValue && devValue === '12345678') {
       localStorage.setItem('dev', devValue);
       // 等待 VConsole 脚本加载完成

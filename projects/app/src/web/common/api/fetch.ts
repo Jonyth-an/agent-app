@@ -12,6 +12,7 @@ import { TeamErrEnum } from '@fastgpt/global/common/error/code/team';
 import { useSystemStore } from '../system/useSystemStore';
 import { formatTime2YMDHMW } from '@fastgpt/global/common/string/time';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
+import Cookies from 'js-cookie';
 
 type StreamFetchProps = {
   url?: string;
@@ -129,7 +130,8 @@ export const streamFetch = ({
       const requestData = {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${Cookies.get('nb_fast_token')}`
           // Authorization: `Bearer ${CHAT_API_KEY}`
           // Auth1: `Bearer ${process.env.CHAT_API_KEY}`,
           // Auth2: `Bearer ${process.env.NEXT_PUBLIC_CHAT_API_KEY}`
@@ -139,7 +141,8 @@ export const streamFetch = ({
           ...data,
           variables,
           detail: true,
-          stream: true
+          stream: true,
+          customUid: 'oFAIb64Q3QisFEhILV8UjxVfa18E'
         })
       };
 

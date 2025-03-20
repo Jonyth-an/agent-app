@@ -1,10 +1,11 @@
 import { create } from 'zustand';
+import Cookies from 'js-cookie';
 import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
-import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import { AgentAccessType, agentConfigInfo, StaffInfo } from '@/global/core/user/api';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
@@ -151,10 +152,11 @@ export const useChatStore = create<State>()(
           agentId: '',
           name: '',
           avatar: '',
-          sourceType: '',
+          sourceType: AgentAccessType.DEFAULT,
           thirdResourceId: '',
           enabled: false,
           permissionType: '',
+          agentkey: 'fastgpt-uzalJfJGopouieZfRxol4e7Xlb0Qpw3msrCABLTWVXQ2lqXarbWh60omT',
           description: '',
           agentConfig: {
             list: [],
@@ -166,10 +168,15 @@ export const useChatStore = create<State>()(
         },
         setAgentConfigInfo(config) {
           set((state) => {
-            state.agentConfigInfo = config;
+            Object.assign(state.agentConfigInfo, config);
             if (config.agentConfig && typeof config.agentConfig === 'string') {
               state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
             }
+            Cookies.set('nb_fastgpt_token', state.agentConfigInfo.agentkey, {
+              expires: 2,
+              path: '/'
+            });
+            // Cookies.set('nb_fastgpt_token', config.agentkey, { expires: 2, path: '/' });
             console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
           });
         },

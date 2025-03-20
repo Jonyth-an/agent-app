@@ -5,9 +5,13 @@ export const redirectToErrorPage = (router: NextRouter, error: any) => {
   const errorMessage = encodeURIComponent(error.message || error?.msg || '未知错误');
   const pathname = router.pathname;
   let o = {};
-  const isDebug = localStorage.getItem('dev') === '12345678';
-  if (isDebug) {
+  const isDev = localStorage.getItem('dev') === '12345678';
+  const isDebugger = localStorage.getItem('debugger') === 'true';
+  if (isDev) {
     o = { dev: 12345678 };
+  }
+  if (isDebugger) {
+    return;
   }
   if (pathname !== '/pageError') {
     router.push({

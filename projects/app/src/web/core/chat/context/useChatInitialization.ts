@@ -28,19 +28,6 @@ const useChatInitialization = (appId: string) => {
       setAgentConfigInfo(agentConfigInfo);
 
       const tenantId = agentConfigInfo.tenantId;
-      const nb_fastgpt_token = Cookies.get('nb_fastgpt_token');
-      if (nb_fastgpt_token) {
-        setToken(nb_fastgpt_token);
-      } else {
-        const res = await postLogin({ username: USER_NAME, password: USER_PWD });
-        if (res?.token) {
-          setToken(res.token);
-          Cookies.set('nb_fastgpt_token', res.token, { expires: 2, path: '/' });
-          if (res?.user) {
-            setUserInfo(res.user);
-          }
-        }
-      }
 
       if (agentConfigInfo.permissionType !== 'PUBLIC') {
         const shareToken = getShareToken(agentConfigInfo);

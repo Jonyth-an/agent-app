@@ -4,3 +4,4 @@ interface Window {
 }
 declare const wx: any;
 declare const VConsole: any;
+declare module '@/global/core/user/api';
