@@ -22,12 +22,20 @@ export type agentConfigDes = {
   weChatShareConfig: any;
   list: any[];
 };
+
+export enum AgentAccessType {
+  'INIT' = 'INIT',
+  'PUBLIC' = 'PUBLIC', // 公开
+  'PRIVATE' = 'PRIVATE', // 仅激活用户
+  'FEE_OR_MEMBERSHIP' = 'FEE_OR_MEMBERSHIP', // 单独付费或会员
+  'EXTRA_FEE' = 'EXTRA_FEE' // 额外付费
+}
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
   agentId: string; // 智能体ID
   name: string; // 智能体名称
   avatar: string; // 智能体图标链接
-  sourceType: AgentAccessType; // 来源类型
+  sourceType: string; // 来源类型
   thirdResourceId: string; // 来源类型
   enabled: boolean; // 是否启用
   permissionType: string; // 权限类型
@@ -49,14 +57,6 @@ export type SignatureInfo = {
   timestamp: string; // timestamp
   nonce: string; // nonce
 };
-
-export enum AgentAccessType {
-  DEFAULT = 'DEFAULT',
-  PUBLIC = 'PUBLIC', // 公开
-  PRIVATE = 'PRIVATE', // 仅激活用户
-  FEE_OR_MEMBERSHIP = 'FEE_OR_MEMBERSHIP', //单独付费或会员
-  EXTRA_FEE = 'EXTRA_FEE' // 额外付费
-}
 
 // 微信授权信息
 export interface WechatAuthInfo {

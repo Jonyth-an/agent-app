@@ -152,10 +152,10 @@ export const useChatStore = create<State>()(
           agentId: '',
           name: '',
           avatar: '',
-          sourceType: AgentAccessType.DEFAULT,
+          sourceType: '',
           thirdResourceId: '',
           enabled: false,
-          permissionType: '',
+          permissionType: 'INIT',
           agentkey: 'fastgpt-uzalJfJGopouieZfRxol4e7Xlb0Qpw3msrCABLTWVXQ2lqXarbWh60omT',
           description: '',
           agentConfig: {
