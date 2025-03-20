@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 
-@Controller('agent/v1')
+@Controller('nbagent-sandbox/agent/v1')
 export class AgentController {
   @Get('healthy')
   getTest() {

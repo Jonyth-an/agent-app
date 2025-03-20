@@ -241,7 +241,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
 };
 
 export async function getServerSideProps(context: any) {
-  console.log('ccc getServerSideProps context', context);
+  // console.log('ccc getServerSideProps context', context);
   return {
     props: {
       appId: context?.query?.appId || '',

@@ -27,8 +27,8 @@ type AppPropsWithLayout = AppProps & {
 function App({ Component, pageProps }: AppPropsWithLayout) {
   const { feConfigs, scripts, title } = useInitApp();
   const { t } = useTranslation();
-  console.log('ccc Component, ', Component);
-  console.log('ccc  pageProps', pageProps);
+  // console.log('ccc Component, ', Component);
+  // console.log('ccc  pageProps', pageProps);
   // 添加 setLog 函数
   const setLog = (search: string) => {
     const set = new URLSearchParams(search);
