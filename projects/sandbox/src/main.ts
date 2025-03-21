@@ -4,8 +4,9 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { ResponseInterceptor } from './response';
-
+import logger from './utils/logger';
 async function bootstrap(port: number) {
+  // 创建NestFastifyApplication实例
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
@@ -16,8 +17,10 @@ async function bootstrap(port: number) {
   // 使用全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // 使用全局拦截器
   app.useGlobalInterceptors(new ResponseInterceptor());
 
+  // 创建Swagger文档
   const config = new DocumentBuilder()
     .setTitle('Cats example')
     .setDescription('The cats API description')
@@ -28,16 +31,12 @@ async function bootstrap(port: number) {
   SwaggerModule.setup('api', app, document);
 
   try {
-    await app.listen(port, '0.0.0.0');
-    console.log(`Application is running on: ${await app.getUrl()}`);
+    // 监听指定端口
+    await app.listen(port, '0.0.0.0', () => {
+      logger.info(`server is running on: ${port}`);
+    });
   } catch (error) {
-    if (error.code === 'EADDRINUSE') {
-      console.warn(`Port ${port} is already in use, trying next port...`);
-      await bootstrap(port + 1);
-    } else {
-      console.error(`Failed to start application: ${error.message}`);
-      process.exit(1);
-    }
+    logger.error('server running error', error);
   }
 }
 bootstrap(3005);
