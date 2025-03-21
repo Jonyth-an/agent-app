@@ -22,7 +22,9 @@ export const initWechatShare = async (config: ShareConfig) => {
     }
 
     // 获取完整的当前URL（包含查询参数）
-    const curUrl = window.location.href.split('#')[0];
+    const url = new URL(window.location.href);
+    const appId = url.searchParams.get('appId');
+    const curUrl = `${url.origin}${url.pathname}${appId ? `?appId=${appId}` : ''}`;
     console.log('当前URL:', curUrl); // 调试用
 
     // 检查缓存

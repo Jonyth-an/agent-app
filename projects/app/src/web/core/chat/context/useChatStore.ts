@@ -167,7 +167,7 @@ export const useChatStore = create<State>()(
             state.outLinkAuthData = e; // 更新 outLinkAuthData
           });
         },
-        canChat: false,
+        canChat: true,
         setCanChat(e: boolean) {
           set((state) => {
             state.canChat = e; // 更新 canChat
