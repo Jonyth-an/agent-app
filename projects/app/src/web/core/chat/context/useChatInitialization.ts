@@ -57,7 +57,7 @@ const useChatInitialization = (appId: string) => {
   );
 
   useEffect(() => {
-    if (!agentConfigInfo.name) return;
+    if (!!Cookies.get('openid')) return;
 
     initWechatShare({
       title: agentConfigInfo.name,

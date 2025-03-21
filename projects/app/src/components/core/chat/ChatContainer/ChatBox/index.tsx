@@ -66,6 +66,7 @@ import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import TimeBox from './components/TimeBox';
 import MyBox from '@fastgpt/web/components/common/MyBox';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import PaymentModal from './components/PaymentModal';
 
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
@@ -914,6 +915,7 @@ const ChatBox = ({
           {!!variableList?.length && (
             <VariableInput chatStarted={chatStarted} chatForm={chatForm} />
           )}
+
           {/* chat history */}
           <Box id={'history'}>
             {chatRecords.map((item, index) => (
@@ -1043,6 +1045,8 @@ const ChatBox = ({
       <Script src={getWebReqUrl('/js/html2pdf.bundle.min.js')} strategy="lazyOnload"></Script>
       {/* chat box container */}
       {RenderRecords}
+      {/* mark tips */}
+      {/* <PaymentModal/> */}
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
         <ChatInput

@@ -156,7 +156,7 @@ export const useChatStore = create<State>()(
           thirdResourceId: '',
           enabled: false,
           permissionType: 'INIT',
-          agentkey: 'fastgpt-uzalJfJGopouieZfRxol4e7Xlb0Qpw3msrCABLTWVXQ2lqXarbWh60omT',
+          appKey: '',
           description: '',
           agentConfig: {
             list: [],
@@ -172,11 +172,12 @@ export const useChatStore = create<State>()(
             if (config.agentConfig && typeof config.agentConfig === 'string') {
               state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
             }
-            Cookies.set('nb_fastgpt_token', state.agentConfigInfo.agentkey, {
-              expires: 2,
-              path: '/'
+            Cookies.remove('nb_fastgpt_token');
+            Cookies.remove('fastgpt_token');
+            Cookies.set('appKey', state.agentConfigInfo.appKey, {
+              expires: 45
             });
-            // Cookies.set('nb_fastgpt_token', config.agentkey, { expires: 2, path: '/' });
+            // Cookies.set('nb_fastgpt_token', config.appKey, { expires: 2, path: '/' });
             console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
           });
         },

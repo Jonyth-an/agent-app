@@ -44,7 +44,7 @@ export type agentConfigInfo = {
   tenantId: number; // 租户ID
   status: string; // 智能体描述
   url: string;
-  agentkey: string;
+  appKey: string;
 };
 
 export type SignatureInfoReq = {

@@ -29,9 +29,10 @@ import { redirectAuth } from '@/web/core/chat/context/utils';
 import useChatInitialization from '@/web/core/chat/context/useChatInitialization';
 import { useTranslation } from 'next-i18next';
 import { getInitChatInfo } from '@/web/core/chat/api';
+import Cookies from 'js-cookie';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
-const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
+const Chat = () => {
   const { t } = useTranslation();
   const { isPc } = useSystem();
   const { userInfo } = useUserStore();
@@ -47,6 +48,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   const { chatId, appId, agentConfigInfo, outLinkAuthData } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
+  const appKey = agentConfigInfo.appKey;
   // Load chat init data
 
   const { loading } = useRequest2(
@@ -66,7 +68,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
     },
     {
       manual: false,
-      ready: !!appId,
+      ready: !!appId && !!Cookies.get('openid') && !!appKey,
       refreshDeps: [appId, chatId],
       onError(e: any) {
         console.log('xxx getInitChatInfo error', e);
@@ -188,8 +190,7 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
   const { source, chatId, agentConfigInfo, setSource, setAppId } = useChatStore();
-  const agentConfig = agentConfigInfo.agentConfig;
-
+  const appKey = agentConfigInfo.appKey;
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
@@ -205,13 +206,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   }, [appId, setAppId]);
 
   useChatInitialization(appId);
-  const { data: myApps = [], runAsync: loadMyApps } = useRequest2(
-    () => getMyApps({ getRecentlyChat: true }),
-    {
-      manual: false,
-      ready: !!appId
-    }
-  );
 
   const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [
     appId
@@ -224,7 +218,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
   }, [appId, chatId]);
 
-  return source === ChatSourceEnum.online ? (
+  return source === ChatSourceEnum.online && Cookies.get('openid') && !!appKey ? (
     <ChatContextProvider params={chatHistoryProviderParams}>
       <ChatItemContextProvider
         showRouteToAppDetail={isStandalone !== '1'}
@@ -233,7 +227,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
         showNodeStatus
       >
         <ChatRecordContextProvider params={chatRecordProviderParams}>
-          <Chat myApps={myApps} />
+          <Chat />
         </ChatRecordContextProvider>
       </ChatItemContextProvider>
     </ChatContextProvider>
