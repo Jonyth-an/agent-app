@@ -184,7 +184,7 @@ export const useChatStore = create<State>()(
           thirdResourceId: '',
           enabled: false,
           permissionType: 'INIT',
-          appKey: '',
+          appKey: Cookies.get('appKey') || '',
           description: '',
           agentConfig: {
             list: [],
