@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
-import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import { agentConfigInfo, WechatUserInfo, StaffInfo } from '@/global/core/user/api';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
@@ -38,6 +38,11 @@ type State = {
 
   staffInfo: StaffInfo; // 存储员工信息
   setStaffInfo: (info: any) => void; // 更新员工信息的方法
+
+  openid: string; // 存储openid
+  unionid: string; // 存储unionid
+  wechatInfoId: string;
+  setWechatInfoIds: (info: any) => void; // 更新员工信息的方法
 };
 
 // 自定义存储机制，结合sessionStorage和localStorage
@@ -89,7 +94,18 @@ export const useChatStore = create<State>()(
     persist(
       // 使用persist中间件进行持久化存储
       immer((set, get) => ({
+        openid: Cookies.get('openid') || '',
+        unionid: Cookies.get('unionid') || '', // 存储unionid
+        wechatInfoId: Cookies.get('wechatInfoId') || '',
         token: '',
+
+        setWechatInfoIds({ openid, unionid, wechatInfoId }: WechatUserInfo) {
+          set((state) => {
+            state.openid = openid;
+            state.unionid = unionid;
+            state.wechatInfoId = wechatInfoId;
+          });
+        },
         setToken(token) {
           set((state) => {
             state.token = token;

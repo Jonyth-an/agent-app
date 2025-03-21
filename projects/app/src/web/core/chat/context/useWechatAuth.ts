@@ -7,6 +7,7 @@ import { getWechatAuthCode } from '../user';
 import { share_h5_url } from '@/config';
 import { redirectToErrorPage } from './errorRedirect';
 import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 export type WechatAuthRedirectOptions = {
   url: string;
   useMiniJump?: boolean;
@@ -27,12 +28,12 @@ const useWechatAuth = () => {
   const pathname = router.pathname;
   console.log('ddd router', router);
   const { toast } = useToast();
-
+  const { setWechatInfoIds, openid, unionid } = useChatStore();
   useEffect(() => {
     const handleWechatAuth = async () => {
       // 先检查 Cookie 中的 openId 和 unionId
-      const openId = Cookies.get('openid');
-      const unionId = Cookies.get('unionid');
+      const openId = openid;
+      const unionId = unionid;
       const { code } = router.query;
       if (openId && unionId) {
         console.log('ddd User is already authorized with WeChat.');
@@ -67,7 +68,7 @@ const useWechatAuth = () => {
           Cookies.set('openid', openid, { expires: 45 });
           Cookies.set('unionid', unionid, { expires: 45 });
           Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
-
+          setWechatInfoIds({ openid, unionid, wechatInfoId });
           console.log('WeChat authorization successful');
         } catch (error) {
           toast({
@@ -93,7 +94,7 @@ const useWechatAuth = () => {
     };
 
     handleWechatAuth();
-  }, [router, pathname, toast]);
+  }, [router, pathname, toast, unionid, openid, setWechatInfoIds]);
 };
 
 export default useWechatAuth;

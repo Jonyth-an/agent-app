@@ -1,6 +1,7 @@
 import type React from 'react';
 import { useState } from 'react';
 import { Box, Text, Button, VStack, useToast, Flex } from '@chakra-ui/react';
+import { toMemberLanding } from '@/web/core/chat/context/utils';
 
 interface PaymentModalProps {
   onClose?: () => void;
@@ -139,7 +140,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ onClose }) => {
 
   // 处理会员链接跳转
   const handleMembershipRedirect = () => {
-    window.location.href = 'https://example.com/membership'; // 替换为实际的会员链接
+    // toMemberLanding()
   };
 
   return (

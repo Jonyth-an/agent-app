@@ -12,7 +12,8 @@ import { redirectToErrorPage } from './errorRedirect';
 import { AgentAccessType } from '../../app/constants';
 const useChatInitialization = (appId: string) => {
   const router = useRouter();
-  const { setAgentConfigInfo, setStaffInfo, setToken, setCanChat, setShareToken } = useChatStore();
+  const { setAgentConfigInfo, setStaffInfo, setToken, setCanChat, setShareToken, openid } =
+    useChatStore();
   const agentConfigInfo = useChatStore().agentConfigInfo;
   const appKey = agentConfigInfo.appKey;
   const permissionType = agentConfigInfo.permissionType;
@@ -20,7 +21,6 @@ const useChatInitialization = (appId: string) => {
   const tenantId = agentConfigInfo.tenantId;
   const paid = agentConfigInfo.paid;
   const memberLevelOk = agentConfigInfo.memberLevelOk;
-  const openid = Cookies.get('openid');
 
   async function tokenIsValid() {
     const shareToken = getShareToken(agentConfigInfo);
@@ -80,7 +80,7 @@ const useChatInitialization = (appId: string) => {
   );
 
   useEffect(() => {
-    if (!Cookies.get('openid') || !appKey) return;
+    if (!openid || !appKey) return;
 
     initWechatShare({
       title: agentConfigInfo.name,
@@ -88,7 +88,7 @@ const useChatInitialization = (appId: string) => {
       imgUrl: agentConfigInfo.avatar,
       link: agentConfigInfo.url || `${share_h5_url}/chat?appId=${appId}`
     });
-  }, [agentConfigInfo, appId, appKey]);
+  }, [agentConfigInfo, appId, appKey, openid]);
 
   return { loading, error };
 };

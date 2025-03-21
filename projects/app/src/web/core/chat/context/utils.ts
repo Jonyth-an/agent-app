@@ -85,6 +85,16 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   // }
 }
 
+export function toMemberLanding({ appId, tenantId }: RedirectAuthParams) {
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
+  const encodedCurUrl = encodeURIComponent(curUrl);
+  const memberLandingUrl = `${share_h5_url}/share/memberLanding?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
+  console.error('xxx memberLandingUrl', memberLandingUrl);
+  if (process.env.NODE_ENV !== 'development') {
+    window.location.href = memberLandingUrl;
+  }
+}
+
 export const isMiniProgram = () => {
   const ua = navigator.userAgent.toLowerCase();
   const bool = /miniprogram/.test(ua);

@@ -71,3 +71,9 @@ export interface WechatAuthInfo {
   unionid: string;
   wechatExtends: any; // 如果有具体结构，可以替换为具体类型
 }
+
+export interface WechatUserInfo {
+  openid: string;
+  unionid: string;
+  wechatInfoId: string;
+}

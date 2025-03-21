@@ -48,7 +48,7 @@ const Chat = () => {
   const isPlugin = useContextSelector(ChatItemContext, (v) => v.isPlugin);
   const setChatBoxData = useContextSelector(ChatItemContext, (v) => v.setChatBoxData);
 
-  const { chatId, appId, agentConfigInfo, outLinkAuthData } = useChatStore();
+  const { chatId, appId, agentConfigInfo, outLinkAuthData, unionid, openid } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
   const appKey = agentConfigInfo.appKey;
   // Load chat init data
@@ -70,7 +70,7 @@ const Chat = () => {
     },
     {
       manual: false,
-      ready: !!appId && !!Cookies.get('openid') && !!appKey,
+      ready: !!appId && !!openid && !!appKey,
       refreshDeps: [appId, chatId],
       onError(e: any) {
         redirectToErrorPage(router, e);
@@ -189,7 +189,7 @@ const Chat = () => {
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const { source, chatId, agentConfigInfo, setSource, setAppId } = useChatStore();
+  const { source, chatId, agentConfigInfo, setSource, setAppId, openid } = useChatStore();
   const appKey = agentConfigInfo.appKey;
   const router = useRouter();
   // 初始化聊天框
@@ -219,7 +219,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
   }, [appId, chatId]);
 
-  return source === ChatSourceEnum.online && Cookies.get('openid') && !!appKey ? (
+  return source === ChatSourceEnum.online && openid && !!appKey ? (
     <ChatContextProvider params={chatHistoryProviderParams}>
       <ChatItemContextProvider
         showRouteToAppDetail={isStandalone !== '1'}
