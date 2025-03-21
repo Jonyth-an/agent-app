@@ -5,7 +5,7 @@ import { immer } from 'zustand/middleware/immer';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
-import { AgentAccessType, agentConfigInfo, StaffInfo } from '@/global/core/user/api';
+import { agentConfigInfo, StaffInfo } from '@/global/core/user/api';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
@@ -29,6 +29,9 @@ type State = {
 
   outLinkAuthData: OutLinkChatAuthProps; // 外部链接认证数据
   setOutLinkAuthData: (e: OutLinkChatAuthProps) => any; // 设置外部链接认证数据的方法
+
+  canChat: boolean; // 是否可以聊天,
+  setCanChat: (e: boolean) => any;
 
   agentConfigInfo: agentConfigInfo; // 存储代理配置
   setAgentConfigInfo: (config: agentConfigInfo) => void; // 更新代理配置的方法
@@ -148,7 +151,16 @@ export const useChatStore = create<State>()(
             state.outLinkAuthData = e; // 更新 outLinkAuthData
           });
         },
+        canChat: false,
+        setCanChat(e: boolean) {
+          set((state) => {
+            state.canChat = e; // 更新 canChat
+          });
+        },
         agentConfigInfo: {
+          freeCount: 0,
+          paid: false,
+          memberLevelOk: false,
           agentId: '',
           name: '',
           avatar: '',

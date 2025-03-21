@@ -128,7 +128,7 @@ const ChatBox = ({
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
-  const { agentConfigInfo } = useChatStore();
+  const { agentConfigInfo, canChat } = useChatStore();
   const userAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.userAvatar);
   const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
@@ -1009,7 +1009,6 @@ const ChatBox = ({
     );
   }, [
     ScrollData,
-    appAvatar,
     chatForm,
     chatRecords,
     chatStarted,
@@ -1023,17 +1022,15 @@ const ChatBox = ({
     onReadUserDislike,
     questionGuides,
     retryInput,
-    showEmpty,
     showMarkIcon,
     showVoiceIcon,
     statusBoxData,
     t,
-    userAvatar,
     variableList?.length,
-    welcomeText
+    welcomeText,
+    agentConfigInfo.avatar
   ]);
-
-
+  
   return (
     <MyBox
       isLoading={isLoading}
@@ -1045,8 +1042,8 @@ const ChatBox = ({
       <Script src={getWebReqUrl('/js/html2pdf.bundle.min.js')} strategy="lazyOnload"></Script>
       {/* chat box container */}
       {RenderRecords}
-      {/* mark tips */}
-      {/* <PaymentModal/> */}
+      {/* pay mark  */}
+      {!canChat && <PaymentModal/> } 
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
         <ChatInput

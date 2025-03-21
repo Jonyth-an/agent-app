@@ -7,6 +7,8 @@ export const redirectToErrorPage = (router: NextRouter, error: any) => {
   let o = {};
   const isDev = localStorage.getItem('dev') === '12345678';
   const isDebugger = localStorage.getItem('debugger') === 'true';
+  console.error(' redirectToErrorPage router', router);
+  console.error(' redirectToErrorPage error', error);
   if (isDev) {
     o = { dev: 12345678 };
   }

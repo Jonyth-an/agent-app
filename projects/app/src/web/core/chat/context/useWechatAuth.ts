@@ -23,9 +23,10 @@ function constructNewUrl(originalUrl: string, newDomain: string) {
 
 const useWechatAuth = () => {
   const router = useRouter();
-  const { toast } = useToast();
+
   const pathname = router.pathname;
   console.log('ddd router', router);
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleWechatAuth = async () => {
@@ -45,6 +46,10 @@ const useWechatAuth = () => {
           router.replace(url.toString());
         }
         return; // 已经授权，直接返回
+      }
+      if (process.env.NODE_ENV === 'development') {
+        console.error('ddd openId unionId 不存在', openId, unionId);
+        return;
       }
 
       if (pathname === '/pageError') {
@@ -75,6 +80,7 @@ const useWechatAuth = () => {
       } else {
         // 未获取到 code，进行重定向获取 code
         let currentUrl;
+        // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
           currentUrl = constructNewUrl(window.location.href, share_h5_url);
         } else {
@@ -87,7 +93,7 @@ const useWechatAuth = () => {
     };
 
     handleWechatAuth();
-  }, [router, pathname]);
+  }, [router, pathname, toast]);
 };
 
 export default useWechatAuth;

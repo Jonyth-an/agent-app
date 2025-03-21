@@ -40,7 +40,7 @@ export const getShareToken = (agentConfigInfo: agentConfigInfo) => {
 
   if (!shareToken) {
     const error = new Error('No token provided for non-public agent');
-    (error as any).code = 407;
+    (error as any).code = 401;
     throw error;
   }
   return shareToken as string;
@@ -61,27 +61,28 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
   console.log("queryParams.get('debugger')", queryParams.get('debugger'));
+
+  // if (isEmptyPage) {
+  //   const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
+  //   console.error('xxx emptyUrl', emptyUrl);
+  //   if (process.env.NODE_ENV !== 'development') {
+  //     window.location.href = emptyUrl;
+  //   }
+  // } else {
+  const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
+  const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
+  console.error('xxx loginUrl', loginUrl);
+  console.error('xxx loginUrl authorizeUrl', authorizeUrl);
   if (queryParams.get('debugger') === 'true') {
     return;
   }
   if (queryParams.get('dev') == '12345678') {
     debugger;
   }
-  if (isEmptyPage) {
-    const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
-    console.error('xxx emptyUrl', emptyUrl);
-    if (process.env.NODE_ENV !== 'development') {
-      window.location.href = emptyUrl;
-    }
-  } else {
-    const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
-    const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
-    console.error('xxx loginUrl', loginUrl);
-    console.error('xxx loginUrl authorizeUrl', authorizeUrl);
-    if (process.env.NODE_ENV !== 'development') {
-      window.location.href = authorizeUrl;
-    }
+  if (process.env.NODE_ENV !== 'development') {
+    window.location.href = authorizeUrl;
   }
+  // }
 }
 
 export const isMiniProgram = () => {

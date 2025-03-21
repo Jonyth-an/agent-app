@@ -23,13 +23,6 @@ export type agentConfigDes = {
   list: any[];
 };
 
-export enum AgentAccessType {
-  'INIT' = 'INIT',
-  'PUBLIC' = 'PUBLIC', // 公开
-  'PRIVATE' = 'PRIVATE', // 仅激活用户
-  'FEE_OR_MEMBERSHIP' = 'FEE_OR_MEMBERSHIP', // 单独付费或会员
-  'EXTRA_FEE' = 'EXTRA_FEE' // 额外付费
-}
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
   agentId: string; // 智能体ID
@@ -45,6 +38,9 @@ export type agentConfigInfo = {
   status: string; // 智能体描述
   url: string;
   appKey: string;
+  freeCount: number;
+  paid: boolean; // 已独立支付
+  memberLevelOk: boolean; // 已满足会员要求
 };
 
 export type SignatureInfoReq = {

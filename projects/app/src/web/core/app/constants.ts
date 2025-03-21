@@ -24,6 +24,14 @@ export const defaultApp: AppDetailType = {
   inheritPermission: false
 };
 
+export const AgentAccessType = {
+  INIT: 'INIT',
+  PUBLIC: 'PUBLIC', // 公开
+  PRIVATE: 'PRIVATE', // 仅激活用户
+  FEE_OR_MEMBERSHIP: 'FEE_OR_MEMBERSHIP', // 单独付费或会员
+  EXTRA_FEE: 'EXTRA_FEE' // 额外付费
+};
+
 export const defaultOutLinkForm: OutLinkEditType = {
   name: '',
   showNodeStatus: true,

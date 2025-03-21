@@ -25,16 +25,18 @@ import { useSystem } from '@fastgpt/web/hooks/useSystem';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
 import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import ChatRecordContextProvider from '@/web/core/chat/context/chatRecordContext';
-import { redirectAuth } from '@/web/core/chat/context/utils';
 import useChatInitialization from '@/web/core/chat/context/useChatInitialization';
 import { useTranslation } from 'next-i18next';
 import { getInitChatInfo } from '@/web/core/chat/api';
 import Cookies from 'js-cookie';
+import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
+import { useRouter } from 'next/router';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
   const { t } = useTranslation();
   const { isPc } = useSystem();
+  const router = useRouter();
   const { userInfo } = useUserStore();
   const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
   const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
@@ -71,9 +73,7 @@ const Chat = () => {
       ready: !!appId && !!Cookies.get('openid') && !!appKey,
       refreshDeps: [appId, chatId],
       onError(e: any) {
-        console.log('xxx getInitChatInfo error', e);
-        // reset all chat tore
-        redirectAuth({ appId, isEmptyPage: false, tenantId });
+        redirectToErrorPage(router, e);
       },
       onFinally() {
         forbidLoadChat.current = false;
@@ -191,11 +191,12 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
   const { source, chatId, agentConfigInfo, setSource, setAppId } = useChatStore();
   const appKey = agentConfigInfo.appKey;
+  const router = useRouter();
   // 初始化聊天框
   useMount(async () => {
     // pc: redirect to latest model chat
     if (!appId) {
-      redirectAuth({ isEmptyPage: false, appId, tenantId: -1 });
+      redirectToErrorPage(router, new Error('appId is required'));
     }
     setSource('online');
   });
