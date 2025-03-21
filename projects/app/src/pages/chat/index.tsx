@@ -55,7 +55,7 @@ const Chat = () => {
 
   const { loading } = useRequest2(
     async () => {
-      if (!appId || forbidLoadChat.current) return;
+      if (!appId || !appKey || !openid || forbidLoadChat.current) return;
 
       const res = await getInitChatInfo({ appId, chatId });
       console.log('xxx getInitChatInfo res2', res);
@@ -71,7 +71,7 @@ const Chat = () => {
     {
       manual: false,
       ready: !!appId && !!openid && !!appKey,
-      refreshDeps: [appId, chatId],
+      refreshDeps: [appId, chatId, appKey],
       onError(e: any) {
         redirectToErrorPage(router, e);
       },
@@ -208,16 +208,18 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
 
   useChatInitialization(appId);
 
-  const chatHistoryProviderParams = useMemo(() => ({ appId, source: ChatSourceEnum.online }), [
-    appId
-  ]);
+  const chatHistoryProviderParams = useMemo(
+    () => ({ appId, appKey, source: ChatSourceEnum.online }),
+    [appId, appKey]
+  );
   const chatRecordProviderParams = useMemo(() => {
     return {
+      appKey,
       appId,
       type: GetChatTypeEnum.normal,
       chatId: chatId
     };
-  }, [appId, chatId]);
+  }, [appId, chatId, appKey]);
 
   return source === ChatSourceEnum.online && openid && !!appKey ? (
     <ChatContextProvider params={chatHistoryProviderParams}>
