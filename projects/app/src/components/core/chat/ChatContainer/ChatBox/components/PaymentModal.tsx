@@ -1,146 +1,106 @@
 import type React from 'react';
 import { useState } from 'react';
-import { Box, Text, Button, VStack, useToast, Flex } from '@chakra-ui/react';
-import { toMemberLanding } from '@/web/core/chat/context/utils';
+import { Box, Text, Button, VStack, useToast } from '@chakra-ui/react';
+
+export enum LinkTypeEnum {
+  AUTH_REDIRECT = 'auth_redirect',
+  PAYMENT = 'payment',
+  MEMBER_PAGE = 'member_page',
+  CUSTOM = 'custom'
+}
+
+export interface PaymentButtonConfig {
+  text: string;
+  colorScheme?: string;
+  textColor?: string;
+  borderColor?: string;
+  variant?: 'solid' | 'outline';
+  linkType: LinkTypeEnum;
+  target?: string;
+  loading?: {
+    text: string;
+  };
+}
+
+export interface PaymentModalConfig {
+  title: {
+    text: string;
+    color?: string;
+  };
+  buttons: PaymentButtonConfig[];
+}
 
 interface PaymentModalProps {
   onClose?: () => void;
+  config: PaymentModalConfig;
 }
 
-// Declare WeixinJSBridge
-declare const WeixinJSBridge: any;
+const config: PaymentModalConfig = {
+  title: {
+    text: '免费体验额度已使用完毕',
+    color: 'gray.700'
+  },
+  buttons: [
+    {
+      text: '点击购买完整版￥200/年',
+      colorScheme: 'blue',
+      textColor: 'white',
+      variant: 'solid',
+      linkType: LinkTypeEnum.PAYMENT
+    },
+    {
+      text: '开通会员￥399/年',
+      colorScheme: 'gray',
+      textColor: 'blue.500',
+      borderColor: 'blue.500',
+      variant: 'outline',
+      linkType: LinkTypeEnum.MEMBER_PAGE,
+      target: 'vip-1',
+      loading: {
+        text: '处理中...'
+      }
+    },
+    {
+      text: '自定义跳转按钮',
+      colorScheme: 'green',
+      linkType: LinkTypeEnum.CUSTOM,
+      target: 'https://example.com'
+    }
+  ]
+};
 
-const PaymentModal: React.FC<PaymentModalProps> = ({ onClose }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const PaymentModal: React.FC<any> = () => {
+  // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
+  const [loadingButtonIndex, setLoadingButtonIndex] = useState<number>(-1);
   const toast = useToast();
 
-  // 处理微信支付
-  const handleWechatPay = async () => {
+  const handleButtonClick = async (buttonConfig: PaymentButtonConfig, index: number) => {
     try {
-      setIsLoading(true);
+      setLoadingButtonIndex(index);
 
-      // 获取预支付信息
-      const response = await fetch('/api/prepay', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          payScene: 'PAID_ACTIVATION'
-          // 其他必要参数
-        })
-      });
-
-      const result = await response.json();
-
-      if (result.code === 0) {
-        const { prepayId, appId, timestamp, nonceStr, paySign, id } = result.data;
-        const params = {
-          appId,
-          timeStamp: timestamp,
-          nonceStr,
-          package: `prepay_id=${prepayId}`,
-          signType: 'RSA',
-          paySign
-        };
-
-        pay(params, id);
-      } else {
-        toast({
-          title: '获取支付信息失败',
-          description: result.msg,
-          status: 'error',
-          duration: 3000,
-          isClosable: true
-        });
+      switch (buttonConfig.linkType) {
+        case LinkTypeEnum.PAYMENT:
+          // 处理支付逻辑
+          break;
+        case LinkTypeEnum.MEMBER_PAGE:
+          // 处理会员页面跳转
+          break;
+        case LinkTypeEnum.AUTH_REDIRECT:
+        case LinkTypeEnum.CUSTOM:
+          window.location.href = buttonConfig.target || '';
+          break;
       }
     } catch (error) {
-      console.error('支付请求失败:', error);
       toast({
-        title: '支付请求失败',
+        title: '操作失败',
         description: '请稍后再试',
         status: 'error',
         duration: 3000,
         isClosable: true
       });
     } finally {
-      setIsLoading(false);
+      setLoadingButtonIndex(-1);
     }
-  };
-
-  // 调用微信支付
-  const pay = (params: any, outTradeNo: string) => {
-    // if (typeof WeixinJSBridge === 'undefined') {
-    //   if (document.addEventListener) {
-    //     document.addEventListener(
-    //       'WeixinJSBridgeReady',
-    //       () => onBridgeReady(params, outTradeNo),
-    //       false
-    //     );
-    //   } else if (document.attachEvent) {
-    //     document.attachEvent('WeixinJSBridgeReady', () => onBridgeReady(params, outTradeNo));
-    //     document.attachEvent('onWeixinJSBridgeReady', () => onBridgeReady(params, outTradeNo));
-    //   }
-    // } else {
-    //   onBridgeReady(params, outTradeNo);
-    // }
-  };
-
-  // 微信支付桥接
-  const onBridgeReady = (params: any, outTradeNo: string) => {
-    WeixinJSBridge.invoke('getBrandWCPayRequest', params, async (res: any) => {
-      if (res.err_msg === 'get_brand_wcpay_request:ok') {
-        // 支付成功，查询支付结果
-        try {
-          const response = await fetch('/api/payResult', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ outTradeNo })
-          });
-
-          const result = await response.json();
-
-          if (result.code === 0) {
-            toast({
-              title: '支付成功',
-              description: '您已成功购买完整版',
-              status: 'success',
-              duration: 3000,
-              isClosable: true
-            });
-
-            if (onClose) onClose();
-            // 可以在这里添加支付成功后的逻辑，如刷新页面或更新用户状态
-          } else {
-            toast({
-              title: '支付结果查询失败',
-              description: result.msg,
-              status: 'warning',
-              duration: 3000,
-              isClosable: true
-            });
-          }
-        } catch (error) {
-          console.error('查询支付结果失败:', error);
-        }
-      } else {
-        console.log('支付失败或取消', res);
-        toast({
-          title: '支付未完成',
-          description: '您可以稍后再试',
-          status: 'info',
-          duration: 3000,
-          isClosable: true
-        });
-      }
-    });
-  };
-
-  // 处理会员链接跳转
-  const handleMembershipRedirect = () => {
-    // toMemberLanding()
   };
 
   return (
@@ -156,35 +116,31 @@ const PaymentModal: React.FC<PaymentModalProps> = ({ onClose }) => {
       boxShadow="sm"
     >
       <VStack spacing={4} align="stretch">
-        <Text fontSize="md" fontWeight="medium" textAlign="center" color="gray.700">
-          免费体验额度已使用完毕
+        <Text
+          fontSize="md"
+          fontWeight="medium"
+          textAlign="center"
+          color={config.title.color || 'gray.700'}
+        >
+          {config.title.text}
         </Text>
 
-        <Button
-          colorScheme="blue"
-          size="md"
-          width="100%"
-          onClick={handleWechatPay}
-          isLoading={isLoading}
-          loadingText="处理中..."
-        >
-          点击购买完整版￥200/年
-        </Button>
-
-        <Flex
-          as={Button}
-          variant="outline"
-          colorScheme="blue"
-          size="md"
-          width="100%"
-          onClick={handleMembershipRedirect}
-          justifyContent="center"
-        >
-          <Text>开通会员￥399/年</Text>
-          <Text ml={1} color="blue.500">
-            立享所有智能体
-          </Text>
-        </Flex>
+        {config.buttons.map((button, index) => (
+          <Button
+            key={index}
+            colorScheme={button.colorScheme || 'blue'}
+            variant={button.variant || 'solid'}
+            size="md"
+            width="100%"
+            onClick={() => handleButtonClick(button, index)}
+            isLoading={loadingButtonIndex === index}
+            loadingText={button.loading?.text || '处理中...'}
+            color={button.textColor}
+            borderColor={button.borderColor}
+          >
+            {button.text}
+          </Button>
+        ))}
       </VStack>
     </Box>
   );

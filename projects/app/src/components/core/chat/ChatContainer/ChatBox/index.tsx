@@ -1043,7 +1043,9 @@ const ChatBox = ({
       {/* chat box container */}
       {RenderRecords}
       {/* pay mark  */}
-      {!canChat && <PaymentModal/> } 
+      {true && <PaymentModal/> } 
+      {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}
+      {/* {!canChat && <PaymentModal/> }  */}
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
         <ChatInput
