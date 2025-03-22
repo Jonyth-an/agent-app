@@ -26,7 +26,7 @@ const useWechatAuth = () => {
   const router = useRouter();
 
   const pathname = router.pathname;
-  console.log('ddd router', router);
+  // console.log('ddd router', router);
   const { toast } = useToast();
   const { setWechatInfoIds, openid, unionid } = useChatStore();
   useEffect(() => {
@@ -43,53 +43,57 @@ const useWechatAuth = () => {
           const url = new URL(window.location.href);
           url.searchParams.delete('code');
           url.searchParams.delete('state');
-          console.log('ddd replace after url:', url);
-          router.replace(url.toString());
-        }
-        return; // 已经授权，直接返回
-      }
-      if (process.env.NODE_ENV === 'development') {
-        console.error('ddd openId unionId 不存在', openId, unionId);
-        return;
-      }
-
-      if (pathname === '/pageError') {
-        return; // 如果当前路径是错误页面，则不进行微信授权
-      }
-
-      if (code) {
-        // 已经获取到 code，调用接口获取用户信息
-        try {
-          const wechatAuthInfo = await getWechatAuthInfo({ code: code as string });
-          console.log('ddd wechatAuthInfo', wechatAuthInfo);
-          const { openid, unionid, id: wechatInfoId } = wechatAuthInfo;
-
-          // 设置 Cookie，保持 45 天
-          Cookies.set('openid', openid, { expires: 45 });
-          Cookies.set('unionid', unionid, { expires: 45 });
-          Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
-          setWechatInfoIds({ openid, unionid, wechatInfoId });
-          console.log('WeChat authorization successful');
-        } catch (error) {
-          toast({
-            status: 'error',
-            title: '微信授权失败'
-          });
-          console.error('Error during WeChat authorization:', error);
-          redirectToErrorPage(router, error);
+          window.history.replaceState({}, '', url.toString());
         }
       } else {
-        // 未获取到 code，进行重定向获取 code
-        let currentUrl;
-        // @ts-ignore
         if (process.env.NODE_ENV === 'development') {
-          currentUrl = constructNewUrl(window.location.href, share_h5_url);
-        } else {
-          currentUrl = window.location.href;
+          console.error('ddd openId unionId 不存在', openId, unionId);
+          return;
         }
-        const toAuthUrl = getWechatAuthCode(currentUrl);
-        console.log('dddd toAuthUrl', toAuthUrl);
-        location.href = toAuthUrl;
+
+        if (pathname === '/pageError') {
+          return; // 如果当前路径是错误页面，则不进行微信授权
+        }
+
+        if (code) {
+          // 已经获取到 code，调用接口获取用户信息
+          try {
+            const wechatAuthInfo = await getWechatAuthInfo({ code: code as string });
+            console.log('ddd wechatAuthInfo', wechatAuthInfo);
+            const { openid, unionid, id: wechatInfoId } = wechatAuthInfo;
+
+            // 设置 Cookie，保持 45 天
+            Cookies.set('openid', openid, { expires: 45 });
+            Cookies.set('unionid', unionid, { expires: 45 });
+            Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
+            setWechatInfoIds({ openid, unionid, wechatInfoId });
+            console.log('WeChat authorization successful');
+            // 使用 replaceState 清理历史记录
+            const url = new URL(window.location.href);
+            url.searchParams.delete('code');
+            url.searchParams.delete('state');
+            window.history.replaceState({}, '', url.toString());
+          } catch (error) {
+            toast({
+              status: 'error',
+              title: '微信授权失败'
+            });
+            console.error('Error during WeChat authorization:', error);
+            redirectToErrorPage(router, error);
+          }
+        } else {
+          // 未获取到 code，进行重定向获取 code
+          let currentUrl;
+          // @ts-ignore
+          if (process.env.NODE_ENV === 'development') {
+            currentUrl = constructNewUrl(window.location.href, share_h5_url);
+          } else {
+            currentUrl = window.location.href;
+          }
+          const toAuthUrl = getWechatAuthCode(currentUrl);
+          console.log('dddd toAuthUrl', toAuthUrl);
+          window.location.replace(toAuthUrl);
+        }
       }
     };
 
