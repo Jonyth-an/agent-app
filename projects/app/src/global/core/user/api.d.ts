@@ -10,6 +10,7 @@ export type ParentOrgIdList = number[];
 export type StaffInfo = {
   id: number; // 用户ID，假设为数字类型
   name: string; // 用户姓名，字符串类型
+  nickname: string;
   userId: string; // 用户标识符ID，字符串类型
   orgId: number; // 用户所属组织ID，假设为数字类型
   parentOrgIdList: ParentOrgIdList; // 用户所属组织的上级组织ID列表，数组中的每个元素都是数字类型
@@ -76,4 +77,28 @@ export interface WechatUserInfo {
   openid: string;
   unionid: string;
   wechatInfoId: string;
+}
+
+export type ChatLogReqParams = {
+  aiAgentId: string;
+  answer: string;
+  answerTime: string;
+  chatId: string;
+  name: string;
+  nickname: string;
+  openid: string;
+  question: string;
+  questionTime: string;
+  tenantId: number;
+  unionid: string;
+};
+
+export interface ChatLogResData extends ChatLogReqParams {
+  id: string;
+}
+
+export interface RemainingCountParams {
+  openid: string;
+  unionid: string;
+  aiAgentId: string;
 }

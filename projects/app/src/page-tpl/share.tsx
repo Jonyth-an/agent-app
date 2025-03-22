@@ -331,8 +331,8 @@ const Render = (props: Props) => {
   }, [chatHistoryProviderParams.outLinkUid, shareId]);
   // Watch appId
   useEffect(() => {
-    setAppId('67b860750d1c6dfdccebab3d');
-    // setAppId(appId);
+    // setAppId('67b860750d1c6dfdccebab3d');
+    setAppId(appId);
   }, [appId]);
 
   return source === ChatSourceEnum.share ? (

@@ -13,12 +13,21 @@ import { useSystemStore } from '../system/useSystemStore';
 import { formatTime2YMDHMW } from '@fastgpt/global/common/string/time';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import Cookies from 'js-cookie';
+import { saveChatLog } from '@/web/core/chat/user';
 
-type StreamFetchProps = {
+export type StreamCBParams = {
+  type: string;
+  responseText: string;
+  message: string;
+  cTime: string;
+};
+
+export type StreamFetchProps = {
   url?: string;
   data: Record<string, any>;
   onMessage: StartChatFnProps['generatingMessage'];
   abortCtrl: AbortController;
+  callback?: (data: StreamCBParams) => void;
 };
 export type StreamResponseType = {
   responseText: string;
@@ -40,13 +49,17 @@ type ResponseQueueItemType =
     };
 class FatalError extends Error {}
 
+// saveChatLog
+
 export const streamFetch = ({
   url = '/api/v1/chat/completions',
   data,
   onMessage,
-  abortCtrl
+  abortCtrl,
+  callback
 }: StreamFetchProps) =>
   new Promise<StreamResponseType>(async (resolve, reject) => {
+    console.log('xxx streamFetch finish data', data);
     // First res
     const timeoutId = setTimeout(() => {
       abortCtrl.abort('Time out');
@@ -63,6 +76,10 @@ export const streamFetch = ({
       if (errMsg !== undefined) {
         return failedFinish();
       }
+      console.log('xxx streamFetch finish responseText', responseText);
+      console.log('xxx streamFetch finish responseData', responseData);
+      callback &&
+        callback({ type: 'success', responseText, message: 'done', cTime: data.variables.cTime });
       return resolve({
         responseText,
         responseData
@@ -70,8 +87,10 @@ export const streamFetch = ({
     };
     const failedFinish = (err?: any) => {
       finished = true;
+      const message = getErrText(err, errMsg ?? '响应过程出现异常~');
+      callback && callback({ type: 'failed', responseText, message, cTime: data.variables.cTime });
       reject({
-        message: getErrText(err, errMsg ?? '响应过程出现异常~'),
+        message,
         responseText
       });
     };

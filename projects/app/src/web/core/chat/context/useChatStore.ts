@@ -212,6 +212,7 @@ export const useChatStore = create<State>()(
         staffInfo: {
           id: 0,
           name: '',
+          nickname: '',
           userId: '',
           orgId: 0,
           parentOrgIdList: []

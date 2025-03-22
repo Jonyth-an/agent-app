@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import NextHead from '@/components/common/NextHead';
 import { Box, Flex, Drawer, DrawerOverlay, DrawerContent, useTheme } from '@chakra-ui/react';
-import { streamFetch } from '@/web/common/api/fetch';
+import { StreamCBParams, streamFetch } from '@/web/common/api/fetch';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import type { StartChatFnProps } from '@/components/core/chat/ChatContainer/type';
 import PageContainer from '@/components/PageContainer';
@@ -32,6 +32,8 @@ import Cookies from 'js-cookie';
 import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
 import { useRouter } from 'next/router';
 import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
+import { saveChatLog } from '../../web/core/chat/user';
+import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -49,9 +51,19 @@ const Chat = () => {
   const isPlugin = useContextSelector(ChatItemContext, (v) => v.isPlugin);
   const setChatBoxData = useContextSelector(ChatItemContext, (v) => v.setChatBoxData);
 
-  const { chatId, appId, agentConfigInfo, outLinkAuthData, unionid, openid } = useChatStore();
+  const {
+    staffInfo,
+    chatId,
+    appId,
+    agentConfigInfo,
+    outLinkAuthData,
+    unionid,
+    openid
+  } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
   const appKey = agentConfigInfo.appKey;
+  const name = staffInfo.name;
+  const nickname = staffInfo.nickname;
   // Load chat init data
 
   const { loading } = useRequest2(
@@ -82,6 +94,23 @@ const Chat = () => {
     }
   );
 
+  // 修改 onSaveChatLog 函数
+  const onSaveChatLog = async (data: StreamCBParams, histories: any[], variables: any) => {
+    await saveChatLog({
+      aiAgentId: appId,
+      answer: data.responseText,
+      answerTime: getCurrentTimestamp(),
+      chatId,
+      name,
+      nickname,
+      openid,
+      question: histories[0]?.content || '', // 获取用户问题
+      questionTime: convertTimeToTimestamp(variables.cTime),
+      tenantId,
+      unionid
+    });
+  };
+
   const onStartChat = useCallback(
     async ({
       messages,
@@ -90,7 +119,6 @@ const Chat = () => {
       generatingMessage,
       variables
     }: StartChatFnProps) => {
-      // Just send a user prompt
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
         data: {
@@ -101,7 +129,8 @@ const Chat = () => {
           chatId
         },
         onMessage: generatingMessage,
-        abortCtrl: controller
+        abortCtrl: controller,
+        callback: (data) => onSaveChatLog(data, histories, variables)
       });
 
       const newTitle = getChatTitleFromChatMessage(GPTMessages2Chats(histories)[0]);

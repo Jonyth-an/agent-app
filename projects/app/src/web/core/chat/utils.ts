@@ -2,7 +2,7 @@ import { FlowNodeTypeEnum } from '@fastgpt/global/core/workflow/node/constant';
 import { StoreNodeItemType } from '@fastgpt/global/core/workflow/type/node.d';
 import { NodeInputKeyEnum } from '@fastgpt/global/core/workflow/constants';
 import { getWebLLMModel } from '@/web/common/system/utils';
-
+import dayjs from 'dayjs';
 export function checkChatSupportSelectFileByChatModels(models: string[] = []) {
   for (const model of models) {
     const modelData = getWebLLMModel(model);
@@ -44,3 +44,21 @@ export function getAppQuestionGuidesByUserGuideModule(
 
   return chatInputGuide?.open ? qGuideText : [];
 }
+
+/**
+ * 将指定格式的时间字符串转换为时间戳
+ * @param timeStr 时间字符串，格式如："2025-03-22 18:03:37 Saturday"
+ * @returns 时间戳（毫秒）
+ */
+export const convertTimeToTimestamp = (timeStr: string): string => {
+  const cleanDateString = timeStr.split(' ')[0] + ' ' + timeStr.split(' ')[1];
+  return dayjs(cleanDateString).valueOf() + '';
+};
+
+/**
+ * 获取当前时间戳
+ * @returns 时间戳（毫秒）
+ */
+export const getCurrentTimestamp = (): string => {
+  return dayjs().valueOf() + '';
+};
