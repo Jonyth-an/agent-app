@@ -31,6 +31,7 @@ import { getInitChatInfo } from '@/web/core/chat/api';
 import Cookies from 'js-cookie';
 import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
 import { useRouter } from 'next/router';
+import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -205,7 +206,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useEffect(() => {
     setAppId(appId);
   }, [appId, setAppId]);
-
+  useWechatAuth();
   useChatInitialization(appId);
 
   const chatHistoryProviderParams = useMemo(

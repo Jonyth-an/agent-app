@@ -59,7 +59,6 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
       setLog(search);
     }
   }, []);
-  useWechatAuth();
 
   // Forbid touch scale
   useEffect(() => {
