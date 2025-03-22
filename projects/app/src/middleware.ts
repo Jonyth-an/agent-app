@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { wechatMiddleware } from './middleware/wechat';
+// import { wechatMiddleware } from './middleware/wechat';
 
 export async function middleware(request: NextRequest) {
   // 使用更详细的日志
