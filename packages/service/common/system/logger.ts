@@ -3,7 +3,7 @@ import * as path from 'path';
 import { remove } from 'fs-extra';
 import { configure, getLogger } from 'log4js';
 import dayjs from 'dayjs';
-import { logPath } from '../../../../projects/app/src/config/index';
+const logPath = path.join(process.cwd(), 'logs');
 
 class Logger {
   public logger: any;
