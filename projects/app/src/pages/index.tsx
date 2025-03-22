@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 const index = () => {
   const router = useRouter();
   useEffect(() => {
-    router.push('/chat');
+    router.replace('/chat');
   }, [router]);
   return <Loading></Loading>;
 };
