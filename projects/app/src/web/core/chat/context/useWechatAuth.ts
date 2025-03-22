@@ -24,26 +24,30 @@ function constructNewUrl(originalUrl: string, newDomain: string) {
 
 const useWechatAuth = () => {
   const router = useRouter();
-
   const pathname = router.pathname;
-  // console.log('ddd router', router);
   const { toast } = useToast();
   const { setWechatInfoIds, openid, unionid } = useChatStore();
+  
   useEffect(() => {
     const handleWechatAuth = async () => {
-      // 先检查 Cookie 中的 openId 和 unionId
       const openId = openid;
       const unionId = unionid;
       const { code } = router.query;
+      
       if (openId && unionId) {
-        console.log('ddd User is already authorized with WeChat.');
-        console.log('ddd replace pre url:', window.location.href);
-        // 删除 URL 中的 code 和 state 参数，并使用 router.replace
         if (code) {
-          const url = new URL(window.location.href);
-          url.searchParams.delete('code');
-          url.searchParams.delete('state');
-          window.history.replaceState({}, '', url.toString());
+          // 使用 router.replace 替代 window.history.replaceState
+          const currentQuery = { ...router.query };
+          delete currentQuery.code;
+          delete currentQuery.state;
+          router.replace(
+            {
+              pathname: router.pathname,
+              query: currentQuery
+            },
+            undefined,
+            { shallow: true }
+          );
         }
       } else {
         if (process.env.NODE_ENV === 'development') {
@@ -56,23 +60,27 @@ const useWechatAuth = () => {
         }
 
         if (code) {
-          // 已经获取到 code，调用接口获取用户信息
           try {
             const wechatAuthInfo = await getWechatAuthInfo({ code: code as string });
-            console.log('ddd wechatAuthInfo', wechatAuthInfo);
             const { openid, unionid, id: wechatInfoId } = wechatAuthInfo;
 
-            // 设置 Cookie，保持 45 天
             Cookies.set('openid', openid, { expires: 45 });
             Cookies.set('unionid', unionid, { expires: 45 });
             Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
             setWechatInfoIds({ openid, unionid, wechatInfoId });
-            console.log('WeChat authorization successful');
-            // 使用 replaceState 清理历史记录
-            const url = new URL(window.location.href);
-            url.searchParams.delete('code');
-            url.searchParams.delete('state');
-            window.history.replaceState({}, '', url.toString());
+
+            // 使用 router.replace 替代 window.history.replaceState
+            const currentQuery = { ...router.query };
+            delete currentQuery.code;
+            delete currentQuery.state;
+            await router.replace(
+              {
+                pathname: router.pathname,
+                query: currentQuery
+              },
+              undefined,
+              { shallow: true }
+            );
           } catch (error) {
             toast({
               status: 'error',
