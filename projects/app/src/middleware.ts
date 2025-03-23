@@ -10,9 +10,14 @@ export async function middleware(request: NextRequest) {
 
   // 仅在路径以 /chat 开头时执行中间件逻辑
   if (nextUrl.pathname.startsWith('/chat')) {
+    const searchParams = new URLSearchParams(nextUrl.search);
+    // 如果请求中包含 code 参数，说明是授权后跳转回来的链接，直接放行
+    if (searchParams.has('code')) {
+      return NextResponse.next();
+    }
     if (!openid || !unionid) {
       // 获取所有查询参数
-      const searchParams = new URLSearchParams(nextUrl.search);
+
       // addLog.info('chat middleware request params', {
       //   data: {
       //     url: request.url,
