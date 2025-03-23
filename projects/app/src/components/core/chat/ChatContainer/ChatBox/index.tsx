@@ -895,11 +895,22 @@ const ChatBox = ({
     }
   }));
   const chatInputRef = useRef<ChatInputRefType>(null);
- 
+
+
+  const handleClick = (event: any) => {
+      event.stopPropagation();
+      event.preventDefault();
+      toast({
+        title: "免费额度已用完",
+        status: 'warning'
+      });
+  };
   const RenderRecords = useMemo(() => {
     return (
       <ScrollData
-        onClick={() => chatInputRef.current?.closeTools()} 
+      onClick={(event) => {
+        chatInputRef.current?.closeTools();
+      }}
         ScrollContainerRef={ScrollContainerRef}
         flex={'1 0 0'}
         h={0}
@@ -909,7 +920,12 @@ const ChatBox = ({
         pb={3}
       >
         <Box id="chat-container" maxW={['100%', '92%']} h={'100%'} mx={'auto'}>
-          {/* {showEmpty && <Empty />} */}
+          <Box 
+           style={{
+            position: 'relative',
+            pointerEvents: canChat ? 'auto' : 'none', // 禁用点击事件
+          }}>
+              {/* {showEmpty && <Empty />} */}
           {!!welcomeText && <WelcomeBox welcomeText={welcomeText} />}
           {/* variable input */}
           {!!variableList?.length && (
@@ -917,97 +933,117 @@ const ChatBox = ({
           )}
 
           {/* chat history */}
-          <Box id={'history'}>
-            {chatRecords.map((item, index) => (
-              <Box key={item.dataId}>
-                {/* 并且时间和上一条的time相差超过十分钟 */}
-                {index !== 0 &&
-                  item.time &&
-                  chatRecords[index - 1].time !== undefined &&
-                  new Date(item.time).getTime() - new Date(chatRecords[index - 1].time!).getTime() >
-                    10 * 60 * 1000 && <TimeBox time={item.time} />}
+            <Box id={'history'}>
+              {chatRecords.map((item, index) => (
+                <Box key={item.dataId}>
+                  {/* 并且时间和上一条的time相差超过十分钟 */}
+                  {index !== 0 &&
+                    item.time &&
+                    chatRecords[index - 1].time !== undefined &&
+                    new Date(item.time).getTime() - new Date(chatRecords[index - 1].time!).getTime() >
+                      10 * 60 * 1000 && <TimeBox time={item.time} />}
 
-                <Box py={item.hideInUI ? 0 : 6}>
-                  {item.obj === ChatRoleEnum.Human && !item.hideInUI && (
-                    <ChatItem
-                      type={item.obj}
-                      avatar={agentConfigInfo.avatar}
-                      chat={item}
-                      onRetry={retryInput(item.dataId)}
-                      onDelete={delOneMessage(item.dataId)}
-                      isLastChild={index === chatRecords.length - 1}
-                    />
-                  )}
-                  {item.obj === ChatRoleEnum.AI && (
-                    <ChatItem
-                      type={item.obj}
-                      avatar={agentConfigInfo.avatar}
-                      chat={item}
-                      isLastChild={index === chatRecords.length - 1}
-                      {...{
-                        showVoiceIcon,
-                        statusBoxData,
-                        questionGuides,
-                        onMark: onMark(
-                          item,
-                          formatChatValue2InputType(chatRecords[index - 1]?.value)?.text
-                        ),
-                        onAddUserLike: onAddUserLike(item),
-                        onCloseUserLike: onCloseUserLike(item),
-                        onAddUserDislike: onAddUserDislike(item),
-                        onReadUserDislike: onReadUserDislike(item)
-                      }}
-                    >
-                      <ResponseTags
-                        showTags={index !== chatRecords.length - 1 || !isChatting}
-                        historyItem={item}
+                  <Box py={item.hideInUI ? 0 : 6}>
+                    {item.obj === ChatRoleEnum.Human && !item.hideInUI && (
+                      <ChatItem
+                        type={item.obj}
+                        avatar={agentConfigInfo.avatar}
+                        chat={item}
+                        onRetry={retryInput(item.dataId)}
+                        onDelete={delOneMessage(item.dataId)}
+                        isLastChild={index === chatRecords.length - 1}
                       />
-                      {/* custom feedback */}
-                      {item.customFeedbacks && item.customFeedbacks.length > 0 && (
-                        <Box>
-                          <ChatBoxDivider
-                            icon={'core/app/customFeedback'}
-                            text={t('common:core.app.feedback.Custom feedback')}
-                          />
-                          {item.customFeedbacks.map((text, i) => (
-                            <Box key={i}>
-                              <MyTooltip
-                                label={t('common:core.app.feedback.close custom feedback')}
-                              >
-                                <Checkbox
-                                  onChange={onCloseCustomFeedback(item, i)}
-                                  icon={<MyIcon name={'common/check'} w={'12px'} />}
+                    )}
+                    {item.obj === ChatRoleEnum.AI && (
+                      <ChatItem
+                        type={item.obj}
+                        avatar={agentConfigInfo.avatar}
+                        chat={item}
+                        isLastChild={index === chatRecords.length - 1}
+                        {...{
+                          showVoiceIcon,
+                          statusBoxData,
+                          questionGuides,
+                          onMark: onMark(
+                            item,
+                            formatChatValue2InputType(chatRecords[index - 1]?.value)?.text
+                          ),
+                          onAddUserLike: onAddUserLike(item),
+                          onCloseUserLike: onCloseUserLike(item),
+                          onAddUserDislike: onAddUserDislike(item),
+                          onReadUserDislike: onReadUserDislike(item)
+                        }}
+                      >
+                        <ResponseTags
+                          showTags={index !== chatRecords.length - 1 || !isChatting}
+                          historyItem={item}
+                        />
+                        {/* custom feedback */}
+                        {item.customFeedbacks && item.customFeedbacks.length > 0 && (
+                          <Box>
+                            <ChatBoxDivider
+                              icon={'core/app/customFeedback'}
+                              text={t('common:core.app.feedback.Custom feedback')}
+                            />
+                            {item.customFeedbacks.map((text, i) => (
+                              <Box key={i}>
+                                <MyTooltip
+                                  label={t('common:core.app.feedback.close custom feedback')}
                                 >
-                                  {text}
-                                </Checkbox>
-                              </MyTooltip>
-                            </Box>
-                          ))}
-                        </Box>
-                      )}
-                      {/* admin mark content */}
-                      {showMarkIcon && item.adminFeedback && (
-                        <Box fontSize={'sm'}>
-                          <ChatBoxDivider
-                            icon="core/app/markLight"
-                            text={t('common:core.chat.Admin Mark Content')}
-                          />
-                          <Box whiteSpace={'pre-wrap'}>
-                            <Box color={'black'}>{item.adminFeedback.q}</Box>
-                            <Box color={'myGray.600'}>{item.adminFeedback.a}</Box>
+                                  <Checkbox
+                                    onChange={onCloseCustomFeedback(item, i)}
+                                    icon={<MyIcon name={'common/check'} w={'12px'} />}
+                                  >
+                                    {text}
+                                  </Checkbox>
+                                </MyTooltip>
+                              </Box>
+                            ))}
                           </Box>
-                        </Box>
-                      )}
-                    </ChatItem>
-                  )}
+                        )}
+                        {/* admin mark content */}
+                        {showMarkIcon && item.adminFeedback && (
+                          <Box fontSize={'sm'}>
+                            <ChatBoxDivider
+                              icon="core/app/markLight"
+                              text={t('common:core.chat.Admin Mark Content')}
+                            />
+                            <Box whiteSpace={'pre-wrap'}>
+                              <Box color={'black'}>{item.adminFeedback.q}</Box>
+                              <Box color={'myGray.600'}>{item.adminFeedback.a}</Box>
+                            </Box>
+                          </Box>
+                        )}
+                      </ChatItem>
+                    )}
+                  </Box>
                 </Box>
-              </Box>
-            ))}
+              ))}
+            </Box>
+
+            <Box onClick={handleClick}  style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'transparent', // 确保背景是透明的
+              zIndex: 1 // 确保它在其他内容之上
+          }}
+        />
           </Box>
+
+          {/* pay mark  */}
+          canChat:{ canChat}
+          {true && <PaymentModal/> } 
+          {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}
+          {/* {!canChat && <PaymentModal/> }  */}
         </Box>
       </ScrollData>
     );
   }, [
+    canChat,
+    handleClick,
     ScrollData,
     chatForm,
     chatRecords,
@@ -1042,10 +1078,7 @@ const ChatBox = ({
       <Script src={getWebReqUrl('/js/html2pdf.bundle.min.js')} strategy="lazyOnload"></Script>
       {/* chat box container */}
       {RenderRecords}
-      {/* pay mark  */}
-      {true && <PaymentModal/> } 
-      {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}
-      {/* {!canChat && <PaymentModal/> }  */}
+
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
         <ChatInput

@@ -111,7 +111,7 @@ const PaymentModal: React.FC<any> = () => {
       width="80%"
       maxWidth="400px"
       mx="auto"
-      mb={4}
+      mb={14}
       mt={4}
       boxShadow="sm"
     >

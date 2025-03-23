@@ -155,7 +155,7 @@ const useChatInitialization = (appId: string) => {
       }
 
       if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        if (freeCount < 1) {
+        if (freeCount < 5) {
           await tokenIsValid();
           if (paid || memberLevelOk) {
             setCanChat(true);
