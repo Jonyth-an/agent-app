@@ -155,8 +155,8 @@ function responseError(err: any) {
 const instance = axios.create({
   timeout: 60000, // 超时时间
   headers: {
-    'content-type': 'application/json',
-    Authorization: `Bearer ${Cookies.get('appKey')}`
+    'content-type': 'application/json'
+    // Authorization: `Bearer ${Cookies.get('appKey')}`
     // Authorization: `Bearer fastgpt-ab1UGyTMpY9V8iDDWU7LUl8ldFUGC6Ji028gzYmlpjeMxwFxXadFn`
     // Authorization: `Bearer ${CHAT_API_KEY}`
     // Authorization: `Bearer ${process.env.CHAT_API_KEY}`

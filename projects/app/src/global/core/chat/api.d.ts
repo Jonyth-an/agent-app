@@ -22,6 +22,7 @@ export type InitChatProps = {
 export type GetChatRecordsProps = OutLinkChatAuthProps & {
   appId: string;
   chatId?: string;
+  appKey?: string;
   loadCustomFeedbacks?: boolean;
   type: `${GetChatTypeEnum}`;
 };
@@ -59,6 +60,7 @@ export type InitChatResponse = {
 export type GetHistoriesProps = OutLinkChatAuthProps & {
   appId?: string;
   source?: `${ChatSourceEnum}`;
+  appKey?: string;
 };
 
 export type UpdateHistoryProps = OutLinkChatAuthProps & {

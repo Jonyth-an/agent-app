@@ -80,7 +80,7 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
     debugger;
   }
   if (process.env.NODE_ENV !== 'development') {
-    window.location.href = authorizeUrl;
+    window.location.replace(authorizeUrl);
   }
   // }
 }

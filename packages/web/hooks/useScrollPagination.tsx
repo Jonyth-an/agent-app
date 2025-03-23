@@ -91,7 +91,7 @@ export function useVirtualScrollPagination<
       } else {
         setData((prev) => [...prev, ...res.list]);
       }
-    } catch (error: any) {
+    } catch (error) {
       toast({
         title: getErrText(error, t('common:core.chat.error.data_error')),
         status: 'error'
@@ -219,6 +219,7 @@ export function useScrollPagination<
       setTrue();
 
       try {
+        if (!params.appKey) return;
         const res = await api({
           offset,
           pageSize,
@@ -250,7 +251,7 @@ export function useScrollPagination<
         } else {
           setData((prevData) => (offset === 0 ? res.list : [...prevData, ...res.list]));
         }
-      } catch (error: any) {
+      } catch (error) {
         if (showErrorToast) {
           toast({
             title: getErrText(error, t('common:core.chat.error.data_error')),

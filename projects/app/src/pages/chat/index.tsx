@@ -70,7 +70,7 @@ const Chat = () => {
     async () => {
       if (!appId || !appKey || !openid || forbidLoadChat.current) return;
 
-      const res = await getInitChatInfo({ appId, chatId });
+      const res = await getInitChatInfo({ appId, chatId }, appKey);
       console.log('xxx getInitChatInfo res2', res);
       res.userAvatar = userInfo?.avatar;
       // Wait for state update to complete
@@ -235,7 +235,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useEffect(() => {
     setAppId(appId);
   }, [appId, setAppId]);
-  useWechatAuth();
   useChatInitialization(appId);
 
   const chatHistoryProviderParams = useMemo(
