@@ -1,30 +1,36 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-// import { wechatMiddleware } from './middleware/wechat';
+import { NextRequest, NextResponse } from 'next/server';
+import { getWechatAuthCode } from './web/core/chat/user';
+import { share_h5_url } from './config';
+import { addLog } from '@fastgpt/service/common/system/log';
 
 export async function middleware(request: NextRequest) {
-  // 使用更详细的日志
-  console.log('xxx middleware triggered for path:', request.nextUrl.pathname);
-  console.log('xxx request headers:', request.headers);
-  const url = new URL(request.url);
-  console.log('xxx full URL:', url.toString());
-  // 根据路径匹配不同的中间件
-  // if (request.nextUrl.pathname.startsWith('/chat')) {
-  //   return wechatMiddleware(request);
-  // }
+  const { cookies, nextUrl } = request;
+  const openid = cookies.get('openid');
+  const unionid = cookies.get('unionid');
 
-  // 其他中间件...
-  // if (request.nextUrl.pathname.startsWith('/other-path')) {
-  //   return otherMiddleware(request);
-  // }
+  // 仅在路径以 /chat 开头时执行中间件逻辑
+  if (nextUrl.pathname.startsWith('/chat')) {
+    if (!openid || !unionid) {
+      // 获取所有查询参数
+      const searchParams = new URLSearchParams(nextUrl.search);
+      // addLog.info('chat middleware request params', {
+      //   data: {
+      //     url: request.url,
+      //     cookies: request.cookies,
+      //     nextUrl: request.nextUrl,
+      //     searchParams: searchParams
+      //   }
+      // });
+      // 构建新的 authUrl，包含所有查询参数
+      const authUrl = `${share_h5_url}/share-agent/chat?${searchParams.toString()}`;
+      const toAuthUrl = getWechatAuthCode(authUrl);
+      // addLog.info('chat middleware request toAuthUrl', {
+      //   toAuthUrl
+      // });
+      console.log('chat middleware request toAuthUrl', toAuthUrl);
+      return NextResponse.redirect(toAuthUrl);
+    }
+  }
 
   return NextResponse.next();
 }
-
-export const config = {
-  matcher: [
-    '/chat',
-    '/chat/(.*)'
-    // 其他需要中间件的路径
-  ]
-};

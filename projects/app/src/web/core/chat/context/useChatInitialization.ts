@@ -109,16 +109,16 @@ const useChatInitialization = (appId: string) => {
           }
         } else {
           // Redirect to get auth code
-          let currentUrl;
-          // @ts-ignore
-          if (process.env.NODE_ENV === 'development') {
-            currentUrl = constructNewUrl(window.location.href, share_h5_url);
-          } else {
-            currentUrl = window.location.href;
-          }
-          const toAuthUrl = getWechatAuthCode(`${share_h5_url}/share-agent/chat?appId=${appId}`);
-          console.log('dddd toAuthUrl', toAuthUrl);
-          window.location.replace(toAuthUrl);
+          // let currentUrl;
+          // // @ts-ignore
+          // if (process.env.NODE_ENV === 'development') {
+          //   currentUrl = constructNewUrl(window.location.href, share_h5_url);
+          // } else {
+          //   currentUrl = window.location.href;
+          // }
+          // const toAuthUrl = getWechatAuthCode(`${share_h5_url}/share-agent/chat?appId=${appId}`);
+          // console.log('dddd toAuthUrl', toAuthUrl);
+          // window.location.replace(toAuthUrl);
         }
       }
     };
