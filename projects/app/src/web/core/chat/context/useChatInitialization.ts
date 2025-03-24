@@ -58,14 +58,14 @@ const useChatInitialization = (appId: string) => {
           const currentQuery = { ...router.query };
           delete currentQuery.code;
           delete currentQuery.state;
-          // router.replace(
-          //   {
-          //     pathname: router.pathname,
-          //     query: currentQuery
-          //   },
-          //   undefined,
-          //   { shallow: true }
-          // );
+          router.replace(
+            {
+              pathname: router.pathname,
+              query: currentQuery
+            },
+            undefined,
+            { shallow: true }
+          );
         }
       } else {
         if (process.env.NODE_ENV === 'development') {
@@ -91,14 +91,14 @@ const useChatInitialization = (appId: string) => {
             const currentQuery = { ...router.query };
             delete currentQuery.code;
             delete currentQuery.state;
-            // await router.replace(
-            //   {
-            //     pathname: router.pathname,
-            //     query: currentQuery
-            //   },
-            //   undefined,
-            //   { shallow: true }
-            // );
+            await router.replace(
+              {
+                pathname: router.pathname,
+                query: currentQuery
+              },
+              undefined,
+              { shallow: true }
+            );
           } catch (error) {
             toast({
               status: 'error',
@@ -107,18 +107,6 @@ const useChatInitialization = (appId: string) => {
             console.error('Error during WeChat authorization:', error);
             redirectToErrorPage(router, error);
           }
-        } else {
-          // Redirect to get auth code
-          // let currentUrl;
-          // // @ts-ignore
-          // if (process.env.NODE_ENV === 'development') {
-          //   currentUrl = constructNewUrl(window.location.href, share_h5_url);
-          // } else {
-          //   currentUrl = window.location.href;
-          // }
-          // const toAuthUrl = getWechatAuthCode(`${share_h5_url}/share-agent/chat?appId=${appId}`);
-          // console.log('dddd toAuthUrl', toAuthUrl);
-          // window.location.replace(toAuthUrl);
         }
       }
     };
