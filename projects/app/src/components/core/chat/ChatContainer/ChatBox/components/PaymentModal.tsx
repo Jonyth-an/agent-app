@@ -4,27 +4,27 @@ import { Box, Text, Button, VStack } from '@chakra-ui/react';
 import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your API functions
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-export enum LinkTypeEnum {
-  LINK_AUTH = 'LINK_AUTH', // 登陆授权
-  LINK_PAY = 'LINK_PAY', // 支付
-  LINK_MEMBER = 'LINK_MEMBER', // 会员
-  LINK_REDIRECT = 'LINK_REDIRECT' // 跳转链接
-}
+import { LinkTypeEnum } from '@/web/core/app/constants';
 
 export interface PaymentButtonConfig {
-  text: string;
+  textBefore: string;
+  textAfter: string;
   colorScheme?: string;
   textColor?: string;
   borderColor?: string;
   variant?: 'solid' | 'outline';
-  linkType: LinkTypeEnum;
+  linkType: string;
   target?: string;
+  field?: string;
   loading?: {
     text: string;
   };
 }
 
 export interface PaymentModalConfig {
+  card: {
+    bgColor: string;
+  };
   title: {
     text: string;
     color?: string;
@@ -37,36 +37,45 @@ interface PaymentModalProps {
   config: PaymentModalConfig;
 }
 
-const config: PaymentModalConfig = {
+const defaultConfig: PaymentModalConfig = {
+  card: {
+    bgColor: 'rgba(245, 245, 245, 1)'
+  },
   title: {
     text: '免费体验额度已使用完毕',
     color: 'gray.700'
   },
   buttons: [
     {
-      text: '点击购买完整版￥200/年',
+      textBefore: '点击购买完整版￥',
+      textAfter: '/年',
       colorScheme: 'blue',
       textColor: 'white',
       variant: 'solid',
-      linkType: LinkTypeEnum.LINK_PAY
-    },
-    {
-      text: '开通会员￥399/年',
-      colorScheme: 'gray',
-      textColor: 'blue.500',
-      borderColor: 'blue.500',
-      variant: 'outline',
-      linkType: LinkTypeEnum.LINK_MEMBER,
-      target: 'vip-1',
+      linkType: 'LINK_PAY',
+      field: 'agentPrice',
       loading: {
         text: '处理中...'
       }
     },
     {
-      text: '自定义跳转按钮',
+      textBefore: '开通会员￥',
+      textAfter: '/年',
+      colorScheme: 'gray',
+      textColor: 'blue.500',
+      borderColor: 'blue.500',
+      variant: 'outline',
+      linkType: 'LINK_MEMBER',
+      field: 'memberPrice',
+      target: 'vip-1'
+    },
+    {
+      textBefore: '自定义跳转按钮',
+      textAfter: '',
       colorScheme: 'green',
-      linkType: LinkTypeEnum.LINK_REDIRECT,
-      target: 'https://example.com'
+      linkType: 'LINK_REDIRECT',
+      target:
+        'https://aim-saas-share-dev.newtamp.cn/share-agent/chat?appId=67b860750d1c6dfdccebab3d'
     }
   ]
 };
@@ -82,7 +91,11 @@ const PaymentModal: React.FC<any> = () => {
     agentConfigInfo
   } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
+  const memberPrice = agentConfigInfo.memberPrice;
+  const agentPrice = agentConfigInfo.agentPrice;
+  const userGuideConfig = agentConfigInfo.userGuideConfig;
   const { toast } = useToast();
+  const config: PaymentModalConfig = JSON.parse(userGuideConfig);
 
   // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
   const [loadingButtonIndex, setLoadingButtonIndex] = useState<number>(-1);
@@ -215,7 +228,7 @@ const PaymentModal: React.FC<any> = () => {
 
   return (
     <Box
-      bg="gray.100"
+      bg={config.card.bgColor}
       borderRadius="md"
       p={4}
       width="80%"
@@ -235,22 +248,36 @@ const PaymentModal: React.FC<any> = () => {
           {config.title.text}
         </Text>
 
-        {config.buttons.map((button, index) => (
-          <Button
-            key={index}
-            colorScheme={button.colorScheme || 'blue'}
-            variant={button.variant || 'solid'}
-            size="md"
-            width="100%"
-            onClick={() => handleButtonClick(button, index)}
-            isLoading={loadingButtonIndex === index}
-            loadingText={button.loading?.text || '处理中...'}
-            color={button.textColor}
-            borderColor={button.borderColor}
-          >
-            {button.text}
-          </Button>
-        ))}
+        {config.buttons.map((button, index) => {
+          const btnText = (button: PaymentButtonConfig) => {
+            // const getField = (button:PaymentButtonConfig, field: string) =>{
+            //   return button
+            // }
+            if (button.linkType === LinkTypeEnum.LINK_PAY) {
+              return `${button.textBefore}${agentPrice}${button.textAfter}`;
+            }
+            if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
+              return `${button.textBefore}${memberPrice}${button.textAfter}`;
+            }
+            return `${button.textBefore}${button.textAfter}`;
+          };
+          return (
+            <Button
+              key={index}
+              colorScheme={button.colorScheme || 'blue'}
+              variant={button.variant || 'solid'}
+              size="md"
+              width="100%"
+              onClick={() => handleButtonClick(button, index)}
+              isLoading={loadingButtonIndex === index}
+              loadingText={button.loading?.text || '处理中...'}
+              color={button.textColor}
+              borderColor={button.borderColor}
+            >
+              {btnText(button)}
+            </Button>
+          );
+        })}
       </VStack>
     </Box>
   );

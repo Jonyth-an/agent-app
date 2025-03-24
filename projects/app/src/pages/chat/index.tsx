@@ -128,7 +128,7 @@ const Chat = () => {
         unionid,
         agentId
       });
-      count = 0;
+      // count = 0;
       console.log('ccccount', count);
       if (count < 1) {
         setChatStauts(ChatStatusType.DISABLE_CHAT);

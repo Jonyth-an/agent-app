@@ -32,6 +32,13 @@ export const AgentAccessType = {
   EXTRA_FEE: 'EXTRA_FEE' // 额外付费
 };
 
+export const LinkTypeEnum = {
+  LINK_AUTH: 'LINK_AUTH', // 登陆授权
+  LINK_PAY: 'LINK_PAY', // 支付
+  LINK_MEMBER: 'LINK_MEMBER', // 会员
+  LINK_REDIRECT: 'LINK_REDIRECT' // 跳转链接
+};
+
 export const ChatStatusType = {
   INIT_CHAT: 'INIT_CHAT', // 初始化
   CAN_CHAT: 'CAN_CHAT', // 可以聊天

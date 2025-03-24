@@ -177,6 +177,9 @@ export const useChatStore = create<State>()(
           });
         },
         agentConfigInfo: {
+          userGuideConfig: '',
+          memberPrice: '',
+          agentPrice: 0,
           freeCount: 0,
           paid: false,
           memberLevelOk: false,
@@ -203,6 +206,14 @@ export const useChatStore = create<State>()(
             if (config.agentConfig && typeof config.agentConfig === 'string') {
               state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
             }
+            // if (config.userGuideConfig && typeof config.userGuideConfig === 'string') {
+            //   console.log(
+            //     'xxx agentConfigInfo2322 userGuideConfig',
+            //     JSON.parse(config.userGuideConfig)
+            //   );
+            //   state.agentConfigInfo.userGuideConfig = JSON.parse(config.userGuideConfig);
+            // }
+
             Cookies.remove('nb_fastgpt_token');
             Cookies.remove('fastgpt_token');
             Cookies.set('appKey', state.agentConfigInfo.appKey, {
