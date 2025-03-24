@@ -35,6 +35,7 @@ import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
 import { getRemainingCount, saveChatLog } from '../../web/core/chat/user';
 import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
 import { useToast } from '@fastgpt/web/hooks/useToast';
+import { ChatStatusType } from '@/web/core/app/constants';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -60,7 +61,8 @@ const Chat = () => {
     agentConfigInfo,
     outLinkAuthData,
     unionid,
-    openid
+    openid,
+    setChatStauts
   } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
   const agentId = agentConfigInfo.agentId;
@@ -97,23 +99,6 @@ const Chat = () => {
     }
   );
 
-  // 修改 onSaveChatLog 函数
-  const onSaveChatLog = async (data: StreamCBParams, histories: any[], variables: any) => {
-    await saveChatLog({
-      agentId,
-      answer: data.responseText,
-      answerTime: getCurrentTimestamp(),
-      chatId,
-      name,
-      nickname,
-      openid,
-      question: histories[0]?.content || '', // 获取用户问题
-      questionTime: convertTimeToTimestamp(variables.cTime),
-      tenantId,
-      unionid
-    });
-  };
-
   const onStartChat = useCallback(
     async ({
       messages,
@@ -122,17 +107,38 @@ const Chat = () => {
       generatingMessage,
       variables
     }: StartChatFnProps) => {
-      const count = await getRemainingCount({
+      // 修改 onSaveChatLog 函数
+      const onSaveChatLog = async (data: StreamCBParams, histories: any[], variables: any) => {
+        await saveChatLog({
+          agentId,
+          answer: data.responseText,
+          answerTime: getCurrentTimestamp(),
+          chatId,
+          name,
+          nickname,
+          openid,
+          question: histories[0]?.content || '', // 获取用户问题
+          questionTime: convertTimeToTimestamp(variables.cTime),
+          tenantId,
+          unionid
+        });
+      };
+      let { count } = await getRemainingCount({
         openid,
         unionid,
         agentId
       });
+      count = 0;
       console.log('ccccount', count);
       if (count < 1) {
+        setChatStauts(ChatStatusType.DISABLE_CHAT);
         toast({
           title: '问答额度已用完',
           status: 'warning'
         });
+        return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
+      } else {
+        setChatStauts(ChatStatusType.CAN_CHAT);
       }
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
@@ -159,7 +165,21 @@ const Chat = () => {
       }));
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
-    [appId, chatId, onUpdateHistoryTitle, setChatBoxData, forbidLoadChat]
+    [
+      name,
+      nickname,
+      tenantId,
+      appId,
+      chatId,
+      agentId,
+      onUpdateHistoryTitle,
+      setChatBoxData,
+      forbidLoadChat,
+      openid,
+      setChatStauts,
+      toast,
+      unionid
+    ]
   );
   const RenderHistorySlider = useMemo(() => {
     const Children = (

@@ -145,7 +145,7 @@ const useChatInitialization = (appId: string) => {
       }
       console.log('ccc permissionType', permissionType, freeCount);
       if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        if (freeCount < 4) {
+        if (freeCount < 1) {
           await tokenIsValid();
           setChatStauts(ChatStatusType.DISABLE_CHAT);
           // if (paid || memberLevelOk) {

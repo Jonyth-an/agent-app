@@ -44,21 +44,27 @@ export function getAppQuestionGuidesByUserGuideModule(
 
   return chatInputGuide?.open ? qGuideText : [];
 }
-
-/**
- * 将指定格式的时间字符串转换为时间戳
- * @param timeStr 时间字符串，格式如："2025-03-22 18:03:37 Saturday"
- * @returns 时间戳（毫秒）
- */
-export const convertTimeToTimestamp = (timeStr: string): string => {
-  const cleanDateString = timeStr.split(' ')[0] + ' ' + timeStr.split(' ')[1];
-  return dayjs(cleanDateString).valueOf() + '';
-};
-
 /**
  * 获取当前时间戳
  * @returns 时间戳（毫秒）
  */
 export const getCurrentTimestamp = (): string => {
   return dayjs().valueOf() + '';
+};
+/**
+ * 将指定格式的时间字符串转换为时间戳
+ * @param timeStr 时间字符串，格式如："2025-03-22 18:03:37 Saturday"
+ * @returns 时间戳（毫秒）
+ */
+export const convertTimeToTimestamp = (timeStr: string): string => {
+  try {
+    if (!timeStr) {
+      return getCurrentTimestamp();
+    }
+    const cleanDateString = timeStr.split(' ')[0] + ' ' + timeStr.split(' ')[1];
+    return dayjs(cleanDateString).valueOf() + '';
+  } catch (error) {
+    console.error('时间转换失败：', error);
+    return getCurrentTimestamp();
+  }
 };

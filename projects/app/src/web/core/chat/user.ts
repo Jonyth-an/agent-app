@@ -68,7 +68,7 @@ export const saveChatLog = (data: ChatLogReqParams) =>
 
 // 剩余会话次数
 export const getRemainingCount = (params: RemainingCountParams) =>
-  GET<number>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
+  GET<{ count: number }>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
     baseURL: '/marketing-ai'
   });
 

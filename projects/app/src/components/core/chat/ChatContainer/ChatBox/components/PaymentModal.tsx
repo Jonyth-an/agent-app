@@ -5,10 +5,10 @@ import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your A
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 export enum LinkTypeEnum {
-  AUTH_REDIRECT = 'auth_redirect',
-  PAYMENT = 'payment',
-  MEMBER_PAGE = 'member_page',
-  CUSTOM = 'custom'
+  LINK_AUTH = 'LINK_AUTH', // 登陆授权
+  LINK_PAY = 'LINK_PAY', // 支付
+  LINK_MEMBER = 'LINK_MEMBER', // 会员
+  LINK_REDIRECT = 'LINK_REDIRECT' // 跳转链接
 }
 
 export interface PaymentButtonConfig {
@@ -48,7 +48,7 @@ const config: PaymentModalConfig = {
       colorScheme: 'blue',
       textColor: 'white',
       variant: 'solid',
-      linkType: LinkTypeEnum.PAYMENT
+      linkType: LinkTypeEnum.LINK_PAY
     },
     {
       text: '开通会员￥399/年',
@@ -56,7 +56,7 @@ const config: PaymentModalConfig = {
       textColor: 'blue.500',
       borderColor: 'blue.500',
       variant: 'outline',
-      linkType: LinkTypeEnum.MEMBER_PAGE,
+      linkType: LinkTypeEnum.LINK_MEMBER,
       target: 'vip-1',
       loading: {
         text: '处理中...'
@@ -65,7 +65,7 @@ const config: PaymentModalConfig = {
     {
       text: '自定义跳转按钮',
       colorScheme: 'green',
-      linkType: LinkTypeEnum.CUSTOM,
+      linkType: LinkTypeEnum.LINK_REDIRECT,
       target: 'https://example.com'
     }
   ]
@@ -180,16 +180,24 @@ const PaymentModal: React.FC<any> = () => {
       setLoadingButtonIndex(index);
 
       switch (buttonConfig.linkType) {
-        case LinkTypeEnum.PAYMENT:
+        case LinkTypeEnum.LINK_AUTH:
+          break;
+        case LinkTypeEnum.LINK_PAY:
           // 处理支付逻辑
           await onGetPrePay(buttonConfig, index);
           break;
-        case LinkTypeEnum.MEMBER_PAGE:
+        case LinkTypeEnum.LINK_MEMBER:
           // 处理会员页面跳转
           break;
-        case LinkTypeEnum.AUTH_REDIRECT:
-        case LinkTypeEnum.CUSTOM:
+
+        case LinkTypeEnum.LINK_REDIRECT:
           window.location.href = buttonConfig.target || '';
+          break;
+        default:
+          toast({
+            title: '未知的链接类型',
+            status: 'error'
+          });
           break;
       }
     } catch (error) {

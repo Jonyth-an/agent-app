@@ -28,6 +28,7 @@ import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import CardList, { CardItem } from './card-list';
 import ChatTools from './chat-tools';
 import OpenTools from './open-tools';
+import { ChatStatusType } from '@/web/core/app/constants';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -66,7 +67,7 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
     const autoTTSResponse = useContextSelector(ChatBoxContext, (v) => v.autoTTSResponse);
     const chatInputGuide = useContextSelector(ChatBoxContext, (v) => v.chatInputGuide);
     const fileSelectConfig = useContextSelector(ChatBoxContext, (v) => v.fileSelectConfig);
-
+    const { agentConfigInfo, chatStauts } = useChatStore();
     const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [isShowTools, setIsShowTools] = useState(false);
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
@@ -380,7 +381,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
               <Box color={'#5A646E'} w={'36px'} textAlign={'right'} whiteSpace={'nowrap'}>
                 {speakingTimeString}
               </Box>
-            ) : (
+            ) : // 判断是否可以聊天
+            chatStauts === ChatStatusType.CAN_CHAT ? (
               <Flex
                 alignItems={'center'}
                 justifyContent={'center'}
@@ -425,6 +427,35 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                   </MyTooltip>
                 )}
               </Flex>
+            ) : (
+              // 不能聊天
+              <Flex
+                alignItems={'center'}
+                justifyContent={'center'}
+                flexShrink={0}
+                mr={isPc ? 0 : 10}
+                h={['28px', '32px']}
+                w={['28px', '32px']}
+                borderRadius={'md'}
+                // bg={'green'}
+                bg={'#E5E5E5'}
+                cursor={havInput ? 'pointer' : 'not-allowed'}
+                lineHeight={1}
+                // onClick={() => {
+                //   if (isChatting) {
+                //     return onStop();
+                //   }
+                //   return handleSend();
+                // }}
+              >
+                <MyIcon
+                  name={'core/chat/sendFill'}
+                  width={['18px', '20px']}
+                  height={['18px', '20px']}
+                  color={'white'}
+                  // color={'red'}
+                />
+              </Flex>
             )}
           </Flex>
           {/* mark */}
@@ -454,6 +485,7 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
         </Flex>
       ),
       [
+        chatStauts,
         File,
         TextareaDom,
         fileList,
@@ -481,8 +513,6 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
         isShowTools
       ]
     );
-
-    const { agentConfigInfo } = useChatStore();
 
     const cardItems: CardItem[] = useMemo(() => {
       const agentConfig = agentConfigInfo?.agentConfig || {};
