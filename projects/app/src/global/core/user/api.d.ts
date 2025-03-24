@@ -80,7 +80,7 @@ export interface WechatUserInfo {
 }
 
 export type ChatLogReqParams = {
-  aiAgentId: string;
+  agentId: string;
   answer: string;
   answerTime: string;
   chatId: string;
@@ -100,5 +100,15 @@ export interface ChatLogResData extends ChatLogReqParams {
 export interface RemainingCountParams {
   openid: string;
   unionid: string;
-  aiAgentId: string;
+  agentId: string;
+}
+
+export interface PrePayParams {
+  openid: string;
+  payScene: string;
+  tenantId: number;
+}
+
+export interface PayResultParams {
+  outTradeNo: string;
 }

@@ -1,7 +1,9 @@
 import type React from 'react';
 import { useState } from 'react';
-import { Box, Text, Button, VStack, useToast } from '@chakra-ui/react';
-
+import { Box, Text, Button, VStack } from '@chakra-ui/react';
+import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your API functions
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import { useToast } from '@fastgpt/web/hooks/useToast';
 export enum LinkTypeEnum {
   AUTH_REDIRECT = 'auth_redirect',
   PAYMENT = 'payment',
@@ -70,9 +72,108 @@ const config: PaymentModalConfig = {
 };
 
 const PaymentModal: React.FC<any> = () => {
+  const {
+    shareToken,
+    setChatStauts,
+    setShareToken,
+    setWechatInfoIds,
+    openid,
+    unionid,
+    agentConfigInfo
+  } = useChatStore();
+  const tenantId = agentConfigInfo.tenantId;
+  const { toast } = useToast();
+
   // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
   const [loadingButtonIndex, setLoadingButtonIndex] = useState<number>(-1);
-  const toast = useToast();
+
+  const [outTradeNo, setOutTradeNo] = useState<string | null>(null);
+
+  const onGetPrePay = async (buttonConfig: PaymentButtonConfig, index: number) => {
+    try {
+      setLoadingButtonIndex(index);
+      const res = await getPrePay(
+        {
+          openid,
+          payScene: 'BUY_AGENT',
+          tenantId
+        },
+        shareToken
+      );
+
+      // if (res.code === 0) {
+      //   const { prepayId, appId, timestamp, nonceStr, paySign, id } = res.data;
+      //   const params = {
+      //     appId,
+      //     timeStamp: timestamp,
+      //     nonceStr,
+      //     package: `prepay_id=${prepayId}`,
+      //     signType: "RSA",
+      //     paySign
+      //   };
+      //   setOutTradeNo(id);
+      //   pay(params);
+      // } else {
+      //   toast({
+      //     title: res.msg,
+      //     status: 'error',
+      //     duration: 3000,
+      //     isClosable: true
+      //   });
+      // }
+    } catch (error) {
+      toast({
+        title: '操作失败',
+        description: '请稍后再试',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top'
+      });
+    } finally {
+      setLoadingButtonIndex(-1);
+    }
+  };
+
+  const onGetPayResult = async (outTradeNo: string) => {
+    // try {
+    //   const res = await getPayResult(outTradeNo);
+    //   console.log('fff getPayResult res', res);
+    //   // if (res.code) {
+    //   //   toast({
+    //   //     title: res.msg,
+    //   //     status: 'error',
+    //   //     duration: 3000,
+    //   //     isClosable: true
+    //   //   });
+    //   // } else {
+    //   //   handleToPath();
+    //   // }
+    // } catch (error) {
+    //   console.error('Error in getPayResult:', error);
+    // }
+  };
+
+  const onBridgeReady = (params: any) => {
+    WeixinJSBridge.invoke('getBrandWCPayRequest', params, (res: any) => {
+      if (res.err_msg === 'get_brand_wcpay_request:ok') {
+        // onGetPayResult();
+      } else {
+        console.log('支付失败', res);
+      }
+    });
+  };
+
+  const pay = (params: any) => {
+    if (typeof WeixinJSBridge === 'undefined') {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', () => onBridgeReady(params), false);
+        document.addEventListener('onWeixinJSBridgeReady', () => onBridgeReady(params), false);
+      } else {
+        onBridgeReady(params);
+      }
+    }
+  };
 
   const handleButtonClick = async (buttonConfig: PaymentButtonConfig, index: number) => {
     try {
@@ -81,6 +182,7 @@ const PaymentModal: React.FC<any> = () => {
       switch (buttonConfig.linkType) {
         case LinkTypeEnum.PAYMENT:
           // 处理支付逻辑
+          await onGetPrePay(buttonConfig, index);
           break;
         case LinkTypeEnum.MEMBER_PAGE:
           // 处理会员页面跳转
@@ -111,8 +213,8 @@ const PaymentModal: React.FC<any> = () => {
       width="80%"
       maxWidth="400px"
       mx="auto"
-      mb={14}
-      mt={4}
+      mb={55}
+      mt={14}
       boxShadow="sm"
     >
       <VStack spacing={4} align="stretch">

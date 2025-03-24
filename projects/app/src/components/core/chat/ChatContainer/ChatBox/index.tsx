@@ -67,6 +67,8 @@ import TimeBox from './components/TimeBox';
 import MyBox from '@fastgpt/web/components/common/MyBox';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import PaymentModal from './components/PaymentModal';
+import DisableChatModel from './components/disableChatModel';
+import { ChatStatusType } from '@/web/core/app/constants';
 
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
@@ -128,7 +130,7 @@ const ChatBox = ({
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
-  const { agentConfigInfo, canChat } = useChatStore();
+  const { agentConfigInfo, chatStauts } = useChatStore();
   const userAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.userAvatar);
   const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
@@ -897,15 +899,9 @@ const ChatBox = ({
   const chatInputRef = useRef<ChatInputRefType>(null);
 
 
-  const handleClick = (event: any) => {
-      event.stopPropagation();
-      event.preventDefault();
-      toast({
-        title: "免费额度已用完",
-        status: 'warning'
-      });
-  };
+ 
   const RenderRecords = useMemo(() => {
+  console.log("ccc RenderRecords chatStauts", chatStauts)
     return (
       <ScrollData
       onClick={(event) => {
@@ -923,7 +919,7 @@ const ChatBox = ({
           <Box 
            style={{
             position: 'relative',
-            pointerEvents: canChat ? 'auto' : 'none', // 禁用点击事件
+            pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none', // 禁用点击事件
           }}>
               {/* {showEmpty && <Empty />} */}
           {!!welcomeText && <WelcomeBox welcomeText={welcomeText} />}
@@ -1020,30 +1016,20 @@ const ChatBox = ({
                 </Box>
               ))}
             </Box>
-
-            <Box onClick={handleClick}  style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'transparent', // 确保背景是透明的
-              zIndex: 1 // 确保它在其他内容之上
-          }}
-        />
+            {chatStauts === ChatStatusType.DISABLE_CHAT && <DisableChatModel/>}
           </Box>
 
           {/* pay mark  */}
-          canChat:{ canChat}
-          {true && <PaymentModal/> } 
+          chatStauts:{ chatStauts}
+          
+          {chatStauts === ChatStatusType.DISABLE_CHAT && <PaymentModal/> } 
           {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}
-          {/* {!canChat && <PaymentModal/> }  */}
+          {/* {!chatStauts && <PaymentModal/> }  */}
         </Box>
       </ScrollData>
     );
   }, [
-    canChat,
-    handleClick,
+    chatStauts,
     ScrollData,
     chatForm,
     chatRecords,

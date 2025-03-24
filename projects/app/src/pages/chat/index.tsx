@@ -32,8 +32,9 @@ import Cookies from 'js-cookie';
 import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
 import { useRouter } from 'next/router';
 import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
-import { saveChatLog } from '../../web/core/chat/user';
+import { getRemainingCount, saveChatLog } from '../../web/core/chat/user';
 import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
+import { useToast } from '@fastgpt/web/hooks/useToast';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -50,6 +51,7 @@ const Chat = () => {
   const resetVariables = useContextSelector(ChatItemContext, (v) => v.resetVariables);
   const isPlugin = useContextSelector(ChatItemContext, (v) => v.isPlugin);
   const setChatBoxData = useContextSelector(ChatItemContext, (v) => v.setChatBoxData);
+  const { toast } = useToast();
 
   const {
     staffInfo,
@@ -61,6 +63,7 @@ const Chat = () => {
     openid
   } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
+  const agentId = agentConfigInfo.agentId;
   const appKey = agentConfigInfo.appKey;
   const name = staffInfo.name;
   const nickname = staffInfo.nickname;
@@ -97,7 +100,7 @@ const Chat = () => {
   // 修改 onSaveChatLog 函数
   const onSaveChatLog = async (data: StreamCBParams, histories: any[], variables: any) => {
     await saveChatLog({
-      aiAgentId: appId,
+      agentId,
       answer: data.responseText,
       answerTime: getCurrentTimestamp(),
       chatId,
@@ -119,6 +122,18 @@ const Chat = () => {
       generatingMessage,
       variables
     }: StartChatFnProps) => {
+      const count = await getRemainingCount({
+        openid,
+        unionid,
+        agentId
+      });
+      console.log('ccccount', count);
+      if (count < 1) {
+        toast({
+          title: '问答额度已用完',
+          status: 'warning'
+        });
+      }
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
         data: {

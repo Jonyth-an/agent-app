@@ -13,7 +13,7 @@ import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import Cookies from 'js-cookie';
 import { clearShareToken, getShareToken, redirectAuth } from './utils';
 import { redirectToErrorPage } from './errorRedirect';
-import { AgentAccessType } from '../../app/constants';
+import { AgentAccessType, ChatStatusType } from '../../app/constants';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 
 function constructNewUrl(originalUrl: string, newDomain: string) {
@@ -32,7 +32,8 @@ const useChatInitialization = (appId: string) => {
     setAgentConfigInfo,
     setStaffInfo,
     setToken,
-    setCanChat,
+    chatStauts,
+    setChatStauts,
     setShareToken,
     setWechatInfoIds,
     openid,
@@ -116,6 +117,7 @@ const useChatInitialization = (appId: string) => {
 
   // Check if token is valid
   async function tokenIsValid() {
+    // debugger;
     const shareToken = getShareToken(agentConfigInfo);
     setShareToken(shareToken);
     const staffInfo = await getStaffInfo(shareToken, tenantId);
@@ -134,30 +136,32 @@ const useChatInitialization = (appId: string) => {
       setAgentConfigInfo(agentConfigInfo);
 
       if (permissionType === AgentAccessType.PUBLIC) {
-        setCanChat(true);
+        setChatStauts(ChatStatusType.CAN_CHAT);
       }
 
       if (permissionType === AgentAccessType.PRIVATE) {
         await tokenIsValid();
-        setCanChat(true);
+        setChatStauts(ChatStatusType.CAN_CHAT);
       }
-
+      console.log('ccc permissionType', permissionType, freeCount);
       if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        if (freeCount < 5) {
+        if (freeCount < 4) {
           await tokenIsValid();
-          if (paid || memberLevelOk) {
-            setCanChat(true);
-          } else {
-            setCanChat(false);
-          }
+          setChatStauts(ChatStatusType.DISABLE_CHAT);
+          // if (paid || memberLevelOk) {
+          //   setChatStauts(true);
+          // } else {
+          //   setChatStauts(false);
+          // }
         } else {
-          setCanChat(true);
+          setChatStauts(ChatStatusType.CAN_CHAT);
         }
+        console.log('ccc permissionType chatStauts', chatStauts);
       }
     },
     {
       manual: false,
-      refreshDeps: [appId, openid, appKey],
+      refreshDeps: [appId, openid, appKey, permissionType, freeCount],
       ready: !!appId && !!openid,
       onError: (error: any) => {
         console.log('rrr agentConfigInfo', agentConfigInfo);

@@ -6,6 +6,7 @@ import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
 import { agentConfigInfo, WechatUserInfo, StaffInfo } from '@/global/core/user/api';
+import { ChatStatusType } from '../../app/constants';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
@@ -30,8 +31,8 @@ type State = {
   outLinkAuthData: OutLinkChatAuthProps; // 外部链接认证数据
   setOutLinkAuthData: (e: OutLinkChatAuthProps) => any; // 设置外部链接认证数据的方法
 
-  canChat: boolean; // 是否可以聊天,
-  setCanChat: (e: boolean) => any;
+  chatStauts: string; // 是否可以聊天,
+  setChatStauts: (e: string) => any;
 
   agentConfigInfo: agentConfigInfo; // 存储代理配置
   setAgentConfigInfo: (config: agentConfigInfo) => void; // 更新代理配置的方法
@@ -111,7 +112,8 @@ export const useChatStore = create<State>()(
             state.token = token;
           });
         },
-        shareToken: '',
+        shareToken:
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyU3RhdHVzIjoiWSIsInRlbmFudElkIjoiMSIsImNsaWVudCI6IjEzMSIsInRva2VuX3R5cGUiOiJ0b2tlbiIsInVzZXJOYW1lIjoi5rGq5bu65ZacIiwidXNlcklkIjoiMzk1NTg0MTExNjc2MDQ1MyIsInVzZXIiOiIzMDAiLCJhY2NvdW50IjoiMzk1NTg0MTExNjc2MDQ1NCIsImlhdCI6MTc0Mjc4Mjg4OCwibmJmIjoxNzQyNzgyODg4LCJleHAiOjE3NDMzODc2ODh9.Xs18lKD5kyzMyR9OzYNQqD-i5AmtN1_KcVEA4MMQJQE',
         setShareToken(shareToken) {
           set((state) => {
             state.shareToken = shareToken;
@@ -167,10 +169,11 @@ export const useChatStore = create<State>()(
             state.outLinkAuthData = e; // 更新 outLinkAuthData
           });
         },
-        canChat: true,
-        setCanChat(e: boolean) {
+        chatStauts: ChatStatusType.INIT_CHAT, // INIT
+        setChatStauts(status: string) {
           set((state) => {
-            state.canChat = e; // 更新 canChat
+            console.log('ccc setChatStauts status', status);
+            state.chatStauts = status; // 更新 chatStauts
           });
         },
         agentConfigInfo: {

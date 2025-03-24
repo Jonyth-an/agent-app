@@ -32,6 +32,12 @@ export const AgentAccessType = {
   EXTRA_FEE: 'EXTRA_FEE' // 额外付费
 };
 
+export const ChatStatusType = {
+  INIT_CHAT: 'INIT_CHAT', // 初始化
+  CAN_CHAT: 'CAN_CHAT', // 可以聊天
+  DISABLE_CHAT: 'DISABLE_CHAT' // 禁止聊天
+};
+
 export const defaultOutLinkForm: OutLinkEditType = {
   name: '',
   showNodeStatus: true,

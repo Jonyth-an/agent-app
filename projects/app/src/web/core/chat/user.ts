@@ -3,6 +3,8 @@ import {
   agentConfigInfo,
   ChatLogReqParams,
   ChatLogResData,
+  PayResultParams,
+  PrePayParams,
   RemainingCountParams,
   SignatureInfo,
   SignatureInfoReq,
@@ -66,6 +68,20 @@ export const saveChatLog = (data: ChatLogReqParams) =>
 
 // 剩余会话次数
 export const getRemainingCount = (params: RemainingCountParams) =>
+  GET<number>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
+    baseURL: '/marketing-ai'
+  });
+
+// 获取预支付订单号
+export const getPrePay = (data: PrePayParams, shareToken: string) =>
+  POST<ChatLogResData>(`/mobile/api/v1/pay/prePay`, data, {
+    baseURL: '/uc-system',
+    headers: {
+      token: shareToken
+    }
+  });
+// 获取支付订单结果
+export const getPayResult = (params: PayResultParams) =>
   GET<WechatAuthInfo>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
     baseURL: '/marketing-ai'
   });
