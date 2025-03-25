@@ -5,7 +5,9 @@ import {
   getAgentConfigInfo,
   getStaffInfo,
   getWechatAuthInfo,
-  getWechatAuthCode
+  getWechatAuthCode,
+  getAgentPermission,
+  getRemainingCount
 } from '@/web/core/chat/user';
 import { initWechatShare } from '@/web/core/chat/wechat';
 import { share_h5_url } from '@/config';
@@ -15,6 +17,7 @@ import { clearShareToken, getShareToken, redirectAuth } from './utils';
 import { redirectToErrorPage } from './errorRedirect';
 import { AgentAccessType, ChatStatusType } from '../../app/constants';
 import { useToast } from '@fastgpt/web/hooks/useToast';
+import { agentConfigInfo } from '@/global/core/user/api';
 
 function constructNewUrl(originalUrl: string, newDomain: string) {
   const urlObj = new URL(originalUrl);
@@ -40,13 +43,7 @@ const useChatInitialization = (appId: string) => {
     unionid,
     agentConfigInfo
   } = useChatStore();
-
   const appKey = agentConfigInfo.appKey;
-  const permissionType = agentConfigInfo.permissionType;
-  const freeCount = agentConfigInfo.freeCount;
-  const tenantId = agentConfigInfo.tenantId;
-  const paid = agentConfigInfo.paid;
-  const memberLevelOk = agentConfigInfo.memberLevelOk;
 
   // Handle WeChat authentication first
   useEffect(() => {
@@ -81,12 +78,13 @@ const useChatInitialization = (appId: string) => {
         if (code) {
           try {
             const wechatAuthInfo = await getWechatAuthInfo({ code: code as string });
-            const { openid, unionid, id: wechatInfoId } = wechatAuthInfo;
+            const { openid, unionid, id: wechatInfoId, nickname, sex } = wechatAuthInfo;
 
             Cookies.set('openid', openid, { expires: 45 });
             Cookies.set('unionid', unionid, { expires: 45 });
             Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
-            setWechatInfoIds({ openid, unionid, wechatInfoId });
+            Cookies.set('nickname', nickname, { expires: 45 });
+            setWechatInfoIds({ openid, unionid, wechatInfoId, nickname, sex});
 
             // Clean up URL after successful auth
             const currentQuery = { ...router.query };
@@ -116,7 +114,7 @@ const useChatInitialization = (appId: string) => {
   }, [router, pathname, toast, unionid, openid, setWechatInfoIds, appId]);
 
   // Check if token is valid
-  async function tokenIsValid() {
+  async function tokenIsValid(agentConfigInfo: agentConfigInfo, tenantId: number) {
     // debugger;
     const shareToken = getShareToken(agentConfigInfo);
     setShareToken(shareToken);
@@ -135,24 +133,41 @@ const useChatInitialization = (appId: string) => {
       const agentConfigInfo = await getAgentConfigInfo({ appId });
       setAgentConfigInfo(agentConfigInfo);
 
+      const permissionType = agentConfigInfo.permissionType;
+      const agentId = agentConfigInfo.agentId;
+      const tenantId = agentConfigInfo.tenantId;
+      const paid = agentConfigInfo.paid;
+      const memberLevelOk = agentConfigInfo.memberLevelOk;
+
       if (permissionType === AgentAccessType.PUBLIC) {
         setChatStauts(ChatStatusType.CAN_CHAT);
       }
 
       if (permissionType === AgentAccessType.PRIVATE) {
-        await tokenIsValid();
+        await tokenIsValid(agentConfigInfo, tenantId);
         setChatStauts(ChatStatusType.CAN_CHAT);
       }
-      console.log('ccc permissionType', permissionType, freeCount);
       if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        if (freeCount < 130) {
-          await tokenIsValid();
-          setChatStauts(ChatStatusType.DISABLE_CHAT);
-          // if (paid || memberLevelOk) {
-          //   setChatStauts(true);
-          // } else {
-          //   setChatStauts(false);
-          // }
+        let { count } = await getRemainingCount({
+          openid,
+          unionid,
+          agentId
+        });
+        console.log('ccc permissionType count', count);
+
+        if (count < 130) {
+          await tokenIsValid(agentConfigInfo, tenantId);
+          const shareToken = getShareToken(agentConfigInfo);
+          const { paid, memberLevelOk } = await getAgentPermission({
+            agentId,
+            shareToken,
+            tenantId
+          });
+          if (paid || memberLevelOk) {
+            setChatStauts(ChatStatusType.CAN_CHAT);
+          } else {
+            setChatStauts(ChatStatusType.DISABLE_CHAT);
+          }
         } else {
           setChatStauts(ChatStatusType.CAN_CHAT);
         }
@@ -161,7 +176,7 @@ const useChatInitialization = (appId: string) => {
     },
     {
       manual: false,
-      refreshDeps: [appId, openid, appKey, permissionType, freeCount],
+      refreshDeps: [appId, openid],
       ready: !!appId && !!openid,
       onError: (error: any) => {
         console.log('rrr agentConfigInfo', agentConfigInfo);
@@ -189,7 +204,6 @@ const useChatInitialization = (appId: string) => {
       link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
     });
   }, [agentConfigInfo, appId, appKey, openid]);
-
   return { loading, error };
 };
 

@@ -32,10 +32,11 @@ import Cookies from 'js-cookie';
 import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
 import { useRouter } from 'next/router';
 import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
-import { getRemainingCount, saveChatLog } from '../../web/core/chat/user';
+import { getAgentPermission, getRemainingCount, saveChatLog } from '../../web/core/chat/user';
 import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-import { ChatStatusType } from '@/web/core/app/constants';
+import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
+import { getShareToken } from '@/web/core/chat/context/utils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -62,13 +63,16 @@ const Chat = () => {
     outLinkAuthData,
     unionid,
     openid,
-    setChatStauts
+    nickname,
+    setChatStauts,
+    chatStauts
   } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
   const agentId = agentConfigInfo.agentId;
   const appKey = agentConfigInfo.appKey;
+  const permissionType = agentConfigInfo.permissionType;
   const name = staffInfo.name;
-  const nickname = staffInfo.nickname;
+
   // Load chat init data
 
   const { loading } = useRequest2(
@@ -123,23 +127,37 @@ const Chat = () => {
           unionid
         });
       };
-      let { count } = await getRemainingCount({
-        openid,
-        unionid,
-        agentId
-      });
-      // count = 0;
-      console.log('ccccount', count);
-      if (count < 1) {
-        setChatStauts(ChatStatusType.DISABLE_CHAT);
-        toast({
-          title: '问答额度已用完',
-          status: 'warning'
+
+      if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
+        let { count } = await getRemainingCount({
+          openid,
+          unionid,
+          agentId
         });
-        return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
-      } else {
-        setChatStauts(ChatStatusType.CAN_CHAT);
+        // count = 0;
+        console.log('ccccount', count);
+        if (count < 1) {
+          const shareToken = getShareToken(agentConfigInfo);
+          const { paid, memberLevelOk } = await getAgentPermission({
+            agentId,
+            shareToken,
+            tenantId
+          });
+          if (paid || memberLevelOk) {
+            setChatStauts(ChatStatusType.CAN_CHAT);
+          } else {
+            setChatStauts(ChatStatusType.DISABLE_CHAT);
+            toast({
+              title: '问答额度已用完',
+              status: 'warning'
+            });
+            return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
+          }
+        } else {
+          setChatStauts(ChatStatusType.CAN_CHAT);
+        }
       }
+      console.log('ccc onStartChat chatStauts', chatStauts);
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
         data: {
@@ -166,7 +184,10 @@ const Chat = () => {
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [
+      chatStauts,
       name,
+      agentConfigInfo,
+      permissionType,
       nickname,
       tenantId,
       appId,

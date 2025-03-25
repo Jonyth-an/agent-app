@@ -1,6 +1,7 @@
 import { GET, POST, DELETE, PUT } from '@/web/common/api/request';
 import {
   agentConfigInfo,
+  AgentPermissionParams,
   ChatLogReqParams,
   ChatLogResData,
   PayResultParams,
@@ -11,7 +12,7 @@ import {
   StaffInfo,
   WechatAuthInfo
 } from '@/global/core/user/api';
-import { agentConfigInfoReq } from '../../../global/core/user/api';
+import { agentConfigInfoReq, AgentPermissionData } from '../../../global/core/user/api';
 import { share_h5_url } from '@/config';
 
 /**
@@ -71,6 +72,22 @@ export const getRemainingCount = (params: RemainingCountParams) =>
   GET<{ count: number }>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
     baseURL: '/marketing-ai'
   });
+
+// 会员权限
+
+export const getAgentPermission = ({ agentId, shareToken, tenantId }: AgentPermissionParams) =>
+  // 发送GET请求，获取代理权限
+  GET<AgentPermissionData>(
+    `/mobile/api/v1/user/agent/permission`,
+    { agentId },
+    {
+      baseURL: '/marketing-ai',
+      headers: {
+        token: shareToken,
+        tenantId
+      }
+    }
+  );
 
 // 获取预支付订单号
 export const getPrePay = (data: PrePayParams, shareToken: string) =>

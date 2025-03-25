@@ -80,6 +80,8 @@ export interface WechatUserInfo {
   openid: string;
   unionid: string;
   wechatInfoId: string;
+  nickname: string;
+  sex: number;
 }
 
 export type ChatLogReqParams = {
@@ -115,3 +117,14 @@ export interface PrePayParams {
 export interface PayResultParams {
   outTradeNo: string;
 }
+
+export type AgentPermissionParams = {
+  agentId: string;
+  shareToken: string;
+  tenantId: number;
+};
+
+export type AgentPermissionData = {
+  memberLevelOk: boolean;
+  paid: boolean;
+};

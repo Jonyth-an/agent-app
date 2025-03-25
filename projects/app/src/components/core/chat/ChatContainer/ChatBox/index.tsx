@@ -1020,7 +1020,7 @@ const ChatBox = ({
           </Box>
 
           {/* pay mark  */}
-          chatStauts:{ chatStauts}
+          {/* chatStauts:{ chatStauts} */}
           
           {chatStauts === ChatStatusType.DISABLE_CHAT && <PaymentModal/> } 
           {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}

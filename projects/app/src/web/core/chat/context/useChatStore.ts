@@ -43,6 +43,8 @@ type State = {
   openid: string; // 存储openid
   unionid: string; // 存储unionid
   wechatInfoId: string;
+  nickname: string;
+  sex: number;
   setWechatInfoIds: (info: any) => void; // 更新员工信息的方法
 };
 
@@ -98,13 +100,17 @@ export const useChatStore = create<State>()(
         openid: Cookies.get('openid') || '',
         unionid: Cookies.get('unionid') || '', // 存储unionid
         wechatInfoId: Cookies.get('wechatInfoId') || '',
+        nickname: Cookies.get('nickname') || '',
+        sex: 0,
         token: '',
 
-        setWechatInfoIds({ openid, unionid, wechatInfoId }: WechatUserInfo) {
+        setWechatInfoIds({ openid, unionid, wechatInfoId, nickname, sex }: WechatUserInfo) {
           set((state) => {
             state.openid = openid;
             state.unionid = unionid;
             state.wechatInfoId = wechatInfoId;
+            state.nickname = nickname;
+            state.sex = sex;
           });
         },
         setToken(token) {
@@ -112,8 +118,7 @@ export const useChatStore = create<State>()(
             state.token = token;
           });
         },
-        shareToken:
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyU3RhdHVzIjoiWSIsInRlbmFudElkIjoiMSIsImNsaWVudCI6IjEzMSIsInRva2VuX3R5cGUiOiJ0b2tlbiIsInVzZXJOYW1lIjoi5rGq5bu65ZacIiwidXNlcklkIjoiMzk1NTg0MTExNjc2MDQ1MyIsInVzZXIiOiIzMDAiLCJhY2NvdW50IjoiMzk1NTg0MTExNjc2MDQ1NCIsImlhdCI6MTc0Mjc4Mjg4OCwibmJmIjoxNzQyNzgyODg4LCJleHAiOjE3NDMzODc2ODh9.Xs18lKD5kyzMyR9OzYNQqD-i5AmtN1_KcVEA4MMQJQE',
+        shareToken: '',
         setShareToken(shareToken) {
           set((state) => {
             state.shareToken = shareToken;
@@ -206,13 +211,6 @@ export const useChatStore = create<State>()(
             if (config.agentConfig && typeof config.agentConfig === 'string') {
               state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
             }
-            // if (config.userGuideConfig && typeof config.userGuideConfig === 'string') {
-            //   console.log(
-            //     'xxx agentConfigInfo2322 userGuideConfig',
-            //     JSON.parse(config.userGuideConfig)
-            //   );
-            //   state.agentConfigInfo.userGuideConfig = JSON.parse(config.userGuideConfig);
-            // }
 
             Cookies.remove('nb_fastgpt_token');
             Cookies.remove('fastgpt_token');
