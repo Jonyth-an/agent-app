@@ -5,6 +5,7 @@ import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your A
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { LinkTypeEnum } from '@/web/core/app/constants';
+import { redirectAuth, toMemberLanding } from '@/web/core/chat/context/utils';
 
 export interface PaymentButtonConfig {
   textBefore: string;
@@ -47,16 +48,20 @@ const defaultConfig: PaymentModalConfig = {
   },
   buttons: [
     {
+      textBefore: '去激活',
+      textAfter: '',
+      colorScheme: 'blue',
+      textColor: 'white',
+      variant: 'solid',
+      linkType: 'LINK_AUTH'
+    },
+    {
       textBefore: '点击购买完整版￥',
       textAfter: '/年',
       colorScheme: 'blue',
       textColor: 'white',
       variant: 'solid',
-      linkType: 'LINK_PAY',
-      field: 'agentPrice',
-      loading: {
-        text: '处理中...'
-      }
+      linkType: 'LINK_PAY'
     },
     {
       textBefore: '开通会员￥',
@@ -66,8 +71,7 @@ const defaultConfig: PaymentModalConfig = {
       borderColor: 'blue.500',
       variant: 'outline',
       linkType: 'LINK_MEMBER',
-      field: 'memberPrice',
-      target: 'vip-1'
+      target: '1'
     },
     {
       textBefore: '自定义跳转按钮',
@@ -82,6 +86,7 @@ const defaultConfig: PaymentModalConfig = {
 
 const PaymentModal: React.FC<any> = () => {
   const {
+    appId,
     shareToken,
     setChatStauts,
     setShareToken,
@@ -96,6 +101,7 @@ const PaymentModal: React.FC<any> = () => {
   const userGuideConfig = agentConfigInfo.userGuideConfig;
   const { toast } = useToast();
   const config: PaymentModalConfig = JSON.parse(userGuideConfig);
+  // const config: PaymentModalConfig = defaultConfig;
 
   // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
   const [loadingButtonIndex, setLoadingButtonIndex] = useState<number>(-1);
@@ -190,16 +196,19 @@ const PaymentModal: React.FC<any> = () => {
 
   const handleButtonClick = async (buttonConfig: PaymentButtonConfig, index: number) => {
     try {
+      console.log('ccc handleButtonClick buttonConfig', buttonConfig);
       setLoadingButtonIndex(index);
 
       switch (buttonConfig.linkType) {
         case LinkTypeEnum.LINK_AUTH:
+          redirectAuth({ appId, tenantId });
           break;
         case LinkTypeEnum.LINK_PAY:
           // 处理支付逻辑
-          await onGetPrePay(buttonConfig, index);
+          // await onGetPrePay(buttonConfig, index);
           break;
         case LinkTypeEnum.LINK_MEMBER:
+          toMemberLanding({ appId, tenantId, memberLevel: buttonConfig.target });
           // 处理会员页面跳转
           break;
 
@@ -227,58 +236,62 @@ const PaymentModal: React.FC<any> = () => {
   };
 
   return (
-    <Box
-      bg={config.card.bgColor}
-      borderRadius="md"
-      p={4}
-      width="80%"
-      maxWidth="400px"
-      mx="auto"
-      mb={55}
-      mt={14}
-      boxShadow="sm"
-    >
-      <VStack spacing={4} align="stretch">
-        <Text
-          fontSize="md"
-          fontWeight="medium"
-          textAlign="center"
-          color={config.title.color || 'gray.700'}
-        >
-          {config.title.text}
-        </Text>
+    <Box>
+      <Box
+        bg={config.card.bgColor}
+        borderRadius="md"
+        p={4}
+        width="85%"
+        maxWidth="450px"
+        mx="auto"
+        mb={0}
+        mt={20}
+        pb={7}
+        boxShadow="sm"
+      >
+        <VStack spacing={4} align="stretch">
+          <Text
+            fontSize="md"
+            fontWeight="medium"
+            textAlign="center"
+            color={config.title.color || 'gray.700'}
+          >
+            {config.title.text}
+          </Text>
 
-        {config.buttons.map((button, index) => {
-          const btnText = (button: PaymentButtonConfig) => {
-            // const getField = (button:PaymentButtonConfig, field: string) =>{
-            //   return button
-            // }
-            if (button.linkType === LinkTypeEnum.LINK_PAY) {
-              return `${button.textBefore}${agentPrice}${button.textAfter}`;
-            }
-            if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
-              return `${button.textBefore}${memberPrice}${button.textAfter}`;
-            }
-            return `${button.textBefore}${button.textAfter}`;
-          };
-          return (
-            <Button
-              key={index}
-              colorScheme={button.colorScheme || 'blue'}
-              variant={button.variant || 'solid'}
-              size="md"
-              width="100%"
-              onClick={() => handleButtonClick(button, index)}
-              isLoading={loadingButtonIndex === index}
-              loadingText={button.loading?.text || '处理中...'}
-              color={button.textColor}
-              borderColor={button.borderColor}
-            >
-              {btnText(button)}
-            </Button>
-          );
-        })}
-      </VStack>
+          {config.buttons.map((button, index) => {
+            const btnText = (button: PaymentButtonConfig) => {
+              // const getField = (button:PaymentButtonConfig, field: string) =>{
+              //   return button
+              // }
+              if (button.linkType === LinkTypeEnum.LINK_PAY) {
+                return `${button.textBefore}${agentPrice}${button.textAfter}`;
+              }
+              if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
+                return `${button.textBefore}${memberPrice}${button.textAfter}`;
+              }
+              return `${button.textBefore}${button.textAfter}`;
+            };
+            return (
+              <Button
+                key={index}
+                colorScheme={button.colorScheme || 'blue'}
+                variant={button.variant || 'solid'}
+                size="md"
+                width="100%"
+                onClick={() => handleButtonClick(button, index)}
+                isLoading={loadingButtonIndex === index}
+                loadingText={button.loading?.text || '处理中...'}
+                color={button.textColor}
+                borderColor={button.borderColor}
+              >
+                {btnText(button)}
+              </Button>
+            );
+          })}
+        </VStack>
+      </Box>
+      <Box height={'30px'}></Box>
     </Box>
   );
 };

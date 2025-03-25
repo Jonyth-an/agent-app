@@ -84,7 +84,7 @@ const useChatInitialization = (appId: string) => {
             Cookies.set('unionid', unionid, { expires: 45 });
             Cookies.set('wechatInfoId', wechatInfoId, { expires: 45 });
             Cookies.set('nickname', nickname, { expires: 45 });
-            setWechatInfoIds({ openid, unionid, wechatInfoId, nickname, sex});
+            setWechatInfoIds({ openid, unionid, wechatInfoId, nickname, sex });
 
             // Clean up URL after successful auth
             const currentQuery = { ...router.query };
@@ -136,8 +136,6 @@ const useChatInitialization = (appId: string) => {
       const permissionType = agentConfigInfo.permissionType;
       const agentId = agentConfigInfo.agentId;
       const tenantId = agentConfigInfo.tenantId;
-      const paid = agentConfigInfo.paid;
-      const memberLevelOk = agentConfigInfo.memberLevelOk;
 
       if (permissionType === AgentAccessType.PUBLIC) {
         setChatStauts(ChatStatusType.CAN_CHAT);
@@ -154,8 +152,13 @@ const useChatInitialization = (appId: string) => {
           agentId
         });
         console.log('ccc permissionType count', count);
+        let minCount = 1;
+        if (process.env.NODE_ENV === 'development') {
+          minCount = 130;
+          console.warn('ccc permissionType mock minCount', minCount, count);
+        }
 
-        if (count < 130) {
+        if (count < minCount) {
           await tokenIsValid(agentConfigInfo, tenantId);
           const shareToken = getShareToken(agentConfigInfo);
           const { paid, memberLevelOk } = await getAgentPermission({
