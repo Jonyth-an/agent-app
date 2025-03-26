@@ -48,7 +48,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
           setTimeout(checkVConsole, 2500);
         }
       };
-      setTimeout(checkVConsole, 500);
+      checkVConsole();
     }
   };
 
@@ -87,7 +87,7 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         icon={getWebReqUrl(feConfigs?.favicon || process.env.SYSTEM_FAVICON)}
       />
       <Script src={getWebReqUrl('/js/utils/jsweixin.js')} strategy="beforeInteractive" />
-      <Script src={getWebReqUrl('/js/utils/vConsole.js')} strategy="lazyOnload" />
+      <Script src={getWebReqUrl('/js/utils/vConsole.js')} strategy="beforeInteractive" />
       {scripts?.map((item, i) => (
         <Script key={i} strategy="lazyOnload" {...item} />
       ))}

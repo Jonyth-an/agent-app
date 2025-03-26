@@ -203,10 +203,7 @@ const PaymentModal: React.FC<any> = () => {
         });
       }
     } catch (error) {
-      toast({
-        title: '操作失败,请稍后再试',
-        status: 'error'
-      });
+      console.error('ccc onGetPrePay error', error);
     } finally {
       setLoadingButtonIndex(-1);
     }
@@ -251,17 +248,11 @@ const PaymentModal: React.FC<any> = () => {
           window.location.href = buttonConfig.target || '';
           break;
         default:
-          toast({
-            title: '未知的链接类型',
-            status: 'error'
-          });
+          console.error('ccc handleButtonClick 未知的链接类型');
           break;
       }
     } catch (error) {
-      toast({
-        title: '操作失败, 请稍后再试',
-        status: 'error'
-      });
+      console.error('ccc handleButtonClick error', error);
     } finally {
       setLoadingButtonIndex(-1);
     }

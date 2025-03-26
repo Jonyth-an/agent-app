@@ -296,14 +296,28 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useChatInitialization(appId);
 
   useEffect(() => {
-    if (!appId || !openid || !appKey) return;
-    initWechatShare({
-      title: agentConfigInfo.name,
-      desc: agentConfigInfo.description,
-      imgUrl: agentConfigInfo.avatar,
-      link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
-    });
+    if (!appId || !openid || !appKey) {
+      console.warn('appId, openid, or appKey is missing. WeChat share will not be initialized.');
+      return;
+    }
+    // 创建一个异步函数在 useEffect 内部调用
+    const setupWechatShare = async () => {
+      try {
+        await initWechatShare({
+          title: agentConfigInfo.name,
+          desc: agentConfigInfo.description,
+          imgUrl: agentConfigInfo.avatar,
+          link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
+        });
+        console.log('微信分享初始化完成 agentConfigInfo', agentConfigInfo);
+      } catch (error) {
+        console.error('微信分享初始化失败:', error);
+      }
+    };
+    // 调用异步函数
+    setupWechatShare();
   }, [agentConfigInfo, appId, appKey, openid]);
+
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, appKey, source: ChatSourceEnum.online }),
     [appId, appKey]
