@@ -149,16 +149,7 @@ const useChatInitialization = (appId: string) => {
   );
 
   // Initialize WeChat sharing
-  useEffect(() => {
-    if (!openid || !appKey) return;
 
-    initWechatShare({
-      title: agentConfigInfo.name,
-      desc: agentConfigInfo.description,
-      imgUrl: agentConfigInfo.avatar,
-      link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
-    });
-  }, [agentConfigInfo, appId, appKey, openid]);
   return { loading, error };
 };
 

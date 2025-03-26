@@ -38,6 +38,8 @@ import { useToast } from '@fastgpt/web/hooks/useToast';
 import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
 import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
 import { tokenIsValid } from '@/web/core/chat/context/utils';
+import { initWechatShare } from '@/web/core/chat/wechat';
+import { share_h5_url } from '@/config';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -293,6 +295,15 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   }, [appId, setAppId]);
   useChatInitialization(appId);
 
+  useEffect(() => {
+    if (!appId || !openid || !appKey) return;
+    initWechatShare({
+      title: agentConfigInfo.name,
+      desc: agentConfigInfo.description,
+      imgUrl: agentConfigInfo.avatar,
+      link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
+    });
+  }, [agentConfigInfo, appId, appKey, openid]);
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, appKey, source: ChatSourceEnum.online }),
     [appId, appKey]
