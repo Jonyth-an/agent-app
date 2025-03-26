@@ -134,7 +134,7 @@ const PaymentModal: React.FC<any> = () => {
       });
     }
   };
-  const onBridgeReady = (params: any) => {
+  const onBridgeReady = (params: any, outTradeNo: string) => {
     console.log('ccc onBridgeReady params', params);
     WeixinJSBridge.invoke('getBrandWCPayRequest', params, (res: any) => {
       if (res.err_msg === 'get_brand_wcpay_request:ok') {
@@ -149,9 +149,10 @@ const PaymentModal: React.FC<any> = () => {
     });
   };
 
-  const pay = (params: any) => {
+  const pay = (params: any, outTradeNo: string) => {
     if (typeof WeixinJSBridge == 'undefined') {
       if (document.addEventListener) {
+        // @ts-ignore
         document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
         // @ts-ignore
       } else if (document.attachEvent) {
@@ -161,7 +162,7 @@ const PaymentModal: React.FC<any> = () => {
         document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
       }
     } else {
-      onBridgeReady(params);
+      onBridgeReady(params, outTradeNo);
     }
   };
   const onGetPrePay = async (
@@ -192,7 +193,7 @@ const PaymentModal: React.FC<any> = () => {
         paySign
       };
       setOutTradeNo(id);
-      pay(params);
+      pay(params, id);
     } catch (error) {
       toast({
         title: '操作失败,请稍后再试',
