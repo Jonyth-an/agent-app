@@ -92,8 +92,8 @@ export const getPrePay = (data: PrePayParams, shareToken: string) =>
   });
 // 获取支付订单结果
 export const getPayResult = (params: PayResultParams, shareToken: string) =>
-  GET<WechatAuthInfo>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
-    baseURL: '/marketing-ai',
+  GET<WechatAuthInfo>(`/mobile/api/v1/pay/queryPayResult`, params, {
+    baseURL: '/uc-system',
     headers: {
       token: shareToken
     }
