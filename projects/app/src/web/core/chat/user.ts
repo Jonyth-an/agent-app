@@ -5,6 +5,7 @@ import {
   ChatLogReqParams,
   ChatLogResData,
   PayResultParams,
+  PrePayData,
   PrePayParams,
   RemainingCountParams,
   SignatureInfo,
@@ -83,7 +84,7 @@ export const getAgentPermission = (params: AgentPermissionParams) =>
 
 // 获取预支付订单号
 export const getPrePay = (data: PrePayParams, shareToken: string) =>
-  POST<PrePayParams>(`/mobile/api/v1/pay/prePay`, data, {
+  POST<PrePayData>(`/mobile/api/v1/pay/prePay`, data, {
     baseURL: '/uc-system',
     headers: {
       token: shareToken
@@ -92,5 +93,8 @@ export const getPrePay = (data: PrePayParams, shareToken: string) =>
 // 获取支付订单结果
 export const getPayResult = (params: PayResultParams, shareToken: string) =>
   GET<WechatAuthInfo>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
-    baseURL: '/marketing-ai'
+    baseURL: '/marketing-ai',
+    headers: {
+      token: shareToken
+    }
   });

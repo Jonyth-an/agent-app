@@ -4,8 +4,13 @@ import { Box, Text, Button, VStack } from '@chakra-ui/react';
 import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your API functions
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
-import { LinkTypeEnum } from '@/web/core/app/constants';
-import { redirectAuth, tokenIsValid, toMemberLanding } from '@/web/core/chat/context/utils';
+import { ChatStatusType, LinkTypeEnum } from '@/web/core/app/constants';
+import {
+  getShareToken,
+  redirectAuth,
+  tokenIsValid,
+  toMemberLanding
+} from '@/web/core/chat/context/utils';
 import { useRouter } from 'next/router';
 
 export interface PaymentButtonConfig {
@@ -110,9 +115,61 @@ const PaymentModal: React.FC<any> = () => {
   // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
   const [loadingButtonIndex, setLoadingButtonIndex] = useState<number>(-1);
 
-  const [outTradeNo, setOutTradeNo] = useState<string | null>(null);
+  const [outTradeNo, setOutTradeNo] = useState<string>('');
+  const onGetPayResult = async (outTradeNo: string) => {
+    try {
+      const shareToken = getShareToken(agentConfigInfo);
+      const res = await getPayResult({ outTradeNo }, shareToken);
+      console.log('ccc onGetPayResult res', res);
+      toast({
+        title: '支付成功',
+        status: 'success'
+      });
+      setChatStauts(ChatStatusType.CAN_CHAT);
+    } catch (error) {
+      console.log('ccc onGetPayResult 支付失败 res', error);
+      toast({
+        title: '支付失败',
+        status: 'error'
+      });
+    }
+  };
+  const onBridgeReady = (params: any) => {
+    console.log('ccc onBridgeReady params', params);
+    WeixinJSBridge.invoke('getBrandWCPayRequest', params, (res: any) => {
+      if (res.err_msg === 'get_brand_wcpay_request:ok') {
+        onGetPayResult(outTradeNo);
+      } else {
+        console.log('ccc onBridgeReady 支付失败 res', res);
+        toast({
+          title: '支付失败',
+          status: 'error'
+        });
+      }
+    });
+  };
 
-  const onGetPrePay = async (buttonConfig: PaymentButtonConfig, index: number) => {
+  const pay = (params: any) => {
+    if (typeof WeixinJSBridge == 'undefined') {
+      if (document.addEventListener) {
+        document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+        // @ts-ignore
+      } else if (document.attachEvent) {
+        // @ts-ignore
+        document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+        // @ts-ignore
+        document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+      }
+    } else {
+      onBridgeReady(params);
+    }
+  };
+  const onGetPrePay = async (
+    buttonConfig: PaymentButtonConfig,
+    index: number,
+    shareToken: string
+  ) => {
+    console.log('ccc onGetPrePay shareToken', shareToken);
     try {
       setLoadingButtonIndex(index);
       const res = await getPrePay(
@@ -124,78 +181,25 @@ const PaymentModal: React.FC<any> = () => {
         },
         shareToken
       );
-
-      // if (res.code === 0) {
-      //   const { prepayId, appId, timestamp, nonceStr, paySign, id } = res.data;
-      //   const params = {
-      //     appId,
-      //     timeStamp: timestamp,
-      //     nonceStr,
-      //     package: `prepay_id=${prepayId}`,
-      //     signType: "RSA",
-      //     paySign
-      //   };
-      //   setOutTradeNo(id);
-      //   pay(params);
-      // } else {
-      //   toast({
-      //     title: res.msg,
-      //     status: 'error',
-      //     duration: 3000,
-      //     isClosable: true
-      //   });
-      // }
+      console.log('onGetPrePay res', res);
+      const { prepayId, appId, timestamp, nonceStr, paySign, id } = res;
+      const params = {
+        appId,
+        timeStamp: timestamp,
+        nonceStr,
+        package: `prepay_id=${prepayId}`,
+        signType: 'RSA',
+        paySign
+      };
+      setOutTradeNo(id);
+      pay(params);
     } catch (error) {
       toast({
-        title: '操作失败',
-        description: '请稍后再试',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-        position: 'top'
+        title: '操作失败,请稍后再试',
+        status: 'error'
       });
     } finally {
       setLoadingButtonIndex(-1);
-    }
-  };
-
-  const onGetPayResult = async (outTradeNo: string) => {
-    // try {
-    //   const res = await getPayResult(outTradeNo);
-    //   console.log('fff getPayResult res', res);
-    //   // if (res.code) {
-    //   //   toast({
-    //   //     title: res.msg,
-    //   //     status: 'error',
-    //   //     duration: 3000,
-    //   //     isClosable: true
-    //   //   });
-    //   // } else {
-    //   //   handleToPath();
-    //   // }
-    // } catch (error) {
-    //   console.error('Error in getPayResult:', error);
-    // }
-  };
-
-  const onBridgeReady = (params: any) => {
-    WeixinJSBridge.invoke('getBrandWCPayRequest', params, (res: any) => {
-      if (res.err_msg === 'get_brand_wcpay_request:ok') {
-        // onGetPayResult();
-      } else {
-        console.log('支付失败', res);
-      }
-    });
-  };
-
-  const pay = (params: any) => {
-    if (typeof WeixinJSBridge === 'undefined') {
-      if (document.addEventListener) {
-        document.addEventListener('WeixinJSBridgeReady', () => onBridgeReady(params), false);
-        document.addEventListener('onWeixinJSBridgeReady', () => onBridgeReady(params), false);
-      } else {
-        onBridgeReady(params);
-      }
     }
   };
 
@@ -226,13 +230,12 @@ const PaymentModal: React.FC<any> = () => {
           break;
         case LinkTypeEnum.LINK_PAY:
           // 处理支付逻辑
-          const { shareToken, staffInfo } = await isLogin();
-          await onGetPrePay(buttonConfig, index);
+          const { shareToken } = await isLogin();
+          await onGetPrePay(buttonConfig, index, shareToken);
           break;
         case LinkTypeEnum.LINK_MEMBER:
           await isLogin();
           toMemberLanding({ appId, tenantId, value: buttonConfig.target });
-          // 处理会员页面跳转
           break;
 
         case LinkTypeEnum.LINK_REDIRECT:
@@ -247,11 +250,8 @@ const PaymentModal: React.FC<any> = () => {
       }
     } catch (error) {
       toast({
-        title: '操作失败',
-        description: '请稍后再试',
-        status: 'error',
-        duration: 3000,
-        isClosable: true
+        title: '操作失败, 请稍后再试',
+        status: 'error'
       });
     } finally {
       setLoadingButtonIndex(-1);

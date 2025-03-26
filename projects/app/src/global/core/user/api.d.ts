@@ -115,6 +115,17 @@ export interface PrePayParams {
   agentId: number;
 }
 
+export interface PrePayData {
+  appId: string;
+  id: string;
+  nonceStr: string;
+  packageVal: string;
+  paySign: string;
+  prepayId: string;
+  signType: string;
+  timestamp: string;
+  tradeStatus: string;
+}
 export interface PayResultParams {
   outTradeNo: string;
 }
