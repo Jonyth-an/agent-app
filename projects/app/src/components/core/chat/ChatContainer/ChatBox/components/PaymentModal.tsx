@@ -210,7 +210,7 @@ const PaymentModal: React.FC<any> = () => {
           await onGetPrePay(buttonConfig, index);
           break;
         case LinkTypeEnum.LINK_MEMBER:
-          toMemberLanding({ appId, tenantId, memberLevel: buttonConfig.target });
+          toMemberLanding({ appId, tenantId, value: buttonConfig.target });
           // 处理会员页面跳转
           break;
 

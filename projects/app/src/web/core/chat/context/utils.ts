@@ -8,7 +8,7 @@ export type RedirectAuthParams = {
   appId: string;
   tenantId: number;
   isEmptyPage?: boolean;
-  memberLevel?: string;
+  value?: string;
 };
 export function getShareUrl() {
   return window.location.origin;
@@ -126,10 +126,10 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   // }
 }
 
-export function toMemberLanding({ appId, tenantId, memberLevel }: RedirectAuthParams) {
+export function toMemberLanding({ appId, tenantId, value }: RedirectAuthParams) {
   const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
-  const memberLandingUrl = `${share_h5_url}/share/memberLanding?tenantId=${tenantId}&memberLevel=${memberLevel}&redirect=${encodedCurUrl}`;
+  const memberLandingUrl = `${share_h5_url}/share/member?tenantId=${tenantId}&value=${value}&redirect=${encodedCurUrl}`;
   console.error('xxx memberLandingUrl', memberLandingUrl);
   if (process.env.NODE_ENV !== 'development') {
     window.location.href = memberLandingUrl;
