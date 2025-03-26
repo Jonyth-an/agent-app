@@ -1,96 +1,85 @@
-import type { AppProps } from 'next/app';
-import Script from 'next/script';
 
-import Layout from '@/components/Layout';
-import { appWithTranslation } from 'next-i18next';
+'use strict'
+import type { AppProps } from "next/app"
+import Script from "next/script"
+import { useState, useEffect, type ReactElement } from "react"
+import type { NextPage } from "next"
+import { appWithTranslation } from "next-i18next"
+import { useTranslation } from "next-i18next"
 
-import QueryClientContext from '@/web/context/QueryClient';
-import ChakraUIContext from '@/web/context/ChakraUI';
-import I18nContextProvider from '@/web/context/I18n';
-import { useInitApp } from '@/web/context/useInitApp';
-import { useTranslation } from 'next-i18next';
-import '@/web/styles/reset.scss';
-import NextHead from '@/components/common/NextHead';
-import { ReactElement, useEffect } from 'react';
-import { NextPage } from 'next';
-import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
-import SystemStoreContextProvider from '@fastgpt/web/context/useSystem';
-import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
+import Layout from "@/components/Layout"
+import NextHead from "@/components/common/NextHead"
+
+import QueryClientContext from "@/web/context/QueryClient"
+import ChakraUIContext from "@/web/context/ChakraUI"
+import I18nContextProvider from "@/web/context/I18n"
+import { useInitApp } from "@/web/context/useInitApp"
+import "@/web/styles/reset.scss"
+import { getWebReqUrl } from "@fastgpt/web/common/system/utils"
+import SystemStoreContextProvider from "@fastgpt/web/context/useSystem"
+import VConsoleLoader from "@/components/common/Vconsole"
 
 type NextPageWithLayout = NextPage & {
-  setLayout?: (page: ReactElement) => JSX.Element;
-};
+  setLayout?: (page: ReactElement) => JSX.Element
+}
 type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout;
-};
+  Component: NextPageWithLayout
+}
 
 function App({ Component, pageProps }: AppPropsWithLayout) {
-  const { feConfigs, scripts, title } = useInitApp();
-  const { t } = useTranslation();
-  // console.log('ccc Component, ', Component);
-  // console.log('ccc  pageProps', pageProps);
-  // 添加 setLog 函数
-  const setLog = (search: string) => {
-    const set = new URLSearchParams(search);
-    const devValue = set.get('dev');
-    const isDebugger = set.get('debugger');
+  const { feConfigs, scripts, title } = useInitApp()
+  const { t } = useTranslation()
+  const [enableVConsole, setEnableVConsole] = useState(false)
 
-    if (isDebugger && isDebugger === 'true') {
-      localStorage.setItem('debugger', 'true');
-    }
-    if (devValue && devValue === '12345678') {
-      localStorage.setItem('dev', devValue);
-      // 等待 VConsole 脚本加载完成
-      const checkVConsole = () => {
-        if (window.VConsole) {
-          new window.VConsole();
-        } else {
-          setTimeout(checkVConsole, 2500);
-        }
-      };
-      checkVConsole();
-    }
-  };
-
-  // 在页面加载完成后执行
+  // 检查 URL 参数并设置本地存储
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const { search } = window.location;
-      setLog(search);
-    }
-  }, []);
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search)
+      const devValue = params.get("dev")
+      const isDebugger = params.get("debugger")
 
-  // Forbid touch scale
+      if (isDebugger === "true") {
+        localStorage.setItem("debugger", "true")
+      }
+
+      if (devValue === "12345678") {
+        localStorage.setItem("dev", devValue)
+        setEnableVConsole(true)
+      }
+    }
+  }, [])
+
+  // 禁止触摸缩放
   useEffect(() => {
     document.addEventListener(
-      'wheel',
-      function (e) {
+      "wheel",
+      (e) => {
         if (e.ctrlKey && Math.abs(e.deltaY) !== 0) {
-          e.preventDefault();
+          e.preventDefault()
         }
       },
-      { passive: false }
-    );
-  }, []);
+      { passive: false },
+    )
+  }, [])
 
-  const setLayout = Component.setLayout || ((page) => <>{page}</>);
+  const setLayout = Component.setLayout || ((page) => <>{page}</>)
 
   return (
     <>
       <NextHead
         title={title}
-        desc={
-          feConfigs?.systemDescription ||
-          process.env.SYSTEM_DESCRIPTION ||
-          `${title}${t('app:intro')}`
-        }
+        desc={feConfigs?.systemDescription || process.env.SYSTEM_DESCRIPTION || `${title}${t("app:intro")}`}
         icon={getWebReqUrl(feConfigs?.favicon || process.env.SYSTEM_FAVICON)}
       />
-      <Script src={getWebReqUrl('/js/utils/jsweixin.js')} strategy="beforeInteractive" />
-      <Script src={getWebReqUrl('/js/utils/vConsole.js')} strategy="beforeInteractive" />
+      <Script src={getWebReqUrl("/js/utils/jsweixin.js")} strategy="beforeInteractive" />
+      {/* <Script src={getWebReqUrl("/js/utils/vConsole.js")} strategy="beforeInteractive" /> */}
       {scripts?.map((item, i) => (
         <Script key={i} strategy="lazyOnload" {...item} />
       ))}
+
+      {/* VConsole 加载器组件 */}
+      <VConsoleLoader enabled={enableVConsole} />
+
       <QueryClientContext>
         <SystemStoreContextProvider device={pageProps.deviceSize}>
           <I18nContextProvider>
@@ -101,7 +90,8 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         </SystemStoreContextProvider>
       </QueryClientContext>
     </>
-  );
+  )
 }
 
-export default appWithTranslation(App);
+export default appWithTranslation(App)
+
