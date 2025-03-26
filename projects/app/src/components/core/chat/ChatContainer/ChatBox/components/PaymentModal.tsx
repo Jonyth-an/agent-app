@@ -5,7 +5,8 @@ import { getPrePay, getPayResult } from '@/web/core/chat/user'; // Import your A
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { LinkTypeEnum } from '@/web/core/app/constants';
-import { redirectAuth, toMemberLanding } from '@/web/core/chat/context/utils';
+import { redirectAuth, tokenIsValid, toMemberLanding } from '@/web/core/chat/context/utils';
+import { useRouter } from 'next/router';
 
 export interface PaymentButtonConfig {
   textBefore: string;
@@ -88,6 +89,7 @@ const PaymentModal: React.FC<any> = () => {
   const {
     appId,
     shareToken,
+    setStaffInfo,
     setChatStauts,
     setShareToken,
     setWechatInfoIds,
@@ -99,6 +101,7 @@ const PaymentModal: React.FC<any> = () => {
   const agentId = agentConfigInfo.agentId;
   const memberPrice = agentConfigInfo.memberPrice;
   const agentPrice = agentConfigInfo.agentPrice;
+  const router = useRouter();
   const userGuideConfig = agentConfigInfo.userGuideConfig;
   const { toast } = useToast();
   const config: PaymentModalConfig = JSON.parse(userGuideConfig);
@@ -196,6 +199,22 @@ const PaymentModal: React.FC<any> = () => {
     }
   };
 
+  const isLogin = async () => {
+    const validRes = await tokenIsValid(
+      {
+        agentConfigInfo,
+        tenantId,
+        appId
+      },
+      router
+    );
+    console.log('ccc onStartChat tokenIsValid validRes ', validRes);
+    const { shareToken, staffInfo } = validRes;
+    setShareToken(shareToken);
+    setStaffInfo(staffInfo);
+    return validRes;
+  };
+
   const handleButtonClick = async (buttonConfig: PaymentButtonConfig, index: number) => {
     try {
       console.log('ccc handleButtonClick buttonConfig', buttonConfig);
@@ -207,9 +226,11 @@ const PaymentModal: React.FC<any> = () => {
           break;
         case LinkTypeEnum.LINK_PAY:
           // 处理支付逻辑
+          const { shareToken, staffInfo } = await isLogin();
           await onGetPrePay(buttonConfig, index);
           break;
         case LinkTypeEnum.LINK_MEMBER:
+          await isLogin();
           toMemberLanding({ appId, tenantId, value: buttonConfig.target });
           // 处理会员页面跳转
           break;

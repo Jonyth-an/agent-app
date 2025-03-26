@@ -131,7 +131,7 @@ const Chat = () => {
         });
       };
 
-      const canCaht = await hasUserChatPermission(
+      const canChat = await hasUserChatPermission(
         {
           unionid,
           agentId,
@@ -139,23 +139,24 @@ const Chat = () => {
         },
         router
       );
-      if (canCaht) {
+      console.log(
+        'ccc onStartChat chatStauts login pre canChat',
+        canChat,
+        'chatStauts',
+        chatStauts
+      );
+      if (canChat) {
         setChatStauts(ChatStatusType.CAN_CHAT);
       } else {
-        const { shareToken, staffInfo } = await tokenIsValid(
-          {
-            agentConfigInfo,
-            tenantId,
-            appId
-          },
-          router
-        );
         setChatStauts(ChatStatusType.DISABLE_CHAT);
-        setShareToken(shareToken);
-        setStaffInfo(staffInfo);
         return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
       }
-      console.log('ccc onStartChat chatStauts', chatStauts);
+      console.log(
+        'ccc onStartChat chatStauts login after canChat',
+        canChat,
+        'chatStauts',
+        chatStauts
+      );
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
         data: {
@@ -182,6 +183,7 @@ const Chat = () => {
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [
+      router,
       setStaffInfo,
       setShareToken,
       chatStauts,
