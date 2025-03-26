@@ -1,6 +1,9 @@
 import { agentConfigInfo } from '@/global/core/user/api';
 import Cookies from 'js-cookie';
 import { share_h5_url } from '@/config';
+import { getStaffInfo } from '../user';
+import { redirectToErrorPage } from './errorRedirect';
+import { useRouter } from 'next/router';
 export type RedirectAuthParams = {
   appId: string;
   tenantId: number;
@@ -40,11 +43,48 @@ export const getShareToken = (agentConfigInfo: agentConfigInfo) => {
   }
 
   if (!shareToken) {
-    const error = new Error('No token provided for non-public agent');
-    (error as any).code = 401;
-    throw error;
+    console.error('No token provided for non-public agent');
   }
   return shareToken as string;
+};
+export interface TokenIsValidParams {
+  agentConfigInfo: agentConfigInfo;
+  appId: string;
+  tenantId: number;
+}
+export const tokenIsValid = async (
+  { agentConfigInfo, tenantId, appId }: TokenIsValidParams,
+  router: ReturnType<typeof useRouter>
+) => {
+  const shareToken = getShareToken(agentConfigInfo);
+  let shareTokenDes = {
+    isValid: false,
+    shareToken: '',
+    staffInfo: {}
+  };
+  if (!shareToken) {
+    redirectAuth({ appId, tenantId });
+    return shareTokenDes;
+  }
+  try {
+    const staffInfo = await getStaffInfo(shareToken, tenantId);
+    shareTokenDes.isValid = true;
+    shareTokenDes.shareToken = shareToken;
+    shareTokenDes.staffInfo = staffInfo;
+    return shareTokenDes;
+  } catch (error: any) {
+    console.error('xxx tokenIsValid error', error);
+    const tenantId = agentConfigInfo.tenantId;
+    const errorCode = (error as { code?: number }).code;
+
+    if ([401].includes(errorCode as number)) {
+      clearShareToken(agentConfigInfo);
+      redirectAuth({ appId, tenantId });
+    }
+    redirectToErrorPage(router, error);
+
+    return shareTokenDes;
+  }
 };
 
 export const clearShareToken = (agentConfigInfo: agentConfigInfo) => {

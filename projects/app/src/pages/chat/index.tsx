@@ -36,7 +36,8 @@ import { getAgentPermission, getRemainingCount, saveChatLog } from '../../web/co
 import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
-import { getShareToken } from '@/web/core/chat/context/utils';
+import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
+import { tokenIsValid } from '@/web/core/chat/context/utils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -61,6 +62,8 @@ const Chat = () => {
     appId,
     agentConfigInfo,
     outLinkAuthData,
+    setShareToken,
+    setStaffInfo,
     unionid,
     openid,
     nickname,
@@ -128,34 +131,29 @@ const Chat = () => {
         });
       };
 
-      if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        let { count } = await getRemainingCount({
-          openid,
+      const canCaht = await hasUserChatPermission(
+        {
           unionid,
-          agentId
-        });
-        // count = 0;
-        console.log('ccccount', count);
-        if (count < 1) {
-          const shareToken = getShareToken(agentConfigInfo);
-          const { paid, memberLevelOk } = await getAgentPermission({
-            agentId,
-            shareToken,
-            tenantId
-          });
-          if (paid || memberLevelOk) {
-            setChatStauts(ChatStatusType.CAN_CHAT);
-          } else {
-            setChatStauts(ChatStatusType.DISABLE_CHAT);
-            toast({
-              title: '问答额度已用完',
-              status: 'warning'
-            });
-            return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
-          }
-        } else {
-          setChatStauts(ChatStatusType.CAN_CHAT);
-        }
+          agentId,
+          tenantId
+        },
+        router
+      );
+      if (canCaht) {
+        setChatStauts(ChatStatusType.CAN_CHAT);
+      } else {
+        const { shareToken, staffInfo } = await tokenIsValid(
+          {
+            agentConfigInfo,
+            tenantId,
+            appId
+          },
+          router
+        );
+        setChatStauts(ChatStatusType.DISABLE_CHAT);
+        setShareToken(shareToken);
+        setStaffInfo(staffInfo);
+        return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
       }
       console.log('ccc onStartChat chatStauts', chatStauts);
       const histories = messages.slice(-1);
@@ -184,10 +182,11 @@ const Chat = () => {
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [
+      setStaffInfo,
+      setShareToken,
       chatStauts,
       name,
       agentConfigInfo,
-      permissionType,
       nickname,
       tenantId,
       appId,
@@ -198,7 +197,6 @@ const Chat = () => {
       forbidLoadChat,
       openid,
       setChatStauts,
-      toast,
       unionid
     ]
   );

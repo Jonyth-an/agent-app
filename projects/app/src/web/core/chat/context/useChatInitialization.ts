@@ -13,11 +13,12 @@ import { initWechatShare } from '@/web/core/chat/wechat';
 import { share_h5_url } from '@/config';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import Cookies from 'js-cookie';
-import { clearShareToken, getShareToken, redirectAuth } from './utils';
+import { clearShareToken, redirectAuth } from './utils';
 import { redirectToErrorPage } from './errorRedirect';
 import { AgentAccessType, ChatStatusType } from '../../app/constants';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { agentConfigInfo } from '@/global/core/user/api';
+import { hasUserChatPermission } from './chatCheck';
 
 function constructNewUrl(originalUrl: string, newDomain: string) {
   const urlObj = new URL(originalUrl);
@@ -114,13 +115,6 @@ const useChatInitialization = (appId: string) => {
   }, [router, pathname, toast, unionid, openid, setWechatInfoIds, appId]);
 
   // Check if token is valid
-  async function tokenIsValid(agentConfigInfo: agentConfigInfo, tenantId: number) {
-    // debugger;
-    const shareToken = getShareToken(agentConfigInfo);
-    setShareToken(shareToken);
-    const staffInfo = await getStaffInfo(shareToken, tenantId);
-    setStaffInfo(staffInfo);
-  }
 
   // Initialize agent configuration after authentication
   const { loading, error } = useRequest2(
@@ -133,64 +127,22 @@ const useChatInitialization = (appId: string) => {
       const agentConfigInfo = await getAgentConfigInfo({ appId });
       setAgentConfigInfo(agentConfigInfo);
 
-      const permissionType = agentConfigInfo.permissionType;
       const agentId = agentConfigInfo.agentId;
       const tenantId = agentConfigInfo.tenantId;
-
-      if (permissionType === AgentAccessType.PUBLIC) {
+      const canChat = await hasUserChatPermission({ unionid, agentId, tenantId }, router);
+      if (canChat) {
         setChatStauts(ChatStatusType.CAN_CHAT);
-      }
-
-      if (permissionType === AgentAccessType.PRIVATE) {
-        await tokenIsValid(agentConfigInfo, tenantId);
-        setChatStauts(ChatStatusType.CAN_CHAT);
-      }
-      if (permissionType === AgentAccessType.FEE_OR_MEMBERSHIP) {
-        let { count } = await getRemainingCount({
-          openid,
-          unionid,
-          agentId
-        });
-        console.log('ccc permissionType count', count);
-        let minCount = 1;
-        if (process.env.NODE_ENV === 'development') {
-          minCount = 130;
-          console.warn('ccc permissionType mock minCount', minCount, count);
-        }
-
-        if (count < minCount) {
-          await tokenIsValid(agentConfigInfo, tenantId);
-          const shareToken = getShareToken(agentConfigInfo);
-          const { paid, memberLevelOk } = await getAgentPermission({
-            agentId,
-            shareToken,
-            tenantId
-          });
-          if (paid || memberLevelOk) {
-            setChatStauts(ChatStatusType.CAN_CHAT);
-          } else {
-            setChatStauts(ChatStatusType.DISABLE_CHAT);
-          }
-        } else {
-          setChatStauts(ChatStatusType.CAN_CHAT);
-        }
-        console.log('ccc permissionType chatStauts', chatStauts);
+      } else {
+        setChatStauts(ChatStatusType.DISABLE_CHAT);
       }
     },
     {
       manual: false,
-      refreshDeps: [appId, openid],
-      ready: !!appId && !!openid,
+      refreshDeps: [appId, unionid],
+      ready: !!appId && !!unionid,
       onError: (error: any) => {
-        console.log('rrr agentConfigInfo', agentConfigInfo);
+        console.log('ccc useChatInitialization error', error);
         const tenantId = agentConfigInfo.tenantId;
-        const errorCode = (error as { code?: number }).code;
-
-        if ([401].includes(errorCode as number)) {
-          clearShareToken(agentConfigInfo);
-          redirectAuth({ appId, tenantId });
-          return;
-        }
         redirectToErrorPage(router, error);
       }
     }

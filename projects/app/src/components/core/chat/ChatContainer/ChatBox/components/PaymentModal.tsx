@@ -96,6 +96,7 @@ const PaymentModal: React.FC<any> = () => {
     agentConfigInfo
   } = useChatStore();
   const tenantId = agentConfigInfo.tenantId;
+  const agentId = agentConfigInfo.agentId;
   const memberPrice = agentConfigInfo.memberPrice;
   const agentPrice = agentConfigInfo.agentPrice;
   const userGuideConfig = agentConfigInfo.userGuideConfig;
@@ -113,6 +114,7 @@ const PaymentModal: React.FC<any> = () => {
       setLoadingButtonIndex(index);
       const res = await getPrePay(
         {
+          agentId,
           openid,
           payScene: 'BUY_AGENT',
           tenantId
@@ -205,7 +207,7 @@ const PaymentModal: React.FC<any> = () => {
           break;
         case LinkTypeEnum.LINK_PAY:
           // 处理支付逻辑
-          // await onGetPrePay(buttonConfig, index);
+          await onGetPrePay(buttonConfig, index);
           break;
         case LinkTypeEnum.LINK_MEMBER:
           toMemberLanding({ appId, tenantId, memberLevel: buttonConfig.target });

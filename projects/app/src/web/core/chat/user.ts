@@ -75,30 +75,22 @@ export const getRemainingCount = (params: RemainingCountParams) =>
 
 // 会员权限
 
-export const getAgentPermission = ({ agentId, shareToken, tenantId }: AgentPermissionParams) =>
+export const getAgentPermission = (params: AgentPermissionParams) =>
   // 发送GET请求，获取代理权限
-  GET<AgentPermissionData>(
-    `/mobile/api/v1/user/agent/permission`,
-    { agentId },
-    {
-      baseURL: '/marketing-ai',
-      headers: {
-        token: shareToken,
-        tenantId
-      }
-    }
-  );
+  GET<AgentPermissionData>(`/mobile/api/v1/user/agent/permission`, params, {
+    baseURL: '/marketing-ai'
+  });
 
 // 获取预支付订单号
 export const getPrePay = (data: PrePayParams, shareToken: string) =>
-  POST<ChatLogResData>(`/mobile/api/v1/pay/prePay`, data, {
+  POST<PrePayParams>(`/mobile/api/v1/pay/prePay`, data, {
     baseURL: '/uc-system',
     headers: {
       token: shareToken
     }
   });
 // 获取支付订单结果
-export const getPayResult = (params: PayResultParams) =>
+export const getPayResult = (params: PayResultParams, shareToken: string) =>
   GET<WechatAuthInfo>(`/mobile/api/v1/ai/agent/chatlog/remainingCount`, params, {
     baseURL: '/marketing-ai'
   });

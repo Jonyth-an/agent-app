@@ -26,7 +26,7 @@ export type agentConfigDes = {
 
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
-  agentId: string; // 智能体ID
+  agentId: number; // 智能体ID
   name: string; // 智能体名称
   avatar: string; // 智能体图标链接
   sourceType: string; // 来源类型
@@ -85,7 +85,7 @@ export interface WechatUserInfo {
 }
 
 export type ChatLogReqParams = {
-  agentId: string;
+  agentId: number;
   answer: string;
   answerTime: string;
   chatId: string;
@@ -105,13 +105,14 @@ export interface ChatLogResData extends ChatLogReqParams {
 export interface RemainingCountParams {
   openid: string;
   unionid: string;
-  agentId: string;
+  agentId: number;
 }
 
 export interface PrePayParams {
   openid: string;
   payScene: string;
   tenantId: number;
+  agentId: number;
 }
 
 export interface PayResultParams {
@@ -119,12 +120,12 @@ export interface PayResultParams {
 }
 
 export type AgentPermissionParams = {
-  agentId: string;
-  shareToken: string;
+  agentId: number;
   tenantId: number;
+  unionid: string;
 };
 
 export type AgentPermissionData = {
-  memberLevelOk: boolean;
-  paid: boolean;
+  isLimited: boolean;
+  remainingCount: number;
 };

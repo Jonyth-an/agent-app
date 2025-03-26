@@ -75,7 +75,7 @@ function Error() {
 2. 检查模型中一些“对象”参数是否异常（数组和对象），如果为空，可以尝试给个空数组或空对象。
 `} */}
       <>
-        <NextHead title="出错啦" />
+        <NextHead title={errorInfo.message || "出错啦"} />
         <Flex minH="100vh" alignItems="center" justifyContent="center" bg="white" p={4}>
           <Box maxW="600px" w="100%" bg="white" borderRadius="lg" p={8}>
             <Flex direction="column" alignItems="center" textAlign="center">

@@ -188,7 +188,7 @@ export const useChatStore = create<State>()(
           freeCount: 0,
           paid: false,
           memberLevelOk: false,
-          agentId: '',
+          agentId: 0,
           appKey: Cookies.get('appKey') || '',
           name: '',
           avatar: '',
