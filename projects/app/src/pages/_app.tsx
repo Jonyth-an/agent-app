@@ -45,10 +45,10 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
         if (window.VConsole) {
           new window.VConsole();
         } else {
-          setTimeout(checkVConsole, 500);
+          setTimeout(checkVConsole, 2500);
         }
       };
-      checkVConsole();
+      setTimeout(checkVConsole, 500);
     }
   };
 

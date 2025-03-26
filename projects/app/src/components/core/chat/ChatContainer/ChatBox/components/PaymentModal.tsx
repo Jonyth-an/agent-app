@@ -183,17 +183,25 @@ const PaymentModal: React.FC<any> = () => {
         shareToken
       );
       console.log('onGetPrePay res', res);
-      const { prepayId, appId, timestamp, nonceStr, paySign, id } = res;
-      const params = {
-        appId,
-        timeStamp: timestamp,
-        nonceStr,
-        package: `prepay_id=${prepayId}`,
-        signType: 'RSA',
-        paySign
-      };
-      setOutTradeNo(id);
-      pay(params, id);
+      const { prepayId, appId, timestamp, nonceStr, paySign, id, tradeStatus } = res;
+      if (tradeStatus === 'NOTPAY') {
+        const params = {
+          appId,
+          timeStamp: timestamp,
+          nonceStr,
+          package: `prepay_id=${prepayId}`,
+          signType: 'RSA',
+          paySign
+        };
+        setOutTradeNo(id);
+        pay(params, id);
+      }
+      if (tradeStatus === 'SUCCESS') {
+        toast({
+          title: '已经支付成功过了',
+          status: 'success'
+        });
+      }
     } catch (error) {
       toast({
         title: '操作失败,请稍后再试',
