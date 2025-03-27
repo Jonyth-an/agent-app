@@ -296,8 +296,11 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   useChatInitialization(appId);
 
   useEffect(() => {
-    if (!appId || !openid || !appKey) {
-      console.warn('appId, openid, or appKey is missing. WeChat share will not be initialized.');
+    if (!agentConfigInfo.name) {
+      console.warn(
+        'aagentConfigInfo is missing. WeChat share will not be initialized.',
+        agentConfigInfo
+      );
       return;
     }
     // 创建一个异步函数在 useEffect 内部调用
@@ -316,7 +319,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
     // 调用异步函数
     setupWechatShare();
-  }, [agentConfigInfo, appId, appKey, openid]);
+  }, [agentConfigInfo, appId]);
 
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, appKey, source: ChatSourceEnum.online }),
