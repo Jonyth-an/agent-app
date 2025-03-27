@@ -93,6 +93,7 @@ try {
   ChatSchema.index({ teamId: 1, appId: 1, updateTime: -1, sources: 1 });
   // get share chat history
   ChatSchema.index({ shareId: 1, outLinkUid: 1, updateTime: -1 });
+  ChatSchema.index({ outLinkUid: 1, updateTime: -1 });
 
   // timer, clear history
   ChatSchema.index({ teamId: 1, updateTime: -1 });

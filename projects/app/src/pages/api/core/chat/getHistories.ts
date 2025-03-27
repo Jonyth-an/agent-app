@@ -9,18 +9,23 @@ import { PaginationProps, PaginationResponse } from '@fastgpt/web/common/fetch/t
 import { GetHistoriesProps } from '@/global/core/chat/api';
 import { parsePaginationRequest } from '@fastgpt/service/common/api/pagination';
 import { addMonths } from 'date-fns';
+import { UserApp } from '@fastgpt/service/core/user/userAppSchema'; // 添加导入
+import { addLog } from '@fastgpt/service/common/system/log';
 
 export type getHistoriesQuery = {};
 
 export type getHistoriesBody = PaginationProps<GetHistoriesProps>;
 
 export type getHistoriesResponse = {};
+export type UserChatRecord = {
+  chatId: string;
+};
 
 async function handler(
   req: ApiRequestProps<getHistoriesBody, getHistoriesQuery>,
   _res: ApiResponseType<any>
 ): Promise<PaginationResponse<getHistoriesResponse>> {
-  const { appId, shareId, outLinkUid, teamId, teamToken, source } = req.body;
+  const { appId, shareId, outLinkUid, teamId, teamToken, source, openid, unionid } = req.body; // 添加 openid, unionid
   const { offset, pageSize } = parsePaginationRequest(req);
 
   const match = await (async () => {
@@ -46,6 +51,9 @@ async function handler(
     }
     if (appId) {
       const { tmbId } = await authCert({ req, authToken: true, authApiKey: true });
+
+      // 如果有 openid 或 unionid，查询该用户的聊天记录
+
       return {
         tmbId,
         appId,
@@ -61,6 +69,38 @@ async function handler(
     };
   }
 
+  let chatIds: string[] = [];
+  if (openid || unionid) {
+    try {
+      const userChats: UserChatRecord[] = await UserApp.find({
+        appId,
+        $or: [...(openid ? [{ openid }] : []), ...(unionid ? [{ unionid }] : [])]
+      }).select('chatId');
+
+      chatIds = userChats.map((chat) => chat.chatId);
+      addLog.info('getHistories get chatIds', {
+        appId,
+        openid,
+        unionid,
+        chatIds,
+        userChats
+      });
+    } catch (error) {
+      addLog.error('getHistories get chatIds error', {
+        appId,
+        openid,
+        unionid,
+        error
+      });
+    }
+    // 查询用户的所有聊天记录
+
+    // return {
+    //   appId,
+    //   chatId: { $in: chatIds } // 只查询用户相关的聊天
+    // };
+  }
+
   const [data, total] = await Promise.all([
     await MongoChat.find(match, 'chatId title top customTitle appId updateTime')
       .sort({ top: -1, updateTime: -1 })
@@ -70,16 +110,29 @@ async function handler(
     MongoChat.countDocuments(match)
   ]);
 
+  let resData = data.map((item) => ({
+    chatId: item.chatId,
+    updateTime: item.updateTime,
+    appId: item.appId,
+    customTitle: item.customTitle,
+    title: item.title,
+    top: item.top
+  }));
+
+  const filterData = resData.filter((item) => chatIds.includes(item.chatId));
+  const filterTotal = filterData.length;
+  addLog.info('getHistories filter after chat data', {
+    appId,
+    openid,
+    unionid,
+    resData,
+    total,
+    filterData,
+    filterTotal
+  });
   return {
-    list: data.map((item) => ({
-      chatId: item.chatId,
-      updateTime: item.updateTime,
-      appId: item.appId,
-      customTitle: item.customTitle,
-      title: item.title,
-      top: item.top
-    })),
-    total
+    list: filterData,
+    total: filterTotal
   };
 }
 

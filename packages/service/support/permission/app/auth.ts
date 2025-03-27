@@ -155,7 +155,7 @@ export const authApp = async ({
     per,
     isRoot: result.isRoot
   });
-  addLog.info(`authApp appId:${appId}, app:`, app);
+
   return {
     ...result,
     permission: app.permission,

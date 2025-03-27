@@ -10,12 +10,14 @@ import { getAppLatestVersion } from '@fastgpt/service/core/app/version/controlle
 import { NextAPI } from '@/service/middleware/entry';
 import { ReadPermissionVal } from '@fastgpt/global/support/permission/constant';
 import { FlowNodeTypeEnum } from '@fastgpt/global/core/workflow/node/constant';
+import { UserApp } from '@fastgpt/service/core/user/userAppSchema';
+import { addLog } from '@fastgpt/service/common/system/log';
 
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ): Promise<InitChatResponse | void> {
-  let { appId, chatId } = req.query as InitChatProps;
+  let { appId, chatId, openid, unionid } = req.query as InitChatProps;
 
   if (!appId) {
     return jsonRes(res, {
@@ -39,6 +41,45 @@ async function handler(
   // auth chat permission
   if (chat && !app.permission.hasManagePer && String(tmbId) !== String(chat?.tmbId)) {
     return Promise.reject(ChatErrEnum.unAuthChat);
+  }
+
+  // 只有当 chatId 存在时才进行存储
+  if ((openid || unionid) && chatId && appId) {
+    try {
+      // 先查询是否存在记录
+      const existRecord = await UserApp.findOne({
+        $and: [
+          { appId },
+          { chatId },
+          {
+            $or: [{ openid: openid || null }, { unionid: unionid || null }]
+          }
+        ]
+      });
+      addLog.info(`init save chatId info`, {
+        appId,
+        openid,
+        unionid,
+        chatId,
+        existRecord
+      });
+      // 记录不存在时才创建
+      if (!existRecord) {
+        await UserApp.create({
+          openid: openid || undefined,
+          unionid: unionid || undefined,
+          appId,
+          chatId,
+          updateTime: new Date()
+        });
+      }
+    } catch (error) {
+      addLog.error(
+        `init save chatId error, appId: ${appId}, openid: ${openid}, unionid: ${unionid}, chatId: ${chatId}, error:`,
+        error
+      );
+      // 不影响主流程，记录失败仍继续
+    }
   }
 
   // get app and history

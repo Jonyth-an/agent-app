@@ -84,7 +84,7 @@ const Chat = () => {
     async () => {
       if (!appId || !appKey || !openid || forbidLoadChat.current) return;
 
-      const res = await getInitChatInfo({ appId, chatId }, appKey);
+      const res = await getInitChatInfo({ appId, chatId, openid, unionid }, appKey);
       console.log('xxx getInitChatInfo res2', res);
       res.userAvatar = userInfo?.avatar;
       // Wait for state update to complete
@@ -186,11 +186,8 @@ const Chat = () => {
     },
     [
       router,
-      setStaffInfo,
-      setShareToken,
       chatStauts,
       name,
-      agentConfigInfo,
       nickname,
       tenantId,
       appId,
@@ -277,7 +274,7 @@ const Chat = () => {
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const { source, chatId, agentConfigInfo, setSource, setAppId, openid } = useChatStore();
+  const { source, chatId, agentConfigInfo, setSource, setAppId, openid, unionid } = useChatStore();
   const appKey = agentConfigInfo.appKey;
   const router = useRouter();
   // 初始化聊天框
@@ -322,8 +319,8 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
   }, [agentConfigInfo, appId]);
 
   const chatHistoryProviderParams = useMemo(
-    () => ({ appId, appKey, source: ChatSourceEnum.online }),
-    [appId, appKey]
+    () => ({ appId, appKey, source: ChatSourceEnum.online, openid, unionid }),
+    [appId, appKey, openid, unionid]
   );
   const chatRecordProviderParams = useMemo(() => {
     return {
