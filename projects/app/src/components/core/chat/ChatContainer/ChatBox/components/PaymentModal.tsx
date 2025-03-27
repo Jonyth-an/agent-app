@@ -108,6 +108,7 @@ const PaymentModal: React.FC<any> = () => {
   const agentPrice = agentConfigInfo.agentPrice;
   const router = useRouter();
   const userGuideConfig = agentConfigInfo.userGuideConfig;
+  const memberLevelList = agentConfigInfo.memberLevelList;
   const { toast } = useToast();
   const config: PaymentModalConfig = JSON.parse(userGuideConfig);
   // const config: PaymentModalConfig = defaultConfig;
@@ -291,7 +292,10 @@ const PaymentModal: React.FC<any> = () => {
                 return `${button.textBefore}${agentPrice}${button.textAfter}`;
               }
               if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
-                return `${button.textBefore}${memberPrice}${button.textAfter}`;
+                const member = memberLevelList.find((item) => String(item.id) === button.target);
+                console.log('ccc handleButtonClick member', member);
+                const price = member?.price || 0;
+                return `${button.textBefore}${price}${button.textAfter}`;
               }
               return `${button.textBefore}${button.textAfter}`;
             };

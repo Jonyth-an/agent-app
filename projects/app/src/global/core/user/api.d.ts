@@ -23,6 +23,12 @@ export type agentConfigDes = {
   weChatShareConfig: any;
   list: any[];
 };
+export type memberLevelItem = {
+  grade: number;
+  id: number;
+  price: number;
+  name: string;
+};
 
 // 定义整个 API 返回的数据结构
 export type agentConfigInfo = {
@@ -45,6 +51,7 @@ export type agentConfigInfo = {
   freeCount: number;
   paid: boolean; // 已独立支付
   memberLevelOk: boolean; // 已满足会员要求
+  memberLevelList: memberLevelItem[];
 };
 
 export type SignatureInfoReq = {

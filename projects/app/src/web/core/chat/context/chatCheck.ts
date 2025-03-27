@@ -47,7 +47,7 @@ export const hasUserChatPermission = async (
     // 默认不允许聊天
     return false;
   } catch (error: any) {
-    if (error.code === '403') {
+    if (error.code === 403) {
       redirectToErrorPage(router, error);
     }
     console.error('ccc getAgentPermission Permission check error:', error);

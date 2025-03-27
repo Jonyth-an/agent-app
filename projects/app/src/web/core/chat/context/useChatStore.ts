@@ -182,6 +182,7 @@ export const useChatStore = create<State>()(
           });
         },
         agentConfigInfo: {
+          memberLevelList: [],
           userGuideConfig: '',
           memberPrice: '',
           agentPrice: 0,

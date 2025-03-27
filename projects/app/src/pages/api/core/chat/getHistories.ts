@@ -131,8 +131,8 @@ async function handler(
     filterTotal
   });
   return {
-    list: filterData,
-    total: filterTotal
+    list: resData,
+    total
   };
 }
 
