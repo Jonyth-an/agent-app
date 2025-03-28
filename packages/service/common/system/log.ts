@@ -40,20 +40,17 @@ export const addLog = {
   log(level: LogLevelEnum, msg: string, obj: Record<string, any> = {}) {
     if (level < LOG_LEVEL) return;
 
-    const stringifyObj = JSON.stringify(obj);
+    // const stringifyObj = JSON.stringify(obj);
     const isEmpty = Object.keys(obj).length === 0;
 
-    console.log(
-      `${logMap[level].levelLog} ${dayjs().format('YYYY-MM-DD HH:mm:ss')} ${msg} ${
-        level !== LogLevelEnum.error && !isEmpty ? stringifyObj : ''
-      }`
-    );
+    console.log(`${logMap[level].levelLog} ${dayjs().format('YYYY-MM-DD HH:mm:ss')} ${msg} `, obj);
 
     level === LogLevelEnum.error && console.error(obj);
 
     // store
     if (level >= STORE_LOG_LEVEL && connectionMongo.connection.readyState === 1) {
       // store log
+      // console.log('store log', msg, obj);
       getMongoLog().create({
         text: msg,
         level,

@@ -127,7 +127,7 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
 }
 
 export function toMemberLanding({ appId, tenantId, value }: RedirectAuthParams) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
+  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&tenantId=${tenantId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   const memberLandingUrl = `${share_h5_url}/share/member?tenantId=${tenantId}&value=${value}&redirect=${encodedCurUrl}`;
   console.error('xxx memberLandingUrl', memberLandingUrl);
