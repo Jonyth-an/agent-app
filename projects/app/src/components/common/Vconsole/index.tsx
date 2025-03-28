@@ -39,11 +39,11 @@ const VConsoleLoader: React.FC<VConsoleLoaderProps> = ({ enabled = false }) => {
 
     // 动态导入 VConsole，而不是依赖全局变量
     const script = document.createElement('script');
-    script.src = getWebReqUrl('/js/utils/jsvConsole.js.js');
+    script.src = getWebReqUrl('/js/utils/jsvConsole.js');
     script.async = true;
 
     const script2 = document.createElement('script');
-    script2.src = getWebReqUrl('/js/utils/vConsole.js.js');
+    script2.src = getWebReqUrl('/js/utils/vConsole.js');
     script2.async = true;
 
     script.onload = () => {
