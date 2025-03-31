@@ -191,8 +191,6 @@ const Chat = () => {
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [
-      router,
-      chatStauts,
       name,
       nickname,
       tenantId,
@@ -203,7 +201,6 @@ const Chat = () => {
       setChatBoxData,
       forbidLoadChat,
       openid,
-      setChatStauts,
       unionid
     ]
   );
