@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { fetchEventSource } from '@fortaine/fetch-event-source';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
-import { getAgentPermission } from '@/service/support/user/permission';
+import { getAgentPermissionApi } from '@/service/support/user/permission';
 import axios from 'axios';
 import { addLog } from '@fastgpt/service/common/system/log';
 /**
@@ -51,7 +51,7 @@ async function validateChatPermission(
   tenantId: number
 ): Promise<boolean> {
   try {
-    const permissionRes = await getAgentPermission({
+    const permissionRes = await getAgentPermissionApi({
       unionid,
       tenantId,
       agentId

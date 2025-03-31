@@ -84,7 +84,7 @@ export async function generateQA(): Promise<any> {
 
   if (done || !data) {
     if (reduceQueue()) {
-      addLog.info(`[QA Queue] Done`);
+      // addLog.info(`[QA Queue] Done`);
     }
     return;
   }
