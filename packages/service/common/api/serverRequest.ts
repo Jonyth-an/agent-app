@@ -5,6 +5,7 @@ interface ConfigType {
   headers?: { [key: string]: string };
   hold?: boolean;
   timeout?: number;
+  baseURL?: string;
 }
 interface ResponseDataType {
   code: number;
@@ -32,7 +33,10 @@ function checkRes(data: ResponseDataType) {
   if (data === undefined) {
     console.log('error->', data, 'data is empty');
     return Promise.reject('服务器异常');
-  } else if (data?.code && (data.code < 200 || data.code >= 400)) {
+  } else if (
+    data?.code &&
+    ((data.code < 200 && data.code !== 0) || (data.code >= 400 && data.code !== 0))
+  ) {
     return Promise.reject(data);
   }
   return data;

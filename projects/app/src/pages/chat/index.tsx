@@ -133,46 +133,52 @@ const Chat = () => {
         });
       };
 
-      const canChat = await hasUserChatPermission(
-        {
-          unionid,
-          agentId,
-          tenantId
-        },
-        router
-      );
-      console.log(
-        'ccc onStartChat chatStauts login pre canChat',
-        canChat,
-        'chatStauts',
-        chatStauts
-      );
-      if (canChat) {
-        setChatStauts(ChatStatusType.CAN_CHAT);
-      } else {
-        setChatStauts(ChatStatusType.DISABLE_CHAT);
-        return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
-      }
-      console.log(
-        'ccc onStartChat chatStauts login after canChat',
-        canChat,
-        'chatStauts',
-        chatStauts
-      );
+      // const canChat = await hasUserChatPermission(
+      //   {
+      //     unionid,
+      //     agentId,
+      //     tenantId
+      //   },
+      //   router
+      // );
+      // console.log(
+      //   'ccc onStartChat chatStauts login pre canChat',
+      //   canChat,
+      //   'chatStauts',
+      //   chatStauts
+      // );
+      // if (canChat) {
+      //   setChatStauts(ChatStatusType.CAN_CHAT);
+      // } else {
+      //   setChatStauts(ChatStatusType.DISABLE_CHAT);
+      //   return { responseText: '', responseData: [], isNewChat: forbidLoadChat.current };
+      // }
+      // console.log(
+      //   'ccc onStartChat chatStauts login after canChat',
+      //   canChat,
+      //   'chatStauts',
+      //   chatStauts
+      // );
       const histories = messages.slice(-1);
       const { responseText, responseData } = await streamFetch({
         data: {
+          params: {
+            unionid,
+            agentId,
+            tenantId
+          },
           messages: histories,
           variables,
           responseChatItemId,
           appId,
-          chatId
+          chatId,
+          stream: false
         },
         onMessage: generatingMessage,
         abortCtrl: controller,
         callback: (data) => onSaveChatLog(data, histories, variables)
       });
-
+      console.log('ccc responseText, responseData', responseText, responseData);
       const newTitle = getChatTitleFromChatMessage(GPTMessages2Chats(histories)[0]);
 
       // new chat

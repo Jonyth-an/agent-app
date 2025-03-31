@@ -33,9 +33,12 @@ export const getStaffInfo = (token: string, tenantId: number) =>
   );
 
 // 获取agent配置信息
-export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq) =>
+export const getAgentConfigInfo = (agentConfigInfoReq: agentConfigInfoReq, unionid: string) =>
   GET<agentConfigInfo>(`/mobile/api/v1/ai/agent/get`, agentConfigInfoReq, {
-    baseURL: '/marketing-ai'
+    baseURL: '/marketing-ai',
+    headers: {
+      unionid
+    }
   });
 
 // 获取微信授权

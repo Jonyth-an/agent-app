@@ -130,7 +130,7 @@ const ChatBox = ({
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
-  const { agentConfigInfo, chatStauts } = useChatStore();
+  const { agentConfigInfo, chatStauts, setChatStauts } = useChatStore();
   const userAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.userAvatar);
   const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
@@ -152,7 +152,6 @@ const ChatBox = ({
   const setAudioPlayingChatId = useContextSelector(ChatBoxContext, (v) => v.setAudioPlayingChatId);
   const splitText2Audio = useContextSelector(ChatBoxContext, (v) => v.splitText2Audio);
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
-
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
 
@@ -559,13 +558,22 @@ const ChatBox = ({
             // tts audio
             autoTTSResponse && splitText2Audio(responseText, true);
           } catch (err: any) {
-            console.log(err);
-            toast({
-              title: t(getErrText(err, 'core.chat.error.Chat error') as any),
-              status: 'error',
-              duration: 5000,
-              isClosable: true
-            });
+            console.log('ChatBox/index error', err);
+            
+            if(err.message === '问答额度已用完'){
+              setChatStauts(ChatStatusType.DISABLE_CHAT);
+              toast({
+                title: '问答额度已用完',
+                status: 'warning'
+              });
+            } else {
+              toast({
+                title: t(getErrText(err, 'core.chat.error.Chat error') as any),
+                status: 'error',
+                duration: 5000,
+                isClosable: true
+              });
+            }
 
             if (!err?.responseText) {
               resetInputVal({ text, files });

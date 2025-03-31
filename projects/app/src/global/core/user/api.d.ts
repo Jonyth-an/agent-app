@@ -147,3 +147,11 @@ export type AgentPermissionData = {
   isLimited: boolean;
   remainingCount: number;
 };
+
+interface ApiResponse<T = any> {
+  code: number;
+  data: T;
+  msg: string;
+  success: boolean;
+  timestamp: number;
+}

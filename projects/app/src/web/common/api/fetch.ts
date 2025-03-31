@@ -52,7 +52,7 @@ class FatalError extends Error {}
 // saveChatLog
 
 export const streamFetch = ({
-  url = '/api/v1/chat/completions',
+  url = '/api/v1/chat/startChat',
   data,
   onMessage,
   abortCtrl,

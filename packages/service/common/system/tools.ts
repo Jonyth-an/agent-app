@@ -7,6 +7,9 @@ export const SERVICE_LOCAL_HOST =
     ? `[${process.env.HOSTNAME}]:${SERVICE_LOCAL_PORT}`
     : `${process.env.HOSTNAME || 'localhost'}:${SERVICE_LOCAL_PORT}`;
 
+// java marketing api
+export const API_MARKETING_AI_URL = process.env.API_MARKETING_AI_URL;
+
 export const initFastGPTConfig = (config?: FastGPTConfigFileType) => {
   if (!config) return;
 

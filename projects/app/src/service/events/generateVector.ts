@@ -79,7 +79,7 @@ export async function generateVector(): Promise<any> {
 
   if (done || !data) {
     if (reduceQueue()) {
-      addLog.info(`[Vector Queue] Done`);
+      // addLog.info(`[Vector Queue] Done`);
     }
     return;
   }

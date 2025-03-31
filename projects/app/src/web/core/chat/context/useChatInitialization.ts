@@ -124,7 +124,7 @@ const useChatInitialization = (appId: string) => {
         return;
       }
 
-      const agentConfigInfo = await getAgentConfigInfo({ appId });
+      const agentConfigInfo = await getAgentConfigInfo({ appId }, unionid);
       setAgentConfigInfo(agentConfigInfo);
 
       const agentId = agentConfigInfo.agentId;
