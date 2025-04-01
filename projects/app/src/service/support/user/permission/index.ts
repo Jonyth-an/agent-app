@@ -9,6 +9,6 @@ export const getAgentPermissionApi = (params: AgentPermissionParams) => {
   });
   // 发送GET请求，获取代理权限
   return GET<ApiResponse<AgentPermissionData>>(`/mobile/api/v1/user/agent/permission`, params, {
-    baseURL: `http://10.10.32.250:38295/marketing-ai`
+    baseURL: `${API_MARKETING_AI_URL}/marketing-ai`
   });
 };
