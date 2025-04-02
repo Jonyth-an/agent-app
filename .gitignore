@@ -6,7 +6,7 @@ out/
 # production
 build/
 .astro/
-
+projects/app/logs
 # misc
 .DS_Store
 *.pem
