@@ -14,7 +14,7 @@
                 "dev"
             ],
             "stopOnEntry": true,
-            "cwd": "${workspaceFolder}/projects/app",
+            "cwd": "${workspaceFolder}/projects/sandbox",
             "autoAttachChildProcesses": true
         }
     ]
