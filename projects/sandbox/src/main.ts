@@ -5,6 +5,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { HttpExceptionFilter } from './http-exception.filter';
 import { ResponseInterceptor } from './response';
 import logger from './utils/logger';
+import { staticPath, APP_PRIFIX, logPath } from '@/utils/config';
 async function bootstrap(port: number) {
   // 创建NestFastifyApplication实例
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -13,6 +14,11 @@ async function bootstrap(port: number) {
       bodyLimit: 50 * 1048576 // 50MB
     })
   );
+  app.setGlobalPrefix(APP_PRIFIX);
+  app.useStaticAssets({
+    root: [staticPath, logPath],
+    prefix: `/${APP_PRIFIX}/static`
+  });
 
   // 使用全局异常过滤器
   app.useGlobalFilters(new HttpExceptionFilter());

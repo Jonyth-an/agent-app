@@ -1,6 +1,6 @@
 import { Query, Req, Controller, Get } from '@nestjs/common';
 import { Request } from 'express';
-@Controller('share-sandbox/agent/v1')
+@Controller('agent')
 export class AgentController {
   @Get('healthy')
   getTest() {

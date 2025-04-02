@@ -3,7 +3,7 @@ import * as path from 'path';
 import { remove } from 'fs-extra';
 import { configure, getLogger } from 'log4js';
 import * as moment from 'moment';
-import { logPath } from '../config';
+import { logPath } from '@/utils/config';
 
 class Logger {
   public logger;
