@@ -84,12 +84,14 @@ async function forwardRequest(req: NextApiRequest, res: NextApiResponse) {
   const originalUrl = `${process.env.CHAT_STREAM_URL}/api/v1/chat/completions`;
   const isStreamRequest = req.body.stream === true;
 
+  // 设置超时时间
+  const TIMEOUT = 190000; // 3分钟
+
   // 准备请求数据
   const requestData = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      // 转发原始请求的授权头
       ...(req.headers.authorization ? { Authorization: req.headers.authorization as string } : {})
     },
     body: JSON.stringify(req.body)
@@ -104,8 +106,18 @@ async function forwardRequest(req: NextApiRequest, res: NextApiResponse) {
     // 创建一个 AbortController 用于取消请求
     const controller = new AbortController();
 
+    // 设置超时定时器
+    const timeoutId = setTimeout(() => {
+      controller.abort('Request timeout');
+      if (!res.writableEnded) {
+        res.write(`event: error\ndata: ${JSON.stringify({ message: '请求超时' })}\n\n`);
+        res.end();
+      }
+    }, TIMEOUT);
+
     // 当客户端断开连接时，取消请求
     req.on('close', () => {
+      clearTimeout(timeoutId);
       controller.abort();
     });
 
@@ -155,7 +167,10 @@ async function forwardRequest(req: NextApiRequest, res: NextApiResponse) {
   } else {
     // 处理非流式响应
     try {
-      const response = await axios(originalUrl, requestData);
+      const response = await axios(originalUrl, {
+        ...requestData,
+        timeout: TIMEOUT
+      });
       addLog.info(`[startChat] ${req.body.params.unionid}`, {
         response,
         reqBody: req.body

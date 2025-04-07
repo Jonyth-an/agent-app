@@ -63,7 +63,7 @@ export const streamFetch = ({
     // First res
     const timeoutId = setTimeout(() => {
       abortCtrl.abort('Time out');
-    }, 90000);
+    }, 180000);
 
     // response data
     let responseText = '';
