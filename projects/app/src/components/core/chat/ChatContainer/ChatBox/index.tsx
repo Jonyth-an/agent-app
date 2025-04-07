@@ -980,10 +980,10 @@ const ChatBox = ({
                             onReadUserDislike: onReadUserDislike(item)
                           }}
                         >
-                          <ResponseTags
+                          {/* <ResponseTags
                             showTags={index !== chatRecords.length - 1 || !isChatting}
                             historyItem={item}
-                          />
+                          /> */}
                           {/* custom feedback */}
                           {item.customFeedbacks && item.customFeedbacks.length > 0 && (
                             <Box>
