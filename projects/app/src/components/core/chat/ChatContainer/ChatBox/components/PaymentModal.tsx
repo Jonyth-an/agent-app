@@ -110,7 +110,11 @@ const PaymentModal: React.FC<any> = () => {
   const userGuideConfig = agentConfigInfo.userGuideConfig;
   const memberLevelList = agentConfigInfo.memberLevelList;
   const { toast } = useToast();
-  const config: PaymentModalConfig = JSON.parse(userGuideConfig);
+  // @ts-ignore
+  let config: PaymentModalConfig = {};
+  if (userGuideConfig.length > 0) {
+    config = JSON.parse(userGuideConfig);
+  }
   // const config: PaymentModalConfig = defaultConfig;
 
   // const PaymentModal: React.FC<PaymentModalProps> = ({ onClose, config }) => {
@@ -261,63 +265,65 @@ const PaymentModal: React.FC<any> = () => {
 
   return (
     <Box>
-      <Box
-        bg={config.card.bgColor}
-        borderRadius="md"
-        p={4}
-        width="85%"
-        maxWidth="450px"
-        mx="auto"
-        mb={0}
-        mt={20}
-        pb={7}
-        boxShadow="sm"
-      >
-        <VStack spacing={4} align="stretch">
-          <Text
-            fontSize="md"
-            fontWeight="medium"
-            textAlign="center"
-            color={config.title.color || 'gray.700'}
-          >
-            {config.title.text}
-          </Text>
+      {Object.keys(config).length > 0 ? (
+        <Box
+          bg={config.card.bgColor}
+          borderRadius="md"
+          p={4}
+          width="85%"
+          maxWidth="450px"
+          mx="auto"
+          mb={0}
+          mt={20}
+          pb={7}
+          boxShadow="sm"
+        >
+          <VStack spacing={4} align="stretch">
+            <Text
+              fontSize="md"
+              fontWeight="medium"
+              textAlign="center"
+              color={config.title.color || 'gray.700'}
+            >
+              {config.title.text}
+            </Text>
 
-          {config.buttons.map((button, index) => {
-            const btnText = (button: PaymentButtonConfig) => {
-              // const getField = (button:PaymentButtonConfig, field: string) =>{
-              //   return button
-              // }
-              if (button.linkType === LinkTypeEnum.LINK_PAY) {
-                return `${button.textBefore}${agentPrice}${button.textAfter}`;
-              }
-              if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
-                const member = memberLevelList.find((item) => String(item.id) === button.target);
-                console.log('ccc handleButtonClick member', member);
-                const price = member?.price || 0;
-                return `${button.textBefore}${price}${button.textAfter}`;
-              }
-              return `${button.textBefore}${button.textAfter}`;
-            };
-            return (
-              <Button
-                key={index}
-                colorScheme={button.colorScheme || 'blue'}
-                variant={button.variant || 'solid'}
-                size="md"
-                width="100%"
-                onClick={() => handleButtonClick(button, index)}
-                isLoading={loadingButtonIndex === index}
-                loadingText={button.loading?.text || '处理中...'}
-                color={button.textColor}
-                borderColor={button.borderColor}
-              >
-                {btnText(button)}
-              </Button>
-            );
-          })}
-        </VStack>
-      </Box>
+            {config.buttons.map((button, index) => {
+              const btnText = (button: PaymentButtonConfig) => {
+                // const getField = (button:PaymentButtonConfig, field: string) =>{
+                //   return button
+                // }
+                if (button.linkType === LinkTypeEnum.LINK_PAY) {
+                  return `${button.textBefore}${agentPrice}${button.textAfter}`;
+                }
+                if (button.linkType === LinkTypeEnum.LINK_MEMBER) {
+                  const member = memberLevelList.find((item) => String(item.id) === button.target);
+                  console.log('ccc handleButtonClick member', member);
+                  const price = member?.price || 0;
+                  return `${button.textBefore}${price}${button.textAfter}`;
+                }
+                return `${button.textBefore}${button.textAfter}`;
+              };
+              return (
+                <Button
+                  key={index}
+                  colorScheme={button.colorScheme || 'blue'}
+                  variant={button.variant || 'solid'}
+                  size="md"
+                  width="100%"
+                  onClick={() => handleButtonClick(button, index)}
+                  isLoading={loadingButtonIndex === index}
+                  loadingText={button.loading?.text || '处理中...'}
+                  color={button.textColor}
+                  borderColor={button.borderColor}
+                >
+                  {btnText(button)}
+                </Button>
+              );
+            })}
+          </VStack>
+        </Box>
+      ) : null}
       <Box height={'30px'}></Box>
     </Box>
   );
