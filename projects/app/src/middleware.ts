@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWechatAuthCode } from './web/core/chat/user';
 import { share_h5_url } from './config';
-// import { addLog } from '@fastgpt/service/common/system/log';
-import { getAgentPermissionApi } from '@/service/support/user/permission';
 import { API_MARKETING_AI_URL } from '@fastgpt/service/common/system/tools';
 
 export async function middleware(request: NextRequest) {
@@ -11,17 +9,13 @@ export async function middleware(request: NextRequest) {
   const unionid = cookies.get('unionid');
 
   if (nextUrl.pathname === '/api/v1/chat/completions') {
-    if (!unionid?.value) {
-      return NextResponse.json({ code: 401, message: '未登录' }, { status: 401 });
-    }
-
     try {
       const clonedRequest = request.clone();
       const body = await clonedRequest.json();
-      const { agentId, tenantId } = body.params || {};
+      const { agentId, tenantId, unionid } = body.params || {};
 
       const response = await fetch(
-        `${API_MARKETING_AI_URL}/marketing-ai/mobile/api/v1/user/agent/permission?unionid=${unionid.value}&agentId=${agentId}&tenantId=${tenantId}`,
+        `${API_MARKETING_AI_URL}/marketing-ai/mobile/api/v1/user/agent/permission?unionid=${unionid}&agentId=${agentId}&tenantId=${tenantId}`,
         {
           method: 'GET',
           headers: {
@@ -36,10 +30,7 @@ export async function middleware(request: NextRequest) {
           status: response.status,
           statusText: response.statusText
         });
-        return NextResponse.json(
-          { code: response.status, message: '权限验证失败' },
-          { status: response.status }
-        );
+        return NextResponse.json({ code: 0, message: '权限验证失败' }, { status: 200 });
       }
 
       const data = await response.json();
@@ -68,10 +59,10 @@ export async function middleware(request: NextRequest) {
       console.error('[Chat Permission Middleware] Error', error);
       return NextResponse.json(
         {
-          code: 500,
+          code: 0,
           message: '权限验证失败'
         },
-        { status: 500 }
+        { status: 200 }
       );
     }
   }

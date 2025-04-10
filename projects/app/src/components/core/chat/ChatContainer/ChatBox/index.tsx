@@ -559,14 +559,15 @@ const ChatBox = ({
             autoTTSResponse && splitText2Audio(responseText, true);
           } catch (err: any) {
             console.log('ChatBox/index error', err);
-            
             if(err.message === '问答额度已用完'){
               setChatStauts(ChatStatusType.DISABLE_CHAT);
               toast({
                 title: '问答额度已用完',
                 status: 'warning'
               });
-            } else {
+            } else  if(err.message === '权限验证失败'){
+              setChatStauts(ChatStatusType.DISABLE_CHAT);
+            }else {
               toast({
                 title: t(getErrText(err, 'core.chat.error.Chat error') as any),
                 status: 'error',

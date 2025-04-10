@@ -3,10 +3,10 @@
   "version": "4.8.22",
   "private": false,
   "scripts": {
-    "dev": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
-    "dev4": "next dev",
+    "dev": "next dev",
     "dev2": "node --inspect-brk ./node_modules/next/dist/bin/next dev",
-    "dev3": "next dev",
+    "dev3": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
+    "dev4": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
