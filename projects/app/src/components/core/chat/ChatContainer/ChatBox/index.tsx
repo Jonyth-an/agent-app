@@ -565,9 +565,9 @@ const ChatBox = ({
                 title: '问答额度已用完',
                 status: 'warning'
               });
-            } else  if(err.message === '权限验证失败'){
+            } else if (err.message === '权限验证失败'){
               setChatStauts(ChatStatusType.DISABLE_CHAT);
-            }else {
+            } else {
               toast({
                 title: t(getErrText(err, 'core.chat.error.Chat error') as any),
                 status: 'error',

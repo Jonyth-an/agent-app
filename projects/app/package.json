@@ -3,7 +3,8 @@
   "version": "4.8.22",
   "private": false,
   "scripts": {
-    "dev": "next dev",
+    "dev": "nodemon server.js --watch server.js",
+    "dev6": "next dev",
     "dev2": "node --inspect-brk ./node_modules/next/dist/bin/next dev",
     "dev3": "nodemon ./server/index.js  --watch server",
     "dev5": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
@@ -37,6 +38,7 @@
     "@types/nprogress": "^0.2.0",
     "ahooks": "^3.7.11",
     "axios": "^1.5.1",
+    "body-parser": "^2.2.0",
     "date-fns": "2.30.0",
     "dayjs": "^1.11.7",
     "echarts": "5.4.1",

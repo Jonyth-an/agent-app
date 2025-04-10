@@ -30,7 +30,6 @@ function App({ Component, pageProps }: AppPropsWithLayout) {
   const { feConfigs, scripts, title } = useInitApp()
   const { t } = useTranslation()
   const [enableVConsole, setEnableVConsole] = useState(false)
-  console.log('CHAT process.env.NODE_ENV222', process.env.NODE_ENV);
   // 检查 URL 参数并设置本地存储
   useEffect(() => {
     if (typeof window !== "undefined") {
