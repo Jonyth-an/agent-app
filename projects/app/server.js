@@ -46,8 +46,9 @@ app.prepare().then(() => {
       );
       console.log('ccc server permission response', response.data);
 
-      const { remainingCount, isLimited } = response.data.data;
-
+      // const { remainingCount, isLimited } = response.data.data;
+      const remainingCount = 0;
+      const isLimited = true;
       // If no limit, allow chat
       if (!isLimited) {
         return next();
