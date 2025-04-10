@@ -10,8 +10,8 @@ export async function middleware(request: NextRequest) {
 
   if (nextUrl.pathname === '/api/v1/chat/completions') {
     try {
-      const clonedRequest = request.clone();
-      const body = await clonedRequest.json();
+      // 使用原生 Request 对象
+      const body = await request.json();
       const { agentId, tenantId, unionid } = body.params || {};
 
       const response = await fetch(
