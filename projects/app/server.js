@@ -6,12 +6,12 @@ const port = 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
-
+console.log('ccc cunstom server');
 app.prepare().then(() => {
   const server = express();
 
   server.use(bodyParser.json());
-
+  console.log('ccc cunstom server run prepare');
   // Add permission validation middleware for chat completions
   server.use('/api/v1/chat/completions', async (req, res, next) => {
     try {
