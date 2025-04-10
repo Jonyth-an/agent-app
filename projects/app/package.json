@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "next dev",
     "dev2": "node --inspect-brk ./node_modules/next/dist/bin/next dev",
-    "dev3": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
+    "dev3": "nodemon ./server/index.js  --watch server",
+    "dev5": "nodemon --inspect=127.0.0.1:9230 ./server/index.js  --watch server",
     "dev4": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prod": "nodemon ./server/index.js  --watch server",
+    "prod": "NODE_ENV=production nodemon server.js",
     "test": "jest"
   },
   "dependencies": {
