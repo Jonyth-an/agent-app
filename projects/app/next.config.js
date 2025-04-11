@@ -46,7 +46,7 @@ const nextConfig = {
   // 国际化配置
   i18n,
   // 构建输出为独立模式
-  output: 'standalone',
+  // output: 'standalone',
   // 严格模式：开发环境关闭，生产环境开启
   reactStrictMode: isDev ? false : true,
   // 启用响应压缩
