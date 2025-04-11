@@ -4,11 +4,21 @@ const axios = require('axios');
 const bodyParser = require('body-parser');
 const port = 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
 
+console.log(
+  'ccc cunstom server process.env.NEXT_PUBLIC_BASE_URL',
+  process.env.NEXT_PUBLIC_BASE_URL
+);
 // 定义API前缀
 const API_PREFIX = '/share-agent';
+const app = next({
+  dev,
+  conf: {
+    basePath: API_PREFIX,
+    assetPrefix: API_PREFIX
+  }
+});
+const handle = app.getRequestHandler();
 
 console.log('ccc cunstom server');
 app.prepare().then(() => {

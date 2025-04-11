@@ -55,15 +55,15 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
+        source: '/share-agent/uc-system/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://wmcloud-share.newbanker.cn/uc-system/:path*'
       },
       {
-        source: '/marketing/:path*', // 匹配 /uc-system 及其子路径
+        source: '/share-agent/marketing/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://wmcloud-share.newbanker.cn/marketing/:path*'
       },
       {
-        source: '/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
+        source: '/share-agent/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://wmcloud-share.newbanker.cn/marketing-ai/:path*'
       }
     ];
