@@ -93,11 +93,11 @@ app.prepare().then(() => {
   });
 
   // 处理所有以API_PREFIX开头的请求
-  server.all(`/*`, (req, res) => {
-    // 移除前缀，让Next.js正常处理路由
-    req.url = req.url.replace(API_PREFIX, '');
-    return handle(req, res);
-  });
+  // server.all(`/*`, (req, res) => {
+  //   // 移除前缀，让Next.js正常处理路由
+  //   req.url = req.url.replace(API_PREFIX, '');
+  //   return handle(req, res);
+  // });
 
   // 处理其他所有请求
   server.get('*', (req, res) => {
