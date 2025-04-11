@@ -14,7 +14,10 @@ export const subRoute = process.env.NEXT_PUBLIC_BASE_URL;
 
 export const getWebReqUrl = (url: string = '') => {
   if (!url) return '/';
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!baseUrl || baseUrl.length === 0) {
+    baseUrl = '/share-agent';
+  }
   if (!baseUrl) return url;
 
   if (!url.startsWith('/') || url.startsWith(baseUrl)) return url;

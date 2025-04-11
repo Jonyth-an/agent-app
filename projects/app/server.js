@@ -92,11 +92,11 @@ app.prepare().then(() => {
     console.log('server is running...');
     res.send('server is running...');
   });
-  server.use('/api', (req, res, next) => {
-    // 将请求重定向到带前缀的路径
-    req.url = `${API_PREFIX}${req.url}`;
-    next();
-  });
+  // server.use('/api', (req, res, next) => {
+  //   // 将请求重定向到带前缀的路径
+  //   req.url = `${API_PREFIX}${req.url}`;
+  //   next();
+  // });
 
   // 处理所有以API_PREFIX开头的请求
   // server.all(`/*`, (req, res) => {
