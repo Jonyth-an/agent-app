@@ -27,7 +27,7 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   console.log('ccc cunstom server run prepare');
   // Add permission validation middleware for chat completions
-  server.use(`${API_PREFIX}/api/v1/chat/completions`, async (req, res, next) => {
+  server.use(`/api/v1/chat/completions`, async (req, res, next) => {
     try {
       // Skip middleware for non-POST requests
       if (req.method !== 'POST') {
@@ -87,13 +87,13 @@ app.prepare().then(() => {
     }
   });
 
-  server.get(`${API_PREFIX}/healthy`, (req, res) => {
+  server.get(`/healthy`, (req, res) => {
     console.log('server is running...');
     res.send('server is running...');
   });
 
   // 处理所有以API_PREFIX开头的请求
-  server.all(`${API_PREFIX}/*`, (req, res) => {
+  server.all(`/*`, (req, res) => {
     // 移除前缀，让Next.js正常处理路由
     req.url = req.url.replace(API_PREFIX, '');
     return handle(req, res);
@@ -106,7 +106,6 @@ app.prepare().then(() => {
 
   server.listen(port, (err) => {
     if (err) throw err;
-    console.log(`> Readysss on http://localhost:${port}`);
-    console.log(`> API前缀: ${API_PREFIX}`);
+    console.log(`> Readysss on http://127.0.0.1:${port}`);
   });
 });
