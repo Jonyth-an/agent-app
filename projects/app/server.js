@@ -6,6 +6,10 @@ const port = 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+// 定义API前缀
+const API_PREFIX = '/share-agent';
+
 console.log('ccc cunstom server');
 app.prepare().then(() => {
   const server = express();
@@ -13,7 +17,7 @@ app.prepare().then(() => {
   server.use(bodyParser.json());
   console.log('ccc cunstom server run prepare');
   // Add permission validation middleware for chat completions
-  server.use('/api/v1/chat/completions', async (req, res, next) => {
+  server.use(`${API_PREFIX}/api/v1/chat/completions`, async (req, res, next) => {
     try {
       // Skip middleware for non-POST requests
       if (req.method !== 'POST') {
@@ -73,11 +77,19 @@ app.prepare().then(() => {
     }
   });
 
-  server.get('/healthy', (req, res) => {
+  server.get(`${API_PREFIX}/healthy`, (req, res) => {
     console.log('server is running...');
     res.send('server is running...');
   });
 
+  // 处理所有以API_PREFIX开头的请求
+  server.all(`${API_PREFIX}/*`, (req, res) => {
+    // 移除前缀，让Next.js正常处理路由
+    req.url = req.url.replace(API_PREFIX, '');
+    return handle(req, res);
+  });
+
+  // 处理其他所有请求
   server.get('*', (req, res) => {
     return handle(req, res);
   });
@@ -85,5 +97,6 @@ app.prepare().then(() => {
   server.listen(port, (err) => {
     if (err) throw err;
     console.log(`> Readysss on http://localhost:${port}`);
+    console.log(`> API前缀: ${API_PREFIX}`);
   });
 });
