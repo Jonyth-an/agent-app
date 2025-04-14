@@ -6,6 +6,7 @@ const fs = require('fs');
 // 判断是否为开发环境
 const isDev = process.env.NODE_ENV === 'development';
 console.log('-----NEXT_PUBLIC_BASE_URL', process.env.NEXT_PUBLIC_BASE_URL);
+
 /**
  * 将 Webpack 配置对象写入文件。
  * @param {Object} config - Webpack 配置对象。
@@ -46,28 +47,45 @@ const nextConfig = {
   // 国际化配置
   i18n,
   // 构建输出为独立模式
-  // output: 'standalone',
+  output: 'standalone',
   // 严格模式：开发环境关闭，生产环境开启
   reactStrictMode: isDev ? false : true,
   // 启用响应压缩
   compress: true,
   // 配置 API 请求代理
-  async rewrites() {
-    return [
-      {
-        source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud-share.newbanker.cn/uc-system/:path*'
-      },
-      {
-        source: '/marketing/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud-share.newbanker.cn/marketing/:path*'
-      },
-      {
-        source: '/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud-share.newbanker.cn/marketing-ai/:path*'
-      }
-    ];
-  },
+  // async rewrites() {
+  //   const basePathPrefix = process.env.NEXT_PUBLIC_BASE_URL || '';
+
+  //   // 基础路径重定向
+  //   const basePathRewrites = basePathPrefix
+  //     ? [
+  //         {
+  //           source: '/',
+  //           destination: `${basePathPrefix}/chat`
+  //         }
+  //       ]
+  //     : [];
+
+  //   // API 重写规则
+  //   const apiRewrites = [
+  //     // 处理 marketing-ai 请求 - 确保同时处理带前缀和不带前缀的情况
+  //     {
+  //       source: '/marketing-ai/:path*',
+  //       destination: `${process.env.API_MARKETING_AI_URL}/marketing-ai/:path*`
+  //     },
+  //     // 如果设置了基础路径，也为带前缀的路径添加代理规则
+  //     ...(basePathPrefix
+  //       ? [
+  //           {
+  //             source: `${basePathPrefix}/marketing-ai/:path*`,
+  //             destination: `${process.env.API_MARKETING_AI_URL}/marketing-ai/:path*`
+  //           }
+  //         ]
+  //       : [])
+  //   ];
+
+  //   return [...basePathRewrites, ...apiRewrites];
+  // },
 
   // webpack 配置
   webpack(config, { isServer, nextRuntime }) {
