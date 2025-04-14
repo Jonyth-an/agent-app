@@ -16,7 +16,7 @@ export const getWebReqUrl = (url: string = '') => {
   if (!url) return '/';
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   if (!baseUrl || baseUrl.length === 0) {
-    baseUrl = '/share-agent';
+    // baseUrl = '/share-agent';
   }
   if (!baseUrl) return url;
 

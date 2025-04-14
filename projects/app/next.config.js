@@ -53,39 +53,22 @@ const nextConfig = {
   // 启用响应压缩
   compress: true,
   // 配置 API 请求代理
-  // async rewrites() {
-  //   const basePathPrefix = process.env.NEXT_PUBLIC_BASE_URL || '';
-
-  //   // 基础路径重定向
-  //   const basePathRewrites = basePathPrefix
-  //     ? [
-  //         {
-  //           source: '/',
-  //           destination: `${basePathPrefix}/chat`
-  //         }
-  //       ]
-  //     : [];
-
-  //   // API 重写规则
-  //   const apiRewrites = [
-  //     // 处理 marketing-ai 请求 - 确保同时处理带前缀和不带前缀的情况
-  //     {
-  //       source: '/marketing-ai/:path*',
-  //       destination: `${process.env.API_MARKETING_AI_URL}/marketing-ai/:path*`
-  //     },
-  //     // 如果设置了基础路径，也为带前缀的路径添加代理规则
-  //     ...(basePathPrefix
-  //       ? [
-  //           {
-  //             source: `${basePathPrefix}/marketing-ai/:path*`,
-  //             destination: `${process.env.API_MARKETING_AI_URL}/marketing-ai/:path*`
-  //           }
-  //         ]
-  //       : [])
-  //   ];
-
-  //   return [...basePathRewrites, ...apiRewrites];
-  // },
+  async rewrites() {
+    return [
+      {
+        source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'https://wmcloud.newbanker.cn/uc-system/:path*'
+      },
+      {
+        source: '/marketing/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'https://wmcloud.newbanker.cn/marketing/:path*'
+      },
+      {
+        source: '/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'https://wmcloud.newbanker.cn/marketing-ai/:path*'
+      }
+    ];
+  },
 
   // webpack 配置
   webpack(config, { isServer, nextRuntime }) {
