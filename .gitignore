@@ -7,6 +7,7 @@ out/
 build/
 .astro/
 projects/app/logs
+projects/app/.env
 # misc
 .DS_Store
 *.pem
