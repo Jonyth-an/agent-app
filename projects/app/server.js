@@ -14,7 +14,7 @@ console.log(
 app.prepare().then(() => {
   const server = new Koa();
   const router = new Router({
-    // prefix: process.env.NEXT_PUBLIC_BASE_URL || null
+    prefix: process.env.NEXT_PUBLIC_BASE_URL
   });
 
   server.use(bodyParser());
