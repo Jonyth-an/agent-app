@@ -5,7 +5,14 @@ const axios = require('axios');
 const bodyParser = require('koa-bodyparser');
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
+require('dotenv').config();
+const app = next({
+  dev,
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
+  basePath: process.env.NEXT_PUBLIC_BASE_URL
+});
+console.log('ccc cunstom server app', app);
+
 const handle = app.getRequestHandler();
 console.log(
   'ccc cunstom server process.env.NEXT_PUBLIC_BASE_URL',

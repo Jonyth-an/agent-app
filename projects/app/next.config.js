@@ -171,6 +171,9 @@ const nextConfig = {
     outputFileTracingRoot: path.join(__dirname, '../../'),
     // 启用性能检测钩子
     instrumentationHook: true
+  },
+  publicRuntimeConfig: {
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || '/share-agent'
   }
 };
 
