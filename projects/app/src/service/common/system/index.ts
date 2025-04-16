@@ -26,7 +26,7 @@ export const readConfigData = async (name: string) => {
       return `data/${name}`;
     }
     // production path
-    return `./data/${name}`;
+    return `/app/data/${name}`;
   })();
 
   const content = await fs.promises.readFile(filename, 'utf-8');
