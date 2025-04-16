@@ -54,6 +54,9 @@ const nextConfig = {
   compress: true,
   // 配置 API 请求代理
   async rewrites() {
+    if (!isDev) {
+      return [];
+    }
     return [
       {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
