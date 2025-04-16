@@ -19,6 +19,18 @@ app.prepare().then(() => {
 
   server.use(bodyParser());
 
+  // 添加一个中间件来记录所有请求，帮助调试
+  server.use(async (ctx, next) => {
+    console.log(`收到请求: ${ctx.method} ${ctx.url}`);
+    try {
+      await next();
+      console.log(`响应状态: ${ctx.status}`);
+    } catch (err) {
+      console.error('请求处理错误:', err);
+      throw err;
+    }
+  });
+
   router.get('/a', async (ctx) => {
     await app.render(ctx.req, ctx.res, '/b', ctx.query);
     ctx.respond = false;
