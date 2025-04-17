@@ -11,7 +11,7 @@ const app = next({
   assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
   basePath: process.env.NEXT_PUBLIC_BASE_URL
 });
-console.log('ccc cunstom server app', app);
+console.log('ccc cunstom server log app', app);
 
 const handle = app.getRequestHandler();
 console.log(
