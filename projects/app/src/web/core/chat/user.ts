@@ -14,7 +14,7 @@ import {
   WechatAuthInfo
 } from '@/global/core/user/api';
 import { agentConfigInfoReq, AgentPermissionData } from '../../../global/core/user/api';
-import { share_h5_url } from '@/config';
+import { share_h5_url } from '@fastgpt/web/common/system/utils';
 
 /**
  * 获取用户信息

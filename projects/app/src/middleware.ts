@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWechatAuthCode } from './web/core/chat/user';
-import { share_h5_url } from './config';
+import { share_h5_url } from '@fastgpt/web/common/system/utils';
 import { API_MARKETING_AI_URL } from '@fastgpt/service/common/system/tools';
 
 export async function middleware(request: NextRequest) {

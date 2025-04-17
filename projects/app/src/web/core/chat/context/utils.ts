@@ -1,6 +1,6 @@
 import { agentConfigInfo } from '@/global/core/user/api';
 import Cookies from 'js-cookie';
-import { share_h5_url } from '@/config';
+import { share_h5_url } from '@fastgpt/web/common/system/utils';
 import { getStaffInfo } from '../user';
 import { redirectToErrorPage } from './errorRedirect';
 import { useRouter } from 'next/router';

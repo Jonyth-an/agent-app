@@ -39,7 +39,7 @@ import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
 import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
 import { tokenIsValid } from '@/web/core/chat/context/utils';
 import { initWechatShare } from '@/web/core/chat/wechat';
-import { share_h5_url } from '@/config';
+import { share_h5_url } from '@fastgpt/web/common/system/utils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {

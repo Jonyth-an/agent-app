@@ -1,7 +1,7 @@
+import { FETCH_JAVA_BASE_URL } from '@fastgpt/web/common/system/utils';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import { getLogger } from 'log4js';
-import { FETCH_JAVA_BASE_URL } from '../../config';
 
 export interface Res<T = any> {
   code: number;
@@ -12,7 +12,7 @@ export interface Res<T = any> {
 }
 
 const logger = getLogger('utils/request.ts');
-
+console.log('ccc request FETCH_JAVA_BASE_URL', FETCH_JAVA_BASE_URL);
 const service = axios.create({
   baseURL: FETCH_JAVA_BASE_URL,
   maxContentLength: Infinity,

@@ -10,7 +10,6 @@ import {
   getRemainingCount
 } from '@/web/core/chat/user';
 import { initWechatShare } from '@/web/core/chat/wechat';
-import { share_h5_url } from '@/config';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import Cookies from 'js-cookie';
 import { clearShareToken, redirectAuth } from './utils';
