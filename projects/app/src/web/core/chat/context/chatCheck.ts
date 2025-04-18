@@ -19,7 +19,7 @@ export const hasUserChatPermission = async (
 ): Promise<boolean> => {
   try {
     // 获取剩余次数,是否有使用限制
-    let { remainingCount, isLimited } = await getAgentPermission({
+    let { remainingCount, isLimited, accessOverLimit } = await getAgentPermission({
       unionid,
       tenantId,
       agentId
@@ -32,7 +32,13 @@ export const hasUserChatPermission = async (
       }
     }
 
+    if (accessOverLimit) {
+      // 如果超限额，则不能访问
+      return false;
+    }
+
     if (!isLimited) {
+      // 如果没有限制，允许访问
       return true;
     }
 
@@ -47,7 +53,7 @@ export const hasUserChatPermission = async (
       );
     }
 
-    // 如果有剩余次数，允许聊天
+    // 当没有超过限制额度，也有限制，需要判断剩余次数，如果有剩余次数，允许聊天
     if (remainingCount >= minCount) {
       return true;
     }

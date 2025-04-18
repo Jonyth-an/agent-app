@@ -146,6 +146,7 @@ export type AgentPermissionParams = {
 export type AgentPermissionData = {
   isLimited: boolean;
   remainingCount: number;
+  accessOverLimit: boolean;
 };
 
 interface ApiResponse<T = any> {
