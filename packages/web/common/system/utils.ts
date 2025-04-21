@@ -11,18 +11,12 @@ export const hasHttps = () => {
 };
 
 export const subRoute = process.env.NEXT_PUBLIC_BASE_URL;
-const isDev = process.env.NODE_ENV === 'development';
 
-export const share_h5_url = isDev ? process.env.NEXT_PUBLIC_SHARE_H5_URL : window.location.origin;
-export const FETCH_JAVA_BASE_URL = isDev
-  ? process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL
-  : window.location.origin;
+export const share_h5_url_node = process.env.NEXT_PUBLIC_SHARE_H5_URL;
 
 export const getWebReqUrl = (url: string = '') => {
   if (!url) return '/';
-  console.log('ddd process.env', process.env);
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  console.log('ddd share_h5_url FETCH_JAVA_BASE_URL', share_h5_url, FETCH_JAVA_BASE_URL);
   // console.log('ccc getWebReqUrl baseUrl pre', baseUrl, url);
   if (!baseUrl || baseUrl.length === 0) {
     if (process.env.NODE_ENV === 'production') {

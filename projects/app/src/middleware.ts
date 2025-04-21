@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWechatAuthCode } from './web/core/chat/user';
-import { share_h5_url } from '@fastgpt/web/common/system/utils';
+import { share_h5_url_node } from '@fastgpt/web/common/system/utils';
 import { API_MARKETING_AI_URL } from '@fastgpt/service/common/system/tools';
 
 export async function middleware(request: NextRequest) {
@@ -74,8 +74,10 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
     if (!openid || !unionid) {
-      const authUrl = `${share_h5_url}/share-agent/chat?${searchParams.toString()}`;
-      const toAuthUrl = getWechatAuthCode(authUrl);
+      console.log('sss middleware share_h5_url_node', share_h5_url_node);
+      const authUrl = `${share_h5_url_node}/share-agent/chat?${searchParams.toString()}`;
+      // @ts-ignore
+      const toAuthUrl = getWechatAuthCode(share_h5_url_node, authUrl);
       console.log('chat middleware request toAuthUrl', toAuthUrl);
       return NextResponse.redirect(toAuthUrl);
     }

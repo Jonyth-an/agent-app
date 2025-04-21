@@ -39,7 +39,6 @@ import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
 import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
 import { tokenIsValid } from '@/web/core/chat/context/utils';
 import { initWechatShare } from '@/web/core/chat/wechat';
-import { share_h5_url } from '@fastgpt/web/common/system/utils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -306,11 +305,6 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       );
       return;
     }
-    const FETCH_JAVA_BASE_URL = process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL;
-    const share_h5_url = process.env.NEXT_PUBLIC_SHARE_H5_URL;
-    console.log('ddd 2 chat FETCH_JAVA_BASE_URL', FETCH_JAVA_BASE_URL);
-    console.log('ddd 2 chat share_h5_url', share_h5_url);
-    console.log('ddd 2 process.env', process.env);
     // 创建一个异步函数在 useEffect 内部调用
     const setupWechatShare = async () => {
       try {
@@ -318,7 +312,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
           title: agentConfigInfo.name,
           desc: agentConfigInfo.description,
           imgUrl: agentConfigInfo.avatar,
-          link: agentConfigInfo.url || `${share_h5_url}/share-agent/chat?appId=${appId}`
+          link: agentConfigInfo.url
         });
         console.log('微信分享初始化完成 agentConfigInfo', agentConfigInfo);
       } catch (error) {

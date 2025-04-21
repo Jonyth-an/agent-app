@@ -1,4 +1,3 @@
-import { FETCH_JAVA_BASE_URL } from '@fastgpt/web/common/system/utils';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import { getLogger } from 'log4js';
@@ -12,9 +11,10 @@ export interface Res<T = any> {
 }
 
 const logger = getLogger('utils/request.ts');
-console.log('ccc request FETCH_JAVA_BASE_URL', FETCH_JAVA_BASE_URL);
+const baseURL = process.env.NEXT_PUBLIC_BASE_URL || '/share-agent';
+console.log('ccc request baseURL', baseURL);
 const service = axios.create({
-  baseURL: FETCH_JAVA_BASE_URL,
+  baseURL: '/',
   maxContentLength: Infinity,
   maxBodyLength: Infinity,
   timeout: 30000,

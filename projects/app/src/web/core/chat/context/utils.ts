@@ -1,9 +1,9 @@
 import { agentConfigInfo } from '@/global/core/user/api';
 import Cookies from 'js-cookie';
-import { share_h5_url } from '@fastgpt/web/common/system/utils';
 import { getStaffInfo } from '../user';
 import { redirectToErrorPage } from './errorRedirect';
 import { useRouter } from 'next/router';
+import { share_h5_url_front } from '@/web/common/utils/config';
 export type RedirectAuthParams = {
   appId: string;
   tenantId: number;
@@ -98,20 +98,22 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
   if (typeof window !== 'undefined') {
     console.log('window 不存在');
   }
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}`;
+  const originUrl = share_h5_url_front();
+  const curUrl = `${originUrl}/share-agent/chat?appId=${appId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
   const queryParams = new URLSearchParams(window.location.search);
   console.log("queryParams.get('debugger')", queryParams.get('debugger'));
 
   // if (isEmptyPage) {
-  //   const emptyUrl = `${share_h5_url}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
+  //   const emptyUrl = `${share_h5_url_front}/share/error?tenantId=${tenantId}&redirect=${encodedCurUrl}`;
   //   console.error('xxx emptyUrl', emptyUrl);
   //   if (process.env.NODE_ENV !== 'development') {
   //     window.location.href = emptyUrl;
   //   }
   // } else {
-  const loginUrl = `${share_h5_url}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
-  const authorizeUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
+
+  const loginUrl = `${originUrl}/share/advLogin?tenantId=${tenantId}&redirect=${curUrl}`;
+  const authorizeUrl = `${originUrl}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(loginUrl)}`;
   console.error('xxx loginUrl', loginUrl);
   console.error('xxx loginUrl authorizeUrl', authorizeUrl);
   if (queryParams.get('debugger') === 'true') {
@@ -127,9 +129,10 @@ export function redirectAuth({ isEmptyPage, appId, tenantId }: RedirectAuthParam
 }
 
 export function toMemberLanding({ appId, tenantId, value }: RedirectAuthParams) {
-  const curUrl = `${share_h5_url}/share-agent/chat?appId=${appId}&tenantId=${tenantId}`;
+  const originUrl = share_h5_url_front();
+  const curUrl = `${originUrl}/share-agent/chat?appId=${appId}&tenantId=${tenantId}`;
   const encodedCurUrl = encodeURIComponent(curUrl);
-  const memberLandingUrl = `${share_h5_url}/share/member?tenantId=${tenantId}&value=${value}&redirect=${encodedCurUrl}`;
+  const memberLandingUrl = `${originUrl}/share/member?tenantId=${tenantId}&value=${value}&redirect=${encodedCurUrl}`;
   console.error('xxx memberLandingUrl', memberLandingUrl);
   if (process.env.NODE_ENV !== 'development') {
     window.location.href = memberLandingUrl;

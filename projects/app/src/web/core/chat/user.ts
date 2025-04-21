@@ -14,7 +14,6 @@ import {
   WechatAuthInfo
 } from '@/global/core/user/api';
 import { agentConfigInfoReq, AgentPermissionData } from '../../../global/core/user/api';
-import { share_h5_url } from '@fastgpt/web/common/system/utils';
 
 /**
  * 获取用户信息
@@ -52,8 +51,8 @@ export const getSignatureInfo = (data: SignatureInfoReq) =>
   );
 
 // 获取微信授权码
-export const getWechatAuthCode = (authUrl: string) => {
-  const toAuthUrl = `${share_h5_url}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(authUrl)}`;
+export const getWechatAuthCode = (originUrl: string, authUrl: string) => {
+  const toAuthUrl = `${originUrl}/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=${encodeURIComponent(authUrl)}`;
   console.log('ddd redirect authUrl', authUrl);
   console.log('ddd redirect toAuthUrl', toAuthUrl);
   return toAuthUrl;

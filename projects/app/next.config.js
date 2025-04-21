@@ -181,9 +181,7 @@ const nextConfig = {
     instrumentationHook: true
   },
   publicRuntimeConfig: {
-    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || '/share-agent',
-    NEXT_PUBLIC_SHARE_H5_URL: process.env.NEXT_PUBLIC_SHARE_H5_URL,
-    NEXT_PUBLIC_FETCH_JAVA_BASE_URL: process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL || '/share-agent'
   }
 };
 

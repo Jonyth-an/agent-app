@@ -5,7 +5,6 @@ import {
   getAgentConfigInfo,
   getStaffInfo,
   getWechatAuthInfo,
-  getWechatAuthCode,
   getAgentPermission,
   getRemainingCount
 } from '@/web/core/chat/user';

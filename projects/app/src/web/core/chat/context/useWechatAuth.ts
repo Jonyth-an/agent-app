@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
 import { getWechatAuthInfo } from '../user';
 import { getWechatAuthCode } from '../user';
-import { share_h5_url } from '@fastgpt/web/common/system/utils';
+import { share_h5_url_front } from '@/web/common/utils/config';
 import { redirectToErrorPage } from './errorRedirect';
 import { useToast } from '@fastgpt/web/hooks/useToast';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
@@ -29,7 +29,6 @@ const useWechatAuth = () => {
   const { setWechatInfoIds, openid, unionid } = useChatStore();
 
   useEffect(() => {
-    console.log('ccc request share_h5_url', share_h5_url);
     const handleWechatAuth = async () => {
       const openId = openid;
       const unionId = unionid;
@@ -96,11 +95,11 @@ const useWechatAuth = () => {
           // @ts-ignore
           if (process.env.NODE_ENV === 'development') {
             // @ts-ignore
-            currentUrl = constructNewUrl(window.location.href, share_h5_url);
+            currentUrl = constructNewUrl(window.location.href, share_h5_url_front());
           } else {
             currentUrl = window.location.href;
           }
-          const toAuthUrl = getWechatAuthCode(currentUrl);
+          const toAuthUrl = getWechatAuthCode(window.location.href, currentUrl);
           console.log('dddd toAuthUrl', toAuthUrl);
           window.location.replace(toAuthUrl);
         }
