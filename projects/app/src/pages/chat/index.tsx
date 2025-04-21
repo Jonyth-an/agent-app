@@ -306,6 +306,11 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       );
       return;
     }
+    const FETCH_JAVA_BASE_URL = process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL;
+    const share_h5_url = process.env.NEXT_PUBLIC_SHARE_H5_URL;
+    console.log('ddd 2 chat FETCH_JAVA_BASE_URL', FETCH_JAVA_BASE_URL);
+    console.log('ddd 2 chat share_h5_url', share_h5_url);
+    console.log('ddd 2 process.env', process.env);
     // 创建一个异步函数在 useEffect 内部调用
     const setupWechatShare = async () => {
       try {
