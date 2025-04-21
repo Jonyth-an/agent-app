@@ -86,5 +86,5 @@ export async function middleware(request: NextRequest) {
 
 // 配置中间件匹配的路径
 export const config = {
-  matcher: ['/chat/:path*', '/api/v1/chat/completions']
+  matcher: ['/chat/:path*', '/api/v1/chat/completions', '/api/v2/chat/completions']
 };

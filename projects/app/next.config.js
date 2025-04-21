@@ -59,16 +59,20 @@ const nextConfig = {
     }
     return [
       {
+        source: '/api/v2/chat/completions', // 匹配 /uc-system 及其子路径
+        destination: 'http://10.5.9.219:3000/api/v2/chat/completions'
+      },
+      {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud.newbanker.cn/uc-system/:path*'
+        destination: 'https://aim-saas-share-dev.newtamp.cn/uc-system/:path*'
       },
       {
         source: '/marketing/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud.newbanker.cn/marketing/:path*'
+        destination: 'https://aim-saas-share-dev.newtamp.cn/marketing/:path*'
       },
       {
         source: '/marketing-ai/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'https://wmcloud.newbanker.cn/marketing-ai/:path*'
+        destination: 'https://aim-saas-share-dev.newtamp.cn/marketing-ai/:path*'
       }
     ];
   },

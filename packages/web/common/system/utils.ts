@@ -17,7 +17,7 @@ export const FETCH_JAVA_BASE_URL = process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL;
 export const getWebReqUrl = (url: string = '') => {
   if (!url) return '/';
   let baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  console.log('ccc share_h5_url FETCH_JAVA_BASE_URL', share_h5_url, FETCH_JAVA_BASE_URL);
+  console.log('ddd share_h5_url FETCH_JAVA_BASE_URL', share_h5_url, FETCH_JAVA_BASE_URL);
   // console.log('ccc getWebReqUrl baseUrl pre', baseUrl, url);
   if (!baseUrl || baseUrl.length === 0) {
     if (process.env.NODE_ENV === 'production') {

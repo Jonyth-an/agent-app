@@ -158,7 +158,9 @@ const ContentCardSkeleton = () => (
 );
 
 const Markdown = (props: Props) => {
+  console.log('ccc Markdown props', props);
   const source = props.source || '';
+  const showAnimation = props.showAnimation || false;
   const CONTENT_CARD_MARK = 'codeClassNameEnum';
   const CONTENT_CARD_TYPE = 'CONTENT_CARD';
   const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
@@ -192,7 +194,10 @@ const Markdown = (props: Props) => {
   useEffect(() => {
     setVisibleItems([]); // 重置状态
     if (!hasContentCardMark || contentCardData.length === 0) return;
-
+    if (!showAnimation) {
+      setVisibleItems(contentCardData);
+      return;
+    }
     const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 600 : 400;
     let currentIndex = 0;
 
