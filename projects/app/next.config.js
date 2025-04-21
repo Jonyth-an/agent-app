@@ -63,6 +63,10 @@ const nextConfig = {
         destination: 'http://10.5.9.219:3000/api/v2/chat/completions'
       },
       {
+        source: '/api/v1/chat/completions', // 匹配 /uc-system 及其子路径
+        destination: 'http://10.5.9.219:3000/api/v1/chat/completions'
+      },
+      {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径
         destination: 'https://aim-saas-share-dev.newtamp.cn/uc-system/:path*'
       },
