@@ -11,8 +11,12 @@ export const hasHttps = () => {
 };
 
 export const subRoute = process.env.NEXT_PUBLIC_BASE_URL;
-export const share_h5_url = process.env.NEXT_PUBLIC_SHARE_H5_URL;
-export const FETCH_JAVA_BASE_URL = process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL;
+const isDev = process.env.NODE_ENV === 'development';
+
+export const share_h5_url = isDev ? process.env.NEXT_PUBLIC_SHARE_H5_URL : window.location.origin;
+export const FETCH_JAVA_BASE_URL = isDev
+  ? process.env.NEXT_PUBLIC_FETCH_JAVA_BASE_URL
+  : window.location.origin;
 
 export const getWebReqUrl = (url: string = '') => {
   if (!url) return '/';
