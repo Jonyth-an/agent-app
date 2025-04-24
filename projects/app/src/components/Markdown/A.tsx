@@ -20,10 +20,14 @@ import MyBox from '@fastgpt/web/components/common/MyBox';
 import RawSourceBox from '../core/dataset/RawSourceBox';
 import { getCollectionSourceData } from '@fastgpt/global/core/dataset/collection/utils';
 import Markdown from '.';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import { RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 
 const A = ({ children, ...props }: any) => {
   console.log('xxx aaa props', children, props);
   const { t } = useTranslation();
+  const { agentConfigInfo, runPlatform } = useChatStore();
+  const card_config = agentConfigInfo.agentConfig.miniprogram.card_config || {};
 
   const { data: quoteData, loading, runAsync } = useRequest2(getQuoteData, {
     manual: true
@@ -96,7 +100,25 @@ const A = ({ children, ...props }: any) => {
     );
   }
 
-  return <Link {...props}>{children}</Link>;
+  const handleClick = () => {
+    const href = props.href;
+    if (runPlatform === RunPlatformEnum.MINI_PROGRAM) {
+      const miniPath = card_config && card_config.miniPath;
+      const url = `${miniPath}?url=${encodeURIComponent(href)}`;
+      console.log('xxx clickCard url', url);
+      wx.miniProgram.navigateTo({
+        url
+      });
+    } else {
+      window.location.href = href;
+    }
+  };
+
+  return (
+    <Link {...props} onClick={handleClick}>
+      {children}
+    </Link>
+  );
 };
 
 export default A;

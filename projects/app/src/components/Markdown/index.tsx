@@ -211,7 +211,7 @@ const Markdown = (props: Props) => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [contentCardData, hasContentCardMark]);
+  }, [contentCardData, hasContentCardMark, showAnimation]);
 
   // 渲染逻辑
   if (!hasContentCardMark || source.length < CONTENT_CARD_MARK.length) {

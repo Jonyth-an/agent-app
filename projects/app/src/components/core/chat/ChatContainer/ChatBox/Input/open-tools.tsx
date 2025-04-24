@@ -70,7 +70,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
   const onShareFriend = () => {
     const url = `${friendMiniPath}?type=${type}&params=${encodeURIComponent(
       JSON.stringify(params)
-    )}&pageName=${pageName}`;
+    )}&pageName=${encodeURIComponent(pageName)}`;
     console.log('ccc onShareFriend url', url);
     wx.miniProgram.navigateTo({ url });
   };
