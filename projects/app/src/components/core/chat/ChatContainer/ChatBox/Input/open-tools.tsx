@@ -5,6 +5,8 @@ import type React from 'react';
 import { useRef } from 'react';
 import { useContextSelector } from 'use-context-selector';
 import { ChatContext } from '@/web/core/chat/context/chatContext';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import { RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 
 interface OpenToolsProps {
   isOpen: boolean;
@@ -17,7 +19,15 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
   const onChangeChatId = useContextSelector(ChatContext, (v) => v.onChangeChatId);
   const albumInputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
-
+  const { agentConfigInfo, runPlatform } = useChatStore();
+  const friend_share_config = agentConfigInfo.agentConfig.miniprogram.friend_share_config || {};
+  console.log('ccc friend_share_config', friend_share_config);
+  const switchFlag = (friend_share_config && friend_share_config.switch) || false;
+  const friendMiniPath = (friend_share_config && friend_share_config.miniPath) || '';
+  const config = (friend_share_config && friend_share_config.config) || {};
+  const params = config.params || {};
+  const type = config.type || {};
+  const pageName = config.pageName || '';
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -56,6 +66,14 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
     cb();
     onToggle();
   };
+
+  const onShareFriend = () => {
+    const url = `${friendMiniPath}?type=${type}&params=${encodeURIComponent(
+      JSON.stringify(params)
+    )}&pageName=${pageName}`;
+    console.log('ccc onShareFriend url', url);
+    wx.miniProgram.navigateTo({ url });
+  };
   return (
     <Flex
       justify="flex-start"
@@ -78,11 +96,15 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
         label="新对话"
         onClick={() => onFnWrapper(onChangeChatId)}
       />
-      <ToolItem
-        icon={<MyIcon name={'common/shareFriend'} w="26px" h="26px" mb={1.5} />}
-        label="分享朋友圈"
-        onClick={() => onFnWrapper(onChangeChatId)}
-      />
+
+      {switchFlag && runPlatform === RunPlatformEnum.MINI_PROGRAM ? (
+        <ToolItem
+          icon={<MyIcon name={'common/shareFriend'} w="26px" h="26px" mb={1.5} />}
+          label="分享朋友圈"
+          onClick={() => onFnWrapper(onShareFriend)}
+        />
+      ) : null}
+
       {/* <ToolItem icon="image" label="相册" onClick={() => albumInputRef.current?.click()} />
       <ToolItem icon="camera" label="拍照" onClick={() => cameraInputRef.current?.click()} />
 

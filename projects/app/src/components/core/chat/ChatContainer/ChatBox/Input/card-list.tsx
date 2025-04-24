@@ -25,7 +25,7 @@ export interface CardItem {
 const CardList = ({ cardItems }: { cardItems: CardItem[] }) => {
   const { agentConfigInfo, runPlatform } = useChatStore();
   const card_config = agentConfigInfo.agentConfig.miniprogram.card_config || {};
-  console.log('ccc card_config', card_config);
+  // console.log('ccc card_config', card_config);
   const miniPath = card_config && card_config.miniPath;
   const theme = useTheme();
   // const { agentConfigInfo } = useChatStore();
@@ -39,8 +39,10 @@ const CardList = ({ cardItems }: { cardItems: CardItem[] }) => {
 
   const clickCard = (item: CardItem) => {
     if (runPlatform === RunPlatformEnum.MINI_PROGRAM) {
+      const url = `${miniPath}?url=${encodeURIComponent(item.url)}`;
+      console.log('xxx clickCard url', url);
       wx.miniProgram.navigateTo({
-        url: `${miniPath}?url=${encodeURIComponent(item.url)}`
+        url
       });
     } else {
       window.location.href = item.url;

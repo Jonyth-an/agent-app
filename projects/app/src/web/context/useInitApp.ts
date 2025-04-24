@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { clientInitData } from '@/web/common/system/staticData';
 import { useRouter } from 'next/router';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
@@ -21,7 +21,7 @@ export const useInitApp = () => {
   };
   const { loadGitStar, setInitd, feConfigs } = useSystemStore();
   const { userInfo } = useUserStore();
-  const { chatId, setRunPlatform, runPlatform } = useChatStore();
+  const { chatId, setRunPlatform, runPlatform, agentConfigInfo } = useChatStore();
   const [scripts, setScripts] = useState<FastGPTFeConfigsType['scripts']>([]);
   const [title, setTitle] = useState(process.env.SYSTEM_NAME || 'Newbanker');
 
@@ -73,10 +73,39 @@ export const useInitApp = () => {
     pollingInterval: 300000 // 5 minutes refresh
   });
 
+  const sendMessageToMiniProgram = useCallback(() => {
+    if (typeof window !== 'undefined' && window.wx && window.wx.miniProgram) {
+      try {
+        const dialog_share_params = {
+          title: agentConfigInfo.name,
+          desc: agentConfigInfo.description,
+          imgUrl: agentConfigInfo.avatar,
+          url: agentConfigInfo.url
+        };
+        console.log('ccc 向小程序发送消息 , dialog_share_params', dialog_share_params);
+        // 向小程序发送消息
+        window.wx.miniProgram.postMessage({
+          data: dialog_share_params
+        });
+      } catch (error) {
+        console.error('ccc 向小程序发送消息失败', error);
+      }
+    }
+  }, [agentConfigInfo]);
+
   useEffect(() => {
     const bool = isMiniProgram();
     if (bool) {
       setRunPlatform(RunPlatformEnum.MINI_PROGRAM);
+      // 页面加载完成后向小程序发送消息
+      if (document.readyState === 'complete') {
+        sendMessageToMiniProgram();
+      } else {
+        window.addEventListener('load', sendMessageToMiniProgram);
+        return () => {
+          window.removeEventListener('load', sendMessageToMiniProgram);
+        };
+      }
     } else {
       setRunPlatform(RunPlatformEnum.H5);
     }
@@ -94,7 +123,7 @@ export const useInitApp = () => {
     if (formatSourceDomain && !sessionStorage.getItem('sourceDomain')) {
       sessionStorage.setItem('sourceDomain', formatSourceDomain);
     }
-  }, [bd_vid, hiId, k, sourceDomain, runPlatform, setRunPlatform]);
+  }, [bd_vid, hiId, k, sourceDomain, runPlatform, setRunPlatform, sendMessageToMiniProgram]);
 
   return {
     feConfigs,

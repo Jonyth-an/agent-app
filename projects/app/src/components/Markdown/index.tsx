@@ -158,7 +158,7 @@ const ContentCardSkeleton = () => (
 );
 
 const Markdown = (props: Props) => {
-  console.log('ccc Markdown props', props);
+  // console.log('ccc Markdown props', props);
   const source = props.source || '';
   const showAnimation = props.showAnimation || false;
   const CONTENT_CARD_MARK = 'codeClassNameEnum';
