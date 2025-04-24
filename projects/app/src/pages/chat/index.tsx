@@ -22,7 +22,7 @@ import { useContextSelector } from 'use-context-selector';
 import dynamic from 'next/dynamic';
 import ChatBox from '@/components/core/chat/ChatContainer/ChatBox';
 import { useSystem } from '@fastgpt/web/hooks/useSystem';
-import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
+import { ChatSourceEnum, RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import ChatRecordContextProvider from '@/web/core/chat/context/chatRecordContext';
 import useChatInitialization from '@/web/core/chat/context/useChatInitialization';
@@ -279,8 +279,19 @@ const Chat = () => {
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const { source, chatId, agentConfigInfo, setSource, setAppId, openid, unionid } = useChatStore();
+  const {
+    source,
+    chatId,
+    agentConfigInfo,
+    setSource,
+    setAppId,
+    openid,
+    unionid,
+    runPlatform
+  } = useChatStore();
   const appKey = agentConfigInfo.appKey;
+  const h5 = agentConfigInfo.agentConfig.h5;
+  const share_switch = h5 && h5.share_switch;
   const router = useRouter();
   // 初始化聊天框
   useMount(async () => {
@@ -305,6 +316,10 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
       );
       return;
     }
+    if (runPlatform !== RunPlatformEnum.H5 || !share_switch) {
+      console.warn('initWechatShare before runPlatform, share_switch ', runPlatform, share_switch);
+      return;
+    }
     // 创建一个异步函数在 useEffect 内部调用
     const setupWechatShare = async () => {
       try {
@@ -321,7 +336,7 @@ const Render = (props: { appId: string; isStandalone?: string }) => {
     };
     // 调用异步函数
     setupWechatShare();
-  }, [agentConfigInfo, appId]);
+  }, [agentConfigInfo, appId, runPlatform, share_switch]);
 
   const chatHistoryProviderParams = useMemo(
     () => ({ appId, appKey, source: ChatSourceEnum.online, openid, unionid }),

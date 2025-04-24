@@ -4,12 +4,15 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
-import { ChatSourceEnum } from '@fastgpt/global/core/chat/constants';
+import { ChatSourceEnum, RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 import { agentConfigInfo, WechatUserInfo, StaffInfo } from '@/global/core/user/api';
 import { ChatStatusType } from '../../app/constants';
 
 // 定义状态类型，描述store中管理的状态和更新状态的方法
 type State = {
+  runPlatform: `${RunPlatformEnum}`;
+  setRunPlatform: (runPlatform: RunPlatformEnum) => void;
+
   shareToken: string; // 存储token
   setShareToken: (token: string) => void;
 
@@ -97,6 +100,12 @@ export const useChatStore = create<State>()(
     persist(
       // 使用persist中间件进行持久化存储
       immer((set, get) => ({
+        runPlatform: RunPlatformEnum.INIT,
+        setRunPlatform(runPlatform: RunPlatformEnum) {
+          set((state) => {
+            state.runPlatform = runPlatform;
+          });
+        },
         openid: Cookies.get('openid') || '',
         unionid: Cookies.get('unionid') || '', // 存储unionid
         wechatInfoId: Cookies.get('wechatInfoId') || '',
@@ -200,7 +209,16 @@ export const useChatStore = create<State>()(
           description: '',
           agentConfig: {
             list: [],
-            weChatShareConfig: {}
+            weChatShareConfig: {},
+            h5: {
+              share_switch: true
+            },
+            miniprogram: {
+              dialog_share_config: {},
+              friend_share_config: {},
+              pay_config: {},
+              card_config: {}
+            }
           },
           tenantId: -1,
           status: '',
@@ -208,9 +226,46 @@ export const useChatStore = create<State>()(
         },
         setAgentConfigInfo(config) {
           set((state) => {
+            const agConfigStr = config.agentConfig;
+            delete config.agentConfig;
+            // console.log('xxx agentConfigInfo2322 before config, agConfigStr', config, agConfigStr);
             Object.assign(state.agentConfigInfo, config);
-            if (config.agentConfig && typeof config.agentConfig === 'string') {
-              state.agentConfigInfo.agentConfig = JSON.parse(config.agentConfig);
+            if (typeof agConfigStr === 'string' && agConfigStr.length > 0) {
+              try {
+                const agConfig = JSON.parse(agConfigStr);
+                console.log('xxx agentConfigInfo2322 agConfig', agConfig);
+                if (agConfig && agConfig.list) {
+                  state.agentConfigInfo.agentConfig.list = agConfig.list || [];
+                }
+
+                if (agConfig && agConfig.h5) {
+                  state.agentConfigInfo.agentConfig.h5 = agConfig.h5 || {};
+                }
+
+                if (agConfig && agConfig.miniprogram && agConfig.miniprogram.dialog_share_config) {
+                  state.agentConfigInfo.agentConfig.miniprogram.dialog_share_config =
+                    agConfig.miniprogram.dialog_share_config || {};
+                }
+
+                if (agConfig && agConfig.miniprogram && agConfig.miniprogram.friend_share_config) {
+                  state.agentConfigInfo.agentConfig.miniprogram.friend_share_config =
+                    agConfig.miniprogram.friend_share_config || {};
+                }
+
+                if (agConfig && agConfig.miniprogram && agConfig.miniprogram.pay_config) {
+                  state.agentConfigInfo.agentConfig.miniprogram.pay_config =
+                    agConfig.miniprogram.pay_config || {};
+                }
+
+                if (agConfig && agConfig.miniprogram && agConfig.miniprogram.card_config) {
+                  state.agentConfigInfo.agentConfig.miniprogram.card_config =
+                    agConfig.miniprogram.card_config || {};
+                }
+
+                console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
+              } catch (error) {
+                console.error('agentConfigInfo.agentConfig error:', error);
+              }
             }
 
             Cookies.remove('nb_fastgpt_token');
@@ -219,7 +274,6 @@ export const useChatStore = create<State>()(
               expires: 45
             });
             // Cookies.set('nb_fastgpt_token', config.appKey, { expires: 2, path: '/' });
-            console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
           });
         },
         staffInfo: {

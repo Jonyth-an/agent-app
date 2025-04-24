@@ -8,6 +8,8 @@ import { TrackEventName } from '../common/system/constants';
 import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 import { useUserStore } from '../support/user/useUserStore';
 import { useChatStore } from '../core/chat/context/useChatStore';
+import { isMiniProgram } from '../core/chat/context/utils';
+import { RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 
 export const useInitApp = () => {
   const router = useRouter();
@@ -19,7 +21,7 @@ export const useInitApp = () => {
   };
   const { loadGitStar, setInitd, feConfigs } = useSystemStore();
   const { userInfo } = useUserStore();
-  const { chatId } = useChatStore();
+  const { chatId, setRunPlatform, runPlatform } = useChatStore();
   const [scripts, setScripts] = useState<FastGPTFeConfigsType['scripts']>([]);
   const [title, setTitle] = useState(process.env.SYSTEM_NAME || 'Newbanker');
 
@@ -72,6 +74,14 @@ export const useInitApp = () => {
   });
 
   useEffect(() => {
+    const bool = isMiniProgram();
+    if (bool) {
+      setRunPlatform(RunPlatformEnum.MINI_PROGRAM);
+    } else {
+      setRunPlatform(RunPlatformEnum.H5);
+    }
+    console.log('ccc runPlatform', runPlatform);
+
     hiId && localStorage.setItem('inviterId', hiId);
     bd_vid && sessionStorage.setItem('bd_vid', bd_vid);
     k && sessionStorage.setItem('fastgpt_sem', JSON.stringify({ keyword: k }));
@@ -84,7 +94,7 @@ export const useInitApp = () => {
     if (formatSourceDomain && !sessionStorage.getItem('sourceDomain')) {
       sessionStorage.setItem('sourceDomain', formatSourceDomain);
     }
-  }, [bd_vid, hiId, k, sourceDomain]);
+  }, [bd_vid, hiId, k, sourceDomain, runPlatform, setRunPlatform]);
 
   return {
     feConfigs,

@@ -78,6 +78,11 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
         label="新对话"
         onClick={() => onFnWrapper(onChangeChatId)}
       />
+      <ToolItem
+        icon={<MyIcon name={'common/shareFriend'} w="26px" h="26px" mb={1.5} />}
+        label="分享朋友圈"
+        onClick={() => onFnWrapper(onChangeChatId)}
+      />
       {/* <ToolItem icon="image" label="相册" onClick={() => albumInputRef.current?.click()} />
       <ToolItem icon="camera" label="拍照" onClick={() => cameraInputRef.current?.click()} />
 

@@ -41,6 +41,12 @@ export enum ChatSourceEnum {
   wecom = 'wecom'
 }
 
+export enum RunPlatformEnum {
+  INIT = 'INIT',
+  H5 = 'H5',
+  MINI_PROGRAM = 'MINI_PROGRAM'
+}
+
 export const ChatSourceMap = {
   [ChatSourceEnum.test]: {
     name: i18nT('common:core.chat.logs.test')

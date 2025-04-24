@@ -140,8 +140,9 @@ export function toMemberLanding({ appId, tenantId, value }: RedirectAuthParams) 
 }
 
 export const isMiniProgram = () => {
-  const ua = navigator.userAgent.toLowerCase();
-  const bool = /miniprogram/.test(ua);
-  console.log('xxx isMiniProgram', bool);
-  return bool;
+  let ua = window.navigator.userAgent.toLowerCase();
+  console.log(ua);
+  let bool = ua.indexOf('miniprogram') != -1;
+  // true 在微信小程序  false 在微信网页
+  return !!bool;
 };
