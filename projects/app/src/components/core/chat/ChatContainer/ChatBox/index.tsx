@@ -31,7 +31,12 @@ import type { AdminMarkType } from './components/SelectMarkCollection';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 
 import { postQuestionGuide } from '@/web/core/ai/api';
-import type { ChatBoxInputType, ChatBoxInputFormType, SendPromptFnType, ChatInputRefType } from './type.d';
+import type {
+  ChatBoxInputType,
+  ChatBoxInputFormType,
+  SendPromptFnType,
+  ChatInputRefType
+} from './type.d';
 import type { StartChatFnProps, generatingMessageProps } from '../type';
 import ChatInput from './Input/ChatInput';
 import ChatBoxDivider from '../../Divider';
@@ -77,7 +82,6 @@ const SelectMarkCollection = dynamic(() => import('./components/SelectMarkCollec
 const Empty = dynamic(() => import('./components/Empty'));
 const WelcomeBox = dynamic(() => import('./components/WelcomeBox'));
 const VariableInput = dynamic(() => import('./components/VariableInput'));
-
 
 enum FeedbackTypeEnum {
   user = 'user',
@@ -559,13 +563,13 @@ const ChatBox = ({
             autoTTSResponse && splitText2Audio(responseText, true);
           } catch (err: any) {
             console.log('ChatBox/index error', err);
-            if(err.message === '问答额度已用完'){
+            if (err.message === '问答额度已用完') {
               setChatStauts(ChatStatusType.DISABLE_CHAT);
               toast({
                 title: '问答额度已用完',
                 status: 'warning'
               });
-            } else if (err.message === '权限验证失败'){
+            } else if (err.message === '权限验证失败') {
               setChatStauts(ChatStatusType.DISABLE_CHAT);
             } else {
               toast({
@@ -907,15 +911,13 @@ const ChatBox = ({
   }));
   const chatInputRef = useRef<ChatInputRefType>(null);
 
-
- 
   const RenderRecords = useMemo(() => {
-  console.log("ccc RenderRecords chatStauts", chatStauts)
+    console.log('ccc RenderRecords chatStauts', chatStauts);
     return (
       <ScrollData
-      onClick={(event) => {
-        chatInputRef.current?.closeTools();
-      }}
+        onClick={(event) => {
+          chatInputRef.current?.closeTools();
+        }}
         ScrollContainerRef={ScrollContainerRef}
         flex={'1 0 0'}
         h={0}
@@ -925,29 +927,36 @@ const ChatBox = ({
         pb={3}
       >
         <Box id="chat-container" maxW={['100%', '92%']} h={'100%'} mx={'auto'}>
-          <Box 
-           style={{
-            position: 'relative',
-            // pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none', // 禁用点击事件
-          }}>
-            <Box style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none', }}>
+          <Box
+            style={{
+              position: 'relative'
+              // pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none', // 禁用点击事件
+            }}
+          >
+            <Box
+              style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
+            >
               {/* {showEmpty && <Empty />} */}
-              {!!welcomeText && <WelcomeBox welcomeText={welcomeText}  />}
+              {!!welcomeText && <WelcomeBox welcomeText={welcomeText} />}
 
               {/* variable input */}
               {!!variableList?.length && (
-                <VariableInput chatStarted={chatStarted} chatForm={chatForm}  />
+                <VariableInput chatStarted={chatStarted} chatForm={chatForm} />
               )}
 
               {/* chat history */}
-              <Box id={'history'} style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}>
+              <Box
+                id={'history'}
+                style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
+              >
                 {chatRecords.map((item, index) => (
                   <Box key={item.dataId}>
                     {/* 并且时间和上一条的time相差超过十分钟 */}
                     {index !== 0 &&
                       item.time &&
                       chatRecords[index - 1].time !== undefined &&
-                      new Date(item.time).getTime() - new Date(chatRecords[index - 1].time!).getTime() >
+                      new Date(item.time).getTime() -
+                        new Date(chatRecords[index - 1].time!).getTime() >
                         10 * 60 * 1000 && <TimeBox time={item.time} />}
 
                     <Box py={item.hideInUI ? 0 : 6}>
@@ -1028,19 +1037,20 @@ const ChatBox = ({
                 ))}
               </Box>
             </Box>
-            {chatStauts === ChatStatusType.DISABLE_CHAT && <DisableChatModel/>}
+            {chatStauts === ChatStatusType.DISABLE_CHAT && <DisableChatModel />}
           </Box>
 
           {/* pay mark  */}
           {/* chatStauts:{ chatStauts} */}
-          
-          {chatStauts === ChatStatusType.DISABLE_CHAT && <PaymentModal/> } 
+
+          {chatStauts === ChatStatusType.DISABLE_CHAT && <PaymentModal />}
           {/* <PaymentModal config={modalConfig} onClose={handleClose} /> */}
           {/* {!chatStauts && <PaymentModal/> }  */}
         </Box>
       </ScrollData>
     );
   }, [
+    isChatting,
     chatStauts,
     ScrollData,
     chatForm,
@@ -1064,7 +1074,7 @@ const ChatBox = ({
     welcomeText,
     agentConfigInfo.avatar
   ]);
-  
+
   return (
     <MyBox
       isLoading={isLoading}

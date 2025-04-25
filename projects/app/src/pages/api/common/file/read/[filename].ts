@@ -27,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   try {
     addLog.debug('file/read -> start', { query: req.query });
     logger.debug('Start reading file', { query: req.query });
-    
+
     await connectToDatabase();
 
     const { token, filename } = req.query as { token: string; filename: string };
@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const [file, fileStream] = await Promise.all([
       getFileById({ bucketName, fileId }),
       getDownloadStream({ bucketName, fileId })
-    ]).catch(err => {
+    ]).catch((err) => {
       addLog.error('file/read -> get file error', { err, fileId, bucketName });
       logger.error('Get file error', { err, fileId, bucketName });
       throw err;
@@ -56,11 +56,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return Promise.reject(CommonErrEnum.fileNotFound);
     }
 
-    addLog.debug('file/read -> file info', { 
+    addLog.debug('file/read -> file info', {
       filename: file.filename,
       contentType: file.contentType,
       length: file.length,
-      metadata: file.metadata 
+      metadata: file.metadata
     });
 
     const { stream, encoding } = await (async () => {
@@ -71,7 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         };
       }
       return stream2Encoding(fileStream);
-    })().catch(err => {
+    })().catch((err) => {
       addLog.error('file/read -> stream encoding error', err);
       logger.error('Stream encoding error', err);
       throw err;
@@ -95,19 +95,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       logger.error('Stream pipe error', err);
       res.status(500).end();
     });
-
   } catch (error) {
-    addLog.error('file/read -> handler error', { 
+    addLog.error('file/read -> handler error', {
       error,
       query: req.query,
       stack: error instanceof Error ? error.stack : undefined
     });
-    logger.error('Handler error', { 
+    logger.error('Handler error', {
       error,
       query: req.query,
       stack: error instanceof Error ? error.stack : undefined
     });
-    
+
     jsonRes(res, {
       code: 500,
       error: error instanceof Error ? error.message : error

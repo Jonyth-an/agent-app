@@ -29,7 +29,11 @@ const A = ({ children, ...props }: any) => {
   const { agentConfigInfo, runPlatform } = useChatStore();
   const card_config = agentConfigInfo.agentConfig.miniprogram.card_config || {};
 
-  const { data: quoteData, loading, runAsync } = useRequest2(getQuoteData, {
+  const {
+    data: quoteData,
+    loading,
+    runAsync
+  } = useRequest2(getQuoteData, {
     manual: true
   });
 

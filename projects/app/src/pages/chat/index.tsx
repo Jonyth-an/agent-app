@@ -279,16 +279,8 @@ const Chat = () => {
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const {
-    source,
-    chatId,
-    agentConfigInfo,
-    setSource,
-    setAppId,
-    openid,
-    unionid,
-    runPlatform
-  } = useChatStore();
+  const { source, chatId, agentConfigInfo, setSource, setAppId, openid, unionid, runPlatform } =
+    useChatStore();
   const appKey = agentConfigInfo.appKey;
   const h5 = agentConfigInfo.agentConfig.h5;
   const share_switch = h5 && h5.share_switch;

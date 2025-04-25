@@ -25,28 +25,28 @@ export class ScreenshotService {
     } = {}
   ): Promise<Buffer | string> {
     const { width = 1280, height = 800, fullPage = true, timeout = 30000 } = options;
-    
+
     this.logger.log(`开始截图: ${url}`);
-    
+
     // 启动浏览器
     const browser = await puppeteer.launch({
       headless: 'new',
       args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
     });
-    
+
     try {
       // 创建新页面
       const page = await browser.newPage();
-      
+
       // 设置视口大小
       await page.setViewport({ width, height });
-      
+
       // 设置超时
       await page.setDefaultNavigationTimeout(timeout);
-      
+
       // 导航到URL
       await page.goto(url, { waitUntil: 'networkidle2' });
-      
+
       // 等待页面加载完成
       await page.evaluate(() => {
         return new Promise<void>((resolve) => {
@@ -60,26 +60,26 @@ export class ScreenshotService {
           }
         });
       });
-      
+
       // 截图
-      const screenshot = await page.screenshot({ 
+      const screenshot = await page.screenshot({
         fullPage,
         type: 'png',
         encoding: 'binary'
       });
-      
+
       // 如果提供了输出路径，保存文件
       if (outputPath) {
         const dir = path.dirname(outputPath);
         if (!fs.existsSync(dir)) {
           fs.mkdirSync(dir, { recursive: true });
         }
-        
+
         fs.writeFileSync(outputPath, screenshot);
         this.logger.log(`截图已保存至: ${outputPath}`);
         return outputPath;
       }
-      
+
       return screenshot as Buffer;
     } catch (error) {
       this.logger.error(`截图失败: ${error.message}`, error.stack);

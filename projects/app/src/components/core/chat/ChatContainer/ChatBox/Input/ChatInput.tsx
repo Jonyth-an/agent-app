@@ -241,8 +241,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
               isSpeaking
                 ? t('common:core.chat.Speaking')
                 : isPc
-                ? t('common:core.chat.Type a message')
-                : t('chat:input_placeholder_phone')
+                  ? t('common:core.chat.Type a message')
+                  : t('chat:input_placeholder_phone')
             }
             resize={'none'}
             rows={1}
@@ -395,8 +395,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                   isSpeaking || isChatting
                     ? ''
                     : !havInput || hasFileUploading
-                    ? '#E5E5E5'
-                    : 'primary.500'
+                      ? '#E5E5E5'
+                      : 'primary.500'
                 }
                 cursor={havInput ? 'pointer' : 'not-allowed'}
                 lineHeight={1}

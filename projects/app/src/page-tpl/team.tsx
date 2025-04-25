@@ -179,7 +179,11 @@ const Chat = ({ myApps }: { myApps: AppListItemType[] }) => {
 
   return (
     <Flex h={'100%'}>
-      <NextHead title={agentConfigInfo.name} icon={agentConfigInfo.avatar} desc={agentConfigInfo.description}></NextHead>
+      <NextHead
+        title={agentConfigInfo.name}
+        icon={agentConfigInfo.avatar}
+        desc={agentConfigInfo.description}
+      ></NextHead>
       {/* pc show myself apps */}
       {isPc && (
         <Box borderRight={theme.borders.base} w={'220px'} flexShrink={0}>

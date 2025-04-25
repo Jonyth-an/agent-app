@@ -91,7 +91,7 @@ const AIContentCard = React.memo(function AIContentCard({
   isChatting: boolean;
   questionGuides: string[];
 }) {
-  console.log("xxx aaa questionGuides", questionGuides)
+  console.log('xxx aaa questionGuides', questionGuides);
   return (
     <Flex flexDirection={'column'} gap={2}>
       {chatValue.map((value, i) => {
@@ -210,7 +210,7 @@ const ChatItem = (props: Props) => {
     return groupedValues;
   }, [chat.obj, chat.value, isChatting]);
 
-  const { agentConfigInfo} = useChatStore();
+  const { agentConfigInfo } = useChatStore();
   return (
     <Box
       _hover={{
@@ -240,7 +240,7 @@ const ChatItem = (props: Props) => {
             <ChatController {...props} isLastChild={isLastChild} />
           </Flex>
         )}
-        
+
         {type === ChatRoleEnum.AI ? <ChatAvatar src={agentConfigInfo.avatar} type={type} /> : null}
 
         {/* Workflow status */}
