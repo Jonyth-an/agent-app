@@ -140,7 +140,7 @@ export const useSystemStore = create<State>()(
             state.feConfigs = res.feConfigs ?? state.feConfigs;
             state.subPlans = res.subPlans ?? state.subPlans;
             state.systemVersion = res.systemVersion ?? state.systemVersion;
-            state.feConfigs.systemTitle = 'Newbanker';
+            state.feConfigs.systemTitle = '';
             state.llmModelList =
               res.activeModelList?.filter((item) => item.type === ModelTypeEnum.llm) ??
               state.llmModelList;
