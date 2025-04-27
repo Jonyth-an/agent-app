@@ -64,6 +64,11 @@ export const getChatRecords = (data: getPaginationRecordsBody) =>
     headers: { Authorization: `Bearer ${data.appKey}` }
   });
 
+export const getChatRecordDetail = (data: getPaginationRecordsBody) =>
+  POST<getPaginationRecordsResponse>('core/chat/getRecordDetail', data, {
+    headers: { Authorization: `Bearer ${data.appKey}` }
+  });
+
 /**
  * delete one history
  */

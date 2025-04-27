@@ -37,6 +37,27 @@ export async function getChatItems({
   return { histories, total };
 }
 
+export async function getChatItemDetail({
+  dataId,
+  appId,
+  field
+}: {
+  dataId: string;
+  appId: string;
+  field: string;
+}): Promise<{ histories: ChatItemType[] }> {
+  const [histories] = await Promise.all([
+    MongoChatItem.find({ appId, dataId }, field).sort({ _id: -1 }).lean()
+  ]);
+  histories.reverse();
+
+  histories.forEach((item) => {
+    // @ts-ignore
+    item.value = adaptStringValue(item.value);
+  });
+
+  return { histories };
+}
 /* Temporary adaptation for old conversation records */
 export const adaptStringValue = (value: any): ChatItemValueItemType[] => {
   if (typeof value === 'string') {

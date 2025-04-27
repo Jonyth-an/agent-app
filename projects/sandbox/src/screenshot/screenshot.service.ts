@@ -24,7 +24,7 @@ export class ScreenshotService {
       timeout?: number;
     } = {}
   ): Promise<Buffer | string> {
-    const { width = 1280, height = 800, fullPage = true, timeout = 30000 } = options;
+    const { width = 375, height = 933, fullPage = true, timeout = 30000 } = options;
 
     this.logger.log(`开始截图: ${url}`);
 
@@ -39,7 +39,7 @@ export class ScreenshotService {
       const page = await browser.newPage();
 
       // 设置视口大小
-      await page.setViewport({ width, height });
+      await page.setViewport({ width, height, deviceScaleFactor: 3.0 });
 
       // 设置超时
       await page.setDefaultNavigationTimeout(timeout);

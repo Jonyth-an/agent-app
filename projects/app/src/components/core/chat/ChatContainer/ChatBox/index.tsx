@@ -1050,14 +1050,12 @@ const ChatBox = ({
       </ScrollData>
     );
   }, [
-    isChatting,
     chatStauts,
     ScrollData,
     chatForm,
     chatRecords,
     chatStarted,
     delOneMessage,
-    isChatting,
     onAddUserDislike,
     onAddUserLike,
     onCloseCustomFeedback,

@@ -32,7 +32,7 @@ platform.json
 testApi/
 local/
 dist/
-
+pnpm-lock.yaml
 # hugo
 **/.hugo_build.lock
 docSite/public/

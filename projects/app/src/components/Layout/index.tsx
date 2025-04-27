@@ -26,6 +26,7 @@ const UpdateContact = dynamic(() => import('@/components/support/user/inform/Upd
 const pcUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,
   '/login': true,
+  '/file': true,
   '/pageError': true,
   '/login/provider': true,
   '/login/fastlogin': true,
@@ -38,6 +39,7 @@ const pcUnShowLayoutRoute: Record<string, boolean> = {
 };
 const phoneUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,
+  '/file': true,
   '/login': true,
   '/pageError': true,
   '/login/provider': true,

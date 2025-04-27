@@ -5,7 +5,7 @@ import { useScrollPagination } from '@fastgpt/web/hooks/useScrollPagination';
 import React, { ReactNode, useMemo, useState } from 'react';
 import { createContext, useContextSelector } from 'use-context-selector';
 import { ChatItemContext } from './chatItemContext';
-import { getChatRecords } from '../api';
+import { getChatRecordDetail, getChatRecords } from '../api';
 import { ChatStatusEnum } from '@fastgpt/global/core/chat/constants';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { BoxProps } from '@chakra-ui/react';
@@ -66,6 +66,69 @@ const ChatRecordContextProvider = ({
       setIsChatRecordsLoaded(false);
 
       const res = await getChatRecords(data);
+
+      // First load scroll to bottom
+      if (Number(data.offset) === 0) {
+        function scrollToBottom() {
+          requestAnimationFrame(
+            ChatBoxRef?.current ? () => ChatBoxRef?.current?.scrollToBottom?.() : scrollToBottom
+          );
+        }
+        scrollToBottom();
+      }
+
+      setIsChatRecordsLoaded(true);
+
+      return {
+        ...res,
+        list: res.list.map((item) => ({
+          ...item,
+          dataId: item.dataId || getNanoid(),
+          status: ChatStatusEnum.finish
+        }))
+      };
+    },
+    {
+      pageSize: 10,
+      refreshDeps: [params],
+      params,
+      scrollLoadType: 'top',
+      showErrorToast: false
+    }
+  );
+
+  const contextValue = useMemo(() => {
+    return {
+      chatRecords,
+      setChatRecords,
+      totalRecordsCount,
+      ScrollData,
+      isChatRecordsLoaded
+    };
+  }, [ScrollData, chatRecords, setChatRecords, totalRecordsCount, isChatRecordsLoaded]);
+  return <ChatRecordContext.Provider value={contextValue}>{children}</ChatRecordContext.Provider>;
+};
+
+export const ChatRecordDetailContextProvider = ({
+  children,
+  params
+}: {
+  children: ReactNode;
+  params: Record<string, any>;
+}) => {
+  const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
+  const [isChatRecordsLoaded, setIsChatRecordsLoaded] = useState(false);
+
+  const {
+    data: chatRecords,
+    ScrollData,
+    setData: setChatRecords,
+    total: totalRecordsCount
+  } = useScrollPagination(
+    async (data: getPaginationRecordsBody): Promise<PaginationResponse<ChatSiteItemType>> => {
+      setIsChatRecordsLoaded(false);
+      console.log('ccc chatRecordContext data', data);
+      const res = await getChatRecordDetail(data);
 
       // First load scroll to bottom
       if (Number(data.offset) === 0) {

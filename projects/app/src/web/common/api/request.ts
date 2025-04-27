@@ -82,7 +82,7 @@ function requestFinish({ signId, url }: { signId?: string; url: string }) {
  * 请求开始
  */
 function startInterceptors(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig {
-  if (config.headers) {
+  if (config.headers && config.headers.Authorization === undefined) {
     config.headers.Authorization = `Bearer ${Cookies.get('appKey')}`;
   }
 
