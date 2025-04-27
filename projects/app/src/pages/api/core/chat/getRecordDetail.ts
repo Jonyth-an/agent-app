@@ -11,11 +11,7 @@ import { AppErrEnum } from '@fastgpt/global/common/error/code/app';
 import { ChatItemValueTypeEnum, ChatRoleEnum } from '@fastgpt/global/core/chat/constants';
 import { filterPublicNodeResponseData } from '@fastgpt/global/core/chat/utils';
 import { GetChatTypeEnum } from '@/global/core/chat/constants';
-import {
-  PaginationDetailResponse,
-  PaginationProps,
-  PaginationResponse
-} from '@fastgpt/web/common/fetch/type';
+import { PaginationProps, PaginationResponse } from '@fastgpt/web/common/fetch/type';
 import { ChatItemType } from '@fastgpt/global/core/chat/type';
 import { parsePaginationRequest } from '@fastgpt/service/common/api/pagination';
 

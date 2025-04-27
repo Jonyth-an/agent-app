@@ -1,84 +1,38 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import NextHead from '@/components/common/NextHead';
-import { Box, Flex, Drawer, DrawerOverlay, DrawerContent, useTheme } from '@chakra-ui/react';
-import { StreamCBParams, streamFetch } from '@/web/common/api/fetch';
+import { Box, Flex } from '@chakra-ui/react';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
-import type { StartChatFnProps } from '@/components/core/chat/ChatContainer/type';
 import PageContainer from '@/components/PageContainer';
-import SideBar from '@/components/SideBar';
-import ChatHistorySlider from '@/pageComponents/chat/ChatHistorySlider';
 import { serviceSideProps } from '@fastgpt/web/common/system/nextjs';
-import { getChatTitleFromChatMessage } from '@fastgpt/global/core/chat/utils';
-import { GPTMessages2Chats } from '@fastgpt/global/core/chat/adapt';
-import { getMyApps } from '@/web/core/app/api';
 import { useRequest2 } from '@fastgpt/web/hooks/useRequest';
 import { useUserStore } from '@/web/support/user/useUserStore';
 import { useMount } from 'ahooks';
-import { getNanoid } from '@fastgpt/global/common/string/tools';
 import { GetChatTypeEnum } from '@/global/core/chat/constants';
-import ChatContextProvider, { ChatContext } from '@/web/core/chat/context/chatContext';
-import { AppListItemType } from '@fastgpt/global/core/app/type';
 import { useContextSelector } from 'use-context-selector';
-import dynamic from 'next/dynamic';
-import ChatBox from '@/components/core/chat/ChatContainer/ChatBox';
-import { useSystem } from '@fastgpt/web/hooks/useSystem';
 import { ChatRoleEnum, ChatSourceEnum, RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
 import ChatItemContextProvider, { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
-import ChatRecordContextProvider, {
-  ChatRecordDetailContextProvider
+import {
+  ChatRecordDetailContextProvider,
+  ChatRecordContext
 } from '@/web/core/chat/context/chatRecordContext';
-import useChatInitialization from '@/web/core/chat/context/useChatInitialization';
-import { useTranslation } from 'next-i18next';
+
 import { getInitChatInfo } from '@/web/core/chat/api';
-import Cookies from 'js-cookie';
 import { redirectToErrorPage } from '@/web/core/chat/context/errorRedirect';
 import { useRouter } from 'next/router';
-import useWechatAuth from '@/web/core/chat/context/useWechatAuth';
-import { getAgentPermission, getRemainingCount, saveChatLog } from '../../web/core/chat/user';
-import { convertTimeToTimestamp, getCurrentTimestamp } from '@/web/core/chat/utils';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
-import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
-import { tokenIsValid } from '@/web/core/chat/context/utils';
-import { initWechatShare } from '@/web/core/chat/wechat';
 import ChatItemFile from '@/components/core/chat/ChatContainer/ChatBox/components/ChatItemFile';
-const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
+import { ChatContext } from '@/web/core/chat/context/chatContext';
 
 const Chat = () => {
-  const { t } = useTranslation();
-  const { isPc } = useSystem();
   const router = useRouter();
   const { userInfo } = useUserStore();
-  const isOpenSlider = useContextSelector(ChatContext, (v) => v.isOpenSlider);
-  const onCloseSlider = useContextSelector(ChatContext, (v) => v.onCloseSlider);
   const forbidLoadChat = useContextSelector(ChatContext, (v) => v.forbidLoadChat);
-  const onChangeChatId = useContextSelector(ChatContext, (v) => v.onChangeChatId);
-  const onUpdateHistoryTitle = useContextSelector(ChatContext, (v) => v.onUpdateHistoryTitle);
-
+  const chatRecords = useContextSelector(ChatRecordContext, (v) => v.chatRecords);
   const resetVariables = useContextSelector(ChatItemContext, (v) => v.resetVariables);
-  const isPlugin = useContextSelector(ChatItemContext, (v) => v.isPlugin);
   const setChatBoxData = useContextSelector(ChatItemContext, (v) => v.setChatBoxData);
-  const { toast } = useToast();
 
-  const {
-    staffInfo,
-    chatId,
-    appId,
-    agentConfigInfo,
-    outLinkAuthData,
-    setShareToken,
-    setStaffInfo,
-    unionid,
-    openid,
-    nickname,
-    setChatStauts,
-    chatStauts
-  } = useChatStore();
-  const tenantId = agentConfigInfo.tenantId;
-  const agentId = agentConfigInfo.agentId;
+  const { chatId, appId, agentConfigInfo, unionid, openid } = useChatStore();
+
   const appKey = agentConfigInfo.appKey;
-  const permissionType = agentConfigInfo.permissionType;
-  const name = staffInfo.name;
 
   // Load chat init data
 
@@ -109,7 +63,7 @@ const Chat = () => {
       }
     }
   );
-
+  console.log('xxx file chatRecords', chatRecords);
   const chetItemFileObj = {
     type: ChatRoleEnum.AI,
     avatar:
@@ -522,7 +476,7 @@ const Chat = () => {
             {/* chat box */}
             <Box flex={'1 0 0'} bg={'white'}>
               {/* @ts-ignore */}
-              <ChatItemFile isLastChild={true} {...chetItemFileObj} />
+              {chatRecords && chatRecords.length > 0 && <ChatItemFile {...chatRecords[0]} />}
             </Box>
           </Flex>
         </Flex>
@@ -539,9 +493,7 @@ const Render = (props: {
 }) => {
   console.log('xxx props', props);
   const { appId, isStandalone, appKey, dataId } = props;
-  const { source, chatId, agentConfigInfo, setSource, setAppId, openid, unionid, runPlatform } =
-    useChatStore();
-  // const appKey = 'fastgpt-uzalJfJGopouieZfRxol4e7Xlb0Qpw3msrCABLTWVXQ2lqXarbWh60omT';
+  const { source, chatId, setSource, setAppId } = useChatStore();
   const router = useRouter();
   // 初始化聊天框
   useMount(async () => {
@@ -569,7 +521,6 @@ const Render = (props: {
   }, [appId, chatId, appKey, dataId]);
 
   return source === ChatSourceEnum.online && !!appKey ? (
-    // <ChatContextProvider params={chatHistoryProviderParams}>
     <ChatItemContextProvider
       showRouteToAppDetail={isStandalone !== '1'}
       showRouteToDatasetDetail={isStandalone !== '1'}
@@ -580,8 +531,7 @@ const Render = (props: {
         <Chat />
       </ChatRecordDetailContextProvider>
     </ChatItemContextProvider>
-  ) : // </ChatContextProvider>
-  null;
+  ) : null;
 };
 
 export async function getServerSideProps(context: any) {
