@@ -53,11 +53,11 @@ class Logger {
         },
         dateRollingFile: {
           ...config,
-          filename: path.join(logDir, `tmagic-editor-${filename}`)
+          filename: path.join(logDir, `sandbox-${filename}`)
         },
         errorsFile: {
           ...config,
-          filename: path.join(logDir, `tmagic-editor-${filename}-error`)
+          filename: path.join(logDir, `sandbox-${filename}-error`)
         },
         errors: {
           type: 'logLevelFilter',
@@ -71,16 +71,16 @@ class Logger {
         healthy: {
           // 外部 健康检查
           ...config,
-          filename: path.join(logDir, `tmagic-editor-server-healthy`)
+          filename: path.join(logDir, `sandbox-server-healthy`)
         },
 
         agentRequest: {
           ...config,
-          filename: path.join(logDir, `tmagic-editor-server-agent-request`)
+          filename: path.join(logDir, `sandbox-server-agent-request`)
         },
         agentError: {
           ...config,
-          filename: path.join(logDir, `tmagic-editor-server--agent-error`)
+          filename: path.join(logDir, `sandbox-server--agent-error`)
         },
         agentErrorFilter: {
           type: 'logLevelFilter',

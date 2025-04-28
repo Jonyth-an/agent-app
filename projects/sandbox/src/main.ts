@@ -6,7 +6,13 @@ import { HttpExceptionFilter } from './http-exception.filter';
 import { ResponseInterceptor } from './response';
 import logger from './utils/logger';
 import { staticPath, APP_PRIFIX, logPath } from '@/utils/config';
+import * as dotenv from 'dotenv';
+
+// 确保环境变量被加载
+dotenv.config();
 async function bootstrap(port: number) {
+  const baseURL = process.env.FETCH_JAVA_BASE_URL;
+  console.log('---- baseURL', baseURL);
   // 创建NestFastifyApplication实例
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,

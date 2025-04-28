@@ -1,8 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import FormData from 'form-data';
 import { getLogger } from 'log4js';
-import { FETCH_JAVA_BASE_URL } from '../config';
+import * as dotenv from 'dotenv';
 
+// 确保环境变量被加载
+dotenv.config();
 export interface Res<T = any> {
   code: number;
   msg: string;
@@ -12,9 +14,10 @@ export interface Res<T = any> {
 }
 
 const logger = getLogger('utils/request.ts');
-
+const baseURL = process.env.FETCH_JAVA_BASE_URL;
+console.log('---- baseURL22', baseURL);
 const service = axios.create({
-  baseURL: FETCH_JAVA_BASE_URL,
+  baseURL: process.env.FETCH_JAVA_BASE_URL,
   maxContentLength: Infinity,
   maxBodyLength: Infinity,
   timeout: 30000,
@@ -77,6 +80,7 @@ service.interceptors.response.use(
     return resData;
   },
   async (error) => {
+    console.log('request error', error);
     const { config } = error;
     // 检查请求配置中的数据类型是否为 FormData
     if (error.config?.data && error.config.data instanceof FormData) {
