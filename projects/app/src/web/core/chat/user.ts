@@ -100,3 +100,9 @@ export const getPayResult = (params: PayResultParams, shareToken: string) =>
       token: shareToken
     }
   });
+
+// 生成图片
+export const generateImgApi = (data: { url: string }) =>
+  POST<PrePayData>(`/v1/screenshot`, data, {
+    baseURL: '/share-sandbox'
+  });

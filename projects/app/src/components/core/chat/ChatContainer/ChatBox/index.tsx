@@ -74,6 +74,8 @@ import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import PaymentModal from './components/PaymentModal';
 import DisableChatModel from './components/disableChatModel';
 import { ChatStatusType } from '@/web/core/app/constants';
+import { generateImgApi } from '@/web/core/chat/user';
+import { basePath, share_h5_url_front } from '@/web/common/utils/config';
 
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
@@ -158,7 +160,8 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
-
+  
+ 
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
     defaultValues: {
@@ -774,6 +777,21 @@ const ChatBox = ({
       return () => setFeedbackId(chat.dataId);
     }
   });
+ 
+
+  const onGenerateImg = useMemoizedFn((chat: ChatSiteItemType) => {
+    return async () => {
+      const appKey = agentConfigInfo.appKey;
+      const origin = window.location.origin;
+      // const origin = share_h5_url_front();
+      const pathUrl = `/file?appId=${appId}&appKey=${appKey}&dataId=${chat.dataId}`
+      const basePathStr = basePath()
+      const url = `${origin}${basePathStr}${pathUrl}`;
+      const res = await generateImgApi({url})
+      console.log('xxx onGenerateImg res',res)
+    };
+  });
+
   const onReadUserDislike = useMemoizedFn((chat: ChatSiteItemType) => {
     if (feedbackType !== FeedbackTypeEnum.admin || chat.obj !== ChatRoleEnum.AI) return;
     return () => {
@@ -784,6 +802,7 @@ const ChatBox = ({
       });
     };
   });
+
   const onCloseCustomFeedback = useMemoizedFn((chat: ChatSiteItemType, i: number) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
       if (e.target.checked && appId && chatId && chat.dataId) {
@@ -987,7 +1006,8 @@ const ChatBox = ({
                             onAddUserLike: onAddUserLike(item),
                             onCloseUserLike: onCloseUserLike(item),
                             onAddUserDislike: onAddUserDislike(item),
-                            onReadUserDislike: onReadUserDislike(item)
+                            onReadUserDislike: onReadUserDislike(item),
+                            onGenerateImg: onGenerateImg(item),
                           }}
                         >
                           {/* <ResponseTags
@@ -1062,6 +1082,7 @@ const ChatBox = ({
     onCloseUserLike,
     onMark,
     onReadUserDislike,
+    onGenerateImg,
     questionGuides,
     retryInput,
     showMarkIcon,

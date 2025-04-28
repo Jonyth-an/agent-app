@@ -10,9 +10,6 @@ export type RedirectAuthParams = {
   isEmptyPage?: boolean;
   value?: string;
 };
-export function getShareUrl() {
-  return window.location.origin;
-}
 
 export const getTenantTokenKey = (agentConfigInfo: agentConfigInfo) => {
   // 获取当前页面的host

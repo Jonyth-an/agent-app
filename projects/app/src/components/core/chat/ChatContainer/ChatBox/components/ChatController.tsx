@@ -23,6 +23,7 @@ export type ChatControllerProps = {
   onCloseUserLike?: () => void;
   onAddUserLike?: () => void;
   onAddUserDislike?: () => void;
+  onGenerateImg?: () => void;
 };
 
 const controlIconStyle = {
@@ -47,7 +48,8 @@ const ChatController = ({
   onRetry,
   onDelete,
   onAddUserDislike,
-  onAddUserLike
+  onAddUserLike,
+  onGenerateImg
 }: ChatControllerProps & FlexProps) => {
   const { t } = useTranslation();
   const { copyData } = useCopyData();
@@ -214,6 +216,7 @@ const ChatController = ({
               />
             </MyTooltip>
           )}
+
           {!!onAddUserLike && (
             <MyIcon
               {...controlIconStyle}
@@ -247,6 +250,16 @@ const ChatController = ({
               name={'core/chat/feedback/badLight'}
             />
           )}
+
+          <MyTooltip label={'生成图片'}>
+            <MyIcon
+              {...controlIconStyle}
+              color={'white'}
+              fontWeight={'bold'}
+              name={'common/genImg'}
+              onClick={onGenerateImg}
+            />
+          </MyTooltip>
         </>
       )}
     </Flex>
