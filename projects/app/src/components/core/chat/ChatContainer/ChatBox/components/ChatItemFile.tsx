@@ -50,6 +50,7 @@ const ChatItem = (props: { value: ChatItemValueItemType[]; dataId: string }) => 
   MessageCardFileStyle.maxW = ['100%', '100%'];
   return (
     <Box
+      id="chat-record-detail"
       _hover={{
         '& .time-label': {
           display: 'block'

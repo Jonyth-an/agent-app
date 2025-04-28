@@ -24,7 +24,7 @@ export class ScreenshotController {
       }
 
       // 生成唯一文件名
-      const fileName = `screenshot_${Date.now()}.png`;
+      const fileName = `screenshot_${Date.now()}_${Math.floor(Math.random() * 900) + 100}.png`;
       const outputDir = path.join(process.cwd(), 'static/uploads', 'screenshots');
       const outputPath = path.join(outputDir, fileName);
 
@@ -34,7 +34,7 @@ export class ScreenshotController {
       }
 
       // 生成截图
-      await this.screenshotService.generateScreenshot(url, outputPath, { width, height, fullPage });
+      await this.screenshotService.generateScreenshot(url, { outputPath, width, height, fullPage });
 
       // 返回文件URL
       const fileUrl = `/screenshots/${fileName}`;
@@ -43,37 +43,6 @@ export class ScreenshotController {
         message: '截图成功',
         url: fileUrl
       });
-    } catch (error) {
-      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-        message: '截图失败',
-        error: error.message
-      });
-    }
-  }
-
-  @Get()
-  async getScreenshot(
-    @Query('url') url: string,
-    @Query('width') width: number,
-    @Query('height') height: number,
-    @Query('fullPage') fullPage: boolean,
-    @Res() res: FastifyReply // 修改类型
-  ) {
-    try {
-      if (!url) {
-        return res.status(HttpStatus.BAD_REQUEST).send({ message: '请提供URL' });
-      }
-
-      // 直接返回截图
-      const screenshot = await this.screenshotService.generateScreenshot(url, undefined, {
-        width: width ? parseInt(width.toString()) : undefined,
-        height: height ? parseInt(height.toString()) : undefined,
-        fullPage: fullPage === undefined ? true : fullPage
-      });
-
-      res.header('Content-Type', 'image/png');
-      res.header('Content-Disposition', `inline; filename="screenshot.png"`);
-      return res.send(screenshot);
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
         message: '截图失败',

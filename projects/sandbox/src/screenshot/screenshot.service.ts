@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import * as puppeteer from 'puppeteer';
 import * as fs from 'fs';
 import * as path from 'path';
+import { sleep } from '@/utils/tools';
+import { puppeteerOpt } from '@/utils/config';
 
 @Injectable()
 export class ScreenshotService {
@@ -16,37 +18,45 @@ export class ScreenshotService {
    */
   async generateScreenshot(
     url: string,
-    outputPath?: string,
     options: {
+      outputPath?: string;
       width?: number;
       height?: number;
+      deviceScaleFactor?: number;
+      selectorEle?: string;
+      type?: 'png' | 'jpeg' | 'webp';
       fullPage?: boolean;
       timeout?: number;
     } = {}
   ): Promise<Buffer | string> {
-    const { width = 375, height = 933, fullPage = true, timeout = 30000 } = options;
+    const {
+      outputPath,
+      width = 375,
+      height = 667,
+      deviceScaleFactor = 3.0,
+      selectorEle = '#chat-record-detail',
+      type = 'png',
+      fullPage = true,
+      timeout = 60000
+    } = options;
 
     this.logger.log(`开始截图: ${url}`);
 
     // 启动浏览器
-    const browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-    });
+    const browser = await puppeteer.launch(puppeteerOpt);
 
     try {
       // 创建新页面
       const page = await browser.newPage();
 
-      // 设置视口大小
-      await page.setViewport({ width, height, deviceScaleFactor: 3.0 });
-
       // 设置超时
       await page.setDefaultNavigationTimeout(timeout);
-
+      await page.setViewport({ width, height });
       // 导航到URL
-      await page.goto(url, { waitUntil: 'networkidle2' });
-
+      await page.goto(url, {
+        timeout,
+        waitUntil: ['load', 'networkidle0', 'domcontentloaded', 'networkidle2']
+      });
       // 等待页面加载完成
       await page.evaluate(() => {
         return new Promise<void>((resolve) => {
@@ -60,11 +70,18 @@ export class ScreenshotService {
           }
         });
       });
+      await page.content();
+
+      await sleep(1000);
+      await page.waitForSelector(selectorEle, { timeout });
+      const scrollHeight = await page.$eval(selectorEle, (el) => el.scrollHeight);
+      // 设置视口大小
+      await page.setViewport({ width, height: scrollHeight, deviceScaleFactor });
 
       // 截图
       const screenshot = await page.screenshot({
         fullPage,
-        type: 'png',
+        type,
         encoding: 'binary'
       });
 

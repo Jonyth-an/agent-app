@@ -5,8 +5,10 @@ export const staticPathPrefix = `/${APP_PRIFIX}/static`;
 export const logPath = resolve(__dirname, '../../logs');
 export const puppeteerOpt = {
   headless: true,
-  timeout: 30000,
+  timeout: 40000,
   ignoreHTTPSErrors: true,
+  dumpio: true,
+  protocolTimeout: 40000,
   args: [
     '--disable-gpu',
     '--disable-dev-shm-usage',
