@@ -11,7 +11,8 @@ import {
   SignatureInfo,
   SignatureInfoReq,
   StaffInfo,
-  WechatAuthInfo
+  WechatAuthInfo,
+  GenImgRes
 } from '@/global/core/user/api';
 import { agentConfigInfoReq, AgentPermissionData } from '../../../global/core/user/api';
 
@@ -103,6 +104,16 @@ export const getPayResult = (params: PayResultParams, shareToken: string) =>
 
 // 生成图片
 export const generateImgApi = (data: { url: string }) =>
-  POST<any>(`/v1/screenshot`, data, {
+  POST<GenImgRes>(`/v1/screenshot`, data, {
     baseURL: '/share-sandbox'
   });
+
+// 生成图片健康检查
+export const generateImgHealthy = () =>
+  GET<any>(
+    `/v1/screenshot/healthy`,
+    {},
+    {
+      baseURL: '/share-sandbox'
+    }
+  );

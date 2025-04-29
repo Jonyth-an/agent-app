@@ -11,6 +11,7 @@ import { useContextSelector } from 'use-context-selector';
 import MyImage from '@fastgpt/web/components/common/Image/MyImage';
 import { ChatRecordContext } from '@/web/core/chat/context/chatRecordContext';
 import { useCopyData } from '@fastgpt/web/hooks/useCopyData';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 
 export type ChatControllerProps = {
   isLastChild: boolean;
@@ -73,9 +74,11 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
   const audioPlayingChatId = useContextSelector(ChatBoxContext, (v) => v.audioPlayingChatId);
   const setAudioPlayingChatId = useContextSelector(ChatBoxContext, (v) => v.setAudioPlayingChatId);
   const chatType = useContextSelector(ChatBoxContext, (v) => v.chatType);
-
   const chatText = useMemo(() => formatChatValue2InputType(chat.value).text || '', [chat.value]);
+  const { agentConfigInfo, serverEnableGenImg } = useChatStore();
 
+  const commonConfig = agentConfigInfo.agentConfig.commonConfig || {};
+  const enableGenImg = commonConfig.enableGenImg || false;
   // console.log('ddd ChatController hasContentCardMark', hasContentCardMark);
   return (
     <Flex
@@ -250,20 +253,22 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
               name={'core/chat/feedback/badLight'}
             />
           )}
-          {(typeof chat.genImgStatus === 'undefined' ||
-            chat.genImgStatus === GenerateImgStatusEnum.INITIAL ||
-            chat.genImgStatus === GenerateImgStatusEnum.FAILED) && (
-            <MyTooltip label={'生成图片'}>
-              <MyIcon
-                {...controlIconStyle}
-                _hover={{ color: 'primary.600' }}
-                color={'white'}
-                fontWeight={'bold'}
-                name={'common/genImg'}
-                onClick={onGenerateImg}
-              />
-            </MyTooltip>
-          )}
+          {enableGenImg &&
+            serverEnableGenImg &&
+            (typeof chat.genImgStatus === 'undefined' ||
+              chat.genImgStatus === GenerateImgStatusEnum.INITIAL ||
+              chat.genImgStatus === GenerateImgStatusEnum.FAILED) && (
+              <MyTooltip label={'生成图片'}>
+                <MyIcon
+                  {...controlIconStyle}
+                  _hover={{ color: 'primary.600' }}
+                  color={'white'}
+                  fontWeight={'bold'}
+                  name={'common/genImg'}
+                  onClick={onGenerateImg}
+                />
+              </MyTooltip>
+            )}
           {chat.genImgStatus === GenerateImgStatusEnum.LOADING && (
             <MyTooltip label={'图片生成中...'}>
               <MyIcon
@@ -278,7 +283,7 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
               <MyIcon
                 _hover={{ color: 'primary.600' }}
                 {...controlIconStyle}
-                name={'common/copyImgLink'}
+                name={'common/copyImgLink2'}
                 onClick={() => {
                   if (chat.genImgUrl) {
                     copyData(chat?.genImgUrl);

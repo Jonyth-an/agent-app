@@ -12,8 +12,13 @@ export class ScreenshotController {
     private readonly uploadService: UploadService
   ) {}
   @Get('healthy')
-  getTest() {
-    return { message: 'screenshot is running' };
+  getTest(@Body() body, @Res() res: FastifyReply) {
+    // return { message: 'screenshot is running' };
+    return res.status(HttpStatus.OK).send({
+      msg: 'screenshot server is running',
+      code: 0,
+      data: null
+    });
   }
   @Post()
   async takeScreenshot(
@@ -55,7 +60,7 @@ export class ScreenshotController {
       return res.status(HttpStatus.OK).send({
         msg: '截图成功',
         code: 0,
-        data: uploadResult
+        data: uploadResult.data
       });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).send({

@@ -800,36 +800,20 @@ const ChatBox = ({
         const pathUrl = `/file?appId=${appId}&appKey=${appKey}&dataId=${chat.dataId}`
         const basePathStr = basePath()
         const url = `${origin}${basePathStr}${pathUrl}`;
-        const res = await generateImgApi({url})
-        console.log('xxx onGenerateImg res',res)
-        if(res.code === 0){
-          const data = res.data;
-          const {requestUrl} = data
-          setChatRecords((state) =>
-            state.map((item) =>
-              item.dataId === chat.dataId
-                ? {
-
-                    ...item,
-                    genImgStatus: GenerateImgStatusEnum.SUCCESS,
-                    genImgUrl: requestUrl
-                  }
-                : item
-            )
-          );
-        } else {
-          setChatRecords((state) =>
-            state.map((item) =>
-              item.dataId === chat.dataId
-                ? {
-                    ...item,
-                    genImgStatus: GenerateImgStatusEnum.FAILED
-                  }
-                : item
-            )
-          );
-        }
-      
+        const resData = await generateImgApi({url})
+        console.log('xxx onGenerateImg resData',resData)
+        const {requestUrl} = resData
+        setChatRecords((state) =>
+          state.map((item) =>
+            item.dataId === chat.dataId
+              ? {
+                  ...item,
+                  genImgStatus: GenerateImgStatusEnum.SUCCESS,
+                  genImgUrl: requestUrl
+                }
+              : item
+          )
+        );
       } catch (error) {
         console.error('Generate image error:', error);
         // 设置失败状态

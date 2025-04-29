@@ -10,6 +10,7 @@ import { useUserStore } from '../support/user/useUserStore';
 import { useChatStore } from '../core/chat/context/useChatStore';
 import { isMiniProgram } from '../core/chat/context/utils';
 import { RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
+import { generateImgHealthy } from '../core/chat/user';
 
 export const useInitApp = () => {
   const router = useRouter();
@@ -21,30 +22,23 @@ export const useInitApp = () => {
   };
   const { loadGitStar, setInitd, feConfigs } = useSystemStore();
   const { userInfo } = useUserStore();
-  const { chatId, setRunPlatform, runPlatform, agentConfigInfo } = useChatStore();
+  const { chatId, setRunPlatform, runPlatform, agentConfigInfo, appId, setServerEnableGenImg } =
+    useChatStore();
   const [scripts, setScripts] = useState<FastGPTFeConfigsType['scripts']>([]);
   const [title, setTitle] = useState(process.env.SYSTEM_NAME || '');
 
+  const commonConfig = agentConfigInfo.agentConfig.commonConfig || {};
+  const enableGenImg = commonConfig.enableGenImg || false;
+
   const initFetch = useMemoizedFn(async () => {
-    const {
-      feConfigs: { scripts, isPlus, systemTitle }
-    } = await clientInitData();
-
-    setTitle(systemTitle || '');
-
-    // log fastgpt
-    if (!isPlus) {
-      console.log(
-        '%cWelcome to FastGPT',
-        'font-family:Arial; color:#3370ff ; font-size:18px; font-weight:bold;',
-        `GitHub：https://github.com/labring/FastGPT`
-      );
+    if (enableGenImg) {
+      try {
+        await generateImgHealthy();
+        setServerEnableGenImg(true);
+      } catch (error) {
+        setServerEnableGenImg(false);
+      }
     }
-
-    // loadGitStar();
-
-    setScripts(scripts || []);
-    setInitd();
   });
 
   useMount(() => {
@@ -68,9 +62,8 @@ export const useInitApp = () => {
   });
 
   useRequest2(initFetch, {
-    refreshDeps: [userInfo?.username, chatId],
-    manual: false,
-    pollingInterval: 300000 // 5 minutes refresh
+    refreshDeps: [appId, enableGenImg],
+    manual: false
   });
 
   const sendMessageToMiniProgram = useCallback(() => {

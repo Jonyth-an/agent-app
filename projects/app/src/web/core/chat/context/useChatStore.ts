@@ -13,6 +13,9 @@ type State = {
   runPlatform: `${RunPlatformEnum}`;
   setRunPlatform: (runPlatform: RunPlatformEnum) => void;
 
+  serverEnableGenImg: boolean; // server是否支持生成图片
+  setServerEnableGenImg: (enable: boolean) => void;
+
   shareToken: string; // 存储token
   setShareToken: (token: string) => void;
 
@@ -100,6 +103,12 @@ export const useChatStore = create<State>()(
     persist(
       // 使用persist中间件进行持久化存储
       immer((set, get) => ({
+        serverEnableGenImg: false,
+        setServerEnableGenImg: (enable: boolean) => {
+          set((state) => {
+            state.serverEnableGenImg = enable;
+          });
+        },
         runPlatform: RunPlatformEnum.INIT,
         setRunPlatform(runPlatform: RunPlatformEnum) {
           set((state) => {
@@ -208,6 +217,9 @@ export const useChatStore = create<State>()(
           permissionType: 'INIT',
           description: '',
           agentConfig: {
+            commonConfig: {
+              enableGenImg: false
+            },
             list: [],
             weChatShareConfig: {},
             h5: {
@@ -236,6 +248,10 @@ export const useChatStore = create<State>()(
                 console.log('xxx agentConfigInfo2322 agConfig', agConfig);
                 if (agConfig && agConfig.list) {
                   state.agentConfigInfo.agentConfig.list = agConfig.list || [];
+                }
+
+                if (agConfig && agConfig.commonConfig) {
+                  state.agentConfigInfo.agentConfig.commonConfig = agConfig.commonConfig || {};
                 }
 
                 if (agConfig && agConfig.h5) {
