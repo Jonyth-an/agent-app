@@ -47,6 +47,14 @@ export enum RunPlatformEnum {
   MINI_PROGRAM = 'MINI_PROGRAM'
 }
 
+// 添加生成图片状态枚举
+export enum GenerateImgStatusEnum {
+  INITIAL = 'initial',
+  LOADING = 'loading',
+  SUCCESS = 'success',
+  FAILED = 'failed'
+}
+
 export const ChatSourceMap = {
   [ChatSourceEnum.test]: {
     name: i18nT('common:core.chat.logs.test')

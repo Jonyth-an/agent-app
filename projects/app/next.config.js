@@ -68,7 +68,7 @@ const nextConfig = {
       },
       {
         source: '/share-sandbox/:path*', // 匹配 /uc-system 及其子路径
-        destination: 'http://127.0.0.1:3005/share-sandbox/:path*'
+        destination: 'http://127.0.0.1:3007/share-sandbox/:path*'
       },
       {
         source: '/uc-system/:path*', // 匹配 /uc-system 及其子路径

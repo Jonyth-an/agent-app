@@ -76,8 +76,7 @@ import DisableChatModel from './components/disableChatModel';
 import { ChatStatusType } from '@/web/core/app/constants';
 import { generateImgApi } from '@/web/core/chat/user';
 import { basePath, share_h5_url_front } from '@/web/common/utils/config';
-import { useCopyData } from '@fastgpt/web/hooks/useCopyData';
-
+import { GenerateImgStatusEnum } from '@fastgpt/global/core/chat/constants';
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
 const ReadFeedbackModal = dynamic(() => import('./components/ReadFeedbackModal'));
@@ -161,8 +160,9 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
-  const { copyData } = useCopyData();
  
+  
+  
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
     defaultValues: {
@@ -782,19 +782,68 @@ const ChatBox = ({
 
   const onGenerateImg = useMemoizedFn((chat: ChatSiteItemType) => {
     return async () => {
-      const appKey = agentConfigInfo.appKey;
-      const origin = window.location.origin;
-      // const origin = share_h5_url_front();
-      const pathUrl = `/file?appId=${appId}&appKey=${appKey}&dataId=${chat.dataId}`
-      const basePathStr = basePath()
-      const url = `${origin}${basePathStr}${pathUrl}`;
-      const res = await generateImgApi({url})
-      console.log('xxx onGenerateImg res',res)
+      try {
+        // 设置当前消息为加载状态
+        setChatRecords((state) =>
+          state.map((item) =>
+            item.dataId === chat.dataId
+              ? {
+                  ...item,
+                  genImgStatus: GenerateImgStatusEnum.LOADING
+                }
+              : item
+          )
+        );
+
+        const appKey = agentConfigInfo.appKey;
+        const origin = window.location.origin;
+        const pathUrl = `/file?appId=${appId}&appKey=${appKey}&dataId=${chat.dataId}`
+        const basePathStr = basePath()
+        const url = `${origin}${basePathStr}${pathUrl}`;
+        const res = await generateImgApi({url})
+        console.log('xxx onGenerateImg res',res)
+        if(res.code === 0){
+          const data = res.data;
+          const {requestUrl} = data
+          setChatRecords((state) =>
+            state.map((item) =>
+              item.dataId === chat.dataId
+                ? {
+
+                    ...item,
+                    genImgStatus: GenerateImgStatusEnum.SUCCESS,
+                    genImgUrl: requestUrl
+                  }
+                : item
+            )
+          );
+        } else {
+          setChatRecords((state) =>
+            state.map((item) =>
+              item.dataId === chat.dataId
+                ? {
+                    ...item,
+                    genImgStatus: GenerateImgStatusEnum.FAILED
+                  }
+                : item
+            )
+          );
+        }
       
-      // if (res.code === 0 && res.data) {
-      //   copyData(formatChatValue2InputType(value).text ?? '')
-      // }
-      
+      } catch (error) {
+        console.error('Generate image error:', error);
+        // 设置失败状态
+        setChatRecords((state) =>
+          state.map((item) =>
+            item.dataId === chat.dataId
+              ? {
+                  ...item,
+                  genImgStatus: GenerateImgStatusEnum.FAILED
+                }
+              : item
+          )
+        );
+      }
     };
   });
 
@@ -1210,8 +1259,7 @@ const ChatBox = ({
             }
           }}
         />
-      )}
-    </MyBox>
+      )}    </MyBox>
   );
 };
 

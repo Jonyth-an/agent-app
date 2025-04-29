@@ -13,6 +13,7 @@ export const iconPaths = {
   comment: () => import('./icons/comment.svg'),
   'common/add2': () => import('./icons/common/add2.svg'),
   'common/genImg': () => import('./icons/common/genImg.svg'),
+  'common/copyImgLink': () => import('./icons/common/copyImgLink.svg'),
   'common/shareFriend': () => import('./icons/common/shareFriend.svg'),
   'common/addCircleLight': () => import('./icons/common/addCircleLight.svg'),
   'common/addLight': () => import('./icons/common/addLight.svg'),

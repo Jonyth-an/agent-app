@@ -114,7 +114,7 @@ const AIContentCard = React.memo(function AIContentCard({
 });
 
 const ChatItem = (props: Props) => {
-  console.log('xxx ChatItem props', props);
+  // console.log('xxx ChatItem props', props);
   const { type, avatar, statusBoxData, children, isLastChild, questionGuides = [], chat } = props;
 
   const { isPc } = useSystem();

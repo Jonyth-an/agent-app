@@ -133,6 +133,16 @@ export interface PrePayData {
   timestamp: string;
   tradeStatus: string;
 }
+export interface GenImgRes {
+  cdnUrl: string;
+  contentType: string;
+  dataType: string;
+  fileId: string;
+  md5: string;
+  requestUrl: string;
+  size: number;
+  submittedFileName: string;
+}
 export interface PayResultParams {
   outTradeNo: string;
 }

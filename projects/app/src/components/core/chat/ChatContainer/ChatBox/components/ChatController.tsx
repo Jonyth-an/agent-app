@@ -1,4 +1,3 @@
-import { useCopyData } from '@fastgpt/web/hooks/useCopyData';
 import { Flex, FlexProps, css, useTheme } from '@chakra-ui/react';
 import { ChatSiteItemType } from '@fastgpt/global/core/chat/type';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
@@ -6,11 +5,12 @@ import React, { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 import MyIcon from '@fastgpt/web/components/common/Icon';
 import { formatChatValue2InputType } from '../utils';
-import { ChatRoleEnum } from '@fastgpt/global/core/chat/constants';
+import { ChatRoleEnum, GenerateImgStatusEnum } from '@fastgpt/global/core/chat/constants';
 import { ChatBoxContext } from '../Provider';
 import { useContextSelector } from 'use-context-selector';
 import MyImage from '@fastgpt/web/components/common/Image/MyImage';
 import { ChatRecordContext } from '@/web/core/chat/context/chatRecordContext';
+import { useCopyData } from '@fastgpt/web/hooks/useCopyData';
 
 export type ChatControllerProps = {
   isLastChild: boolean;
@@ -40,19 +40,25 @@ const controlContainerStyle = {
   display: 'flex'
 };
 
-const ChatController = ({
-  chat,
-  showVoiceIcon,
-  onReadUserDislike,
-  onCloseUserLike,
-  onMark,
-  onRetry,
-  onDelete,
-  onAddUserDislike,
-  onAddUserLike,
-  hasContentCardMark,
-  onGenerateImg
-}: ChatControllerProps & FlexProps) => {
+const ChatController = (props: ChatControllerProps & FlexProps) => {
+  const {
+    chat,
+    showVoiceIcon,
+    onReadUserDislike,
+    onCloseUserLike,
+    onMark,
+    onRetry,
+    onDelete,
+    onAddUserDislike,
+    onAddUserLike,
+    hasContentCardMark,
+    onGenerateImg
+  } = props;
+  // if (props.type === 'AI') {
+  //   console.log('ddd ChatController props chat11', typeof chat.genImgStatus === 'undefined');
+  //   console.log('ddd ChatController props chat', chat, props);
+  // }
+
   const { t } = useTranslation();
   const { copyData } = useCopyData();
 
@@ -244,16 +250,43 @@ const ChatController = ({
               name={'core/chat/feedback/badLight'}
             />
           )}
-
-          {/* <MyTooltip label={'生成图片'}>
-            <MyIcon
-              {...controlIconStyle}
-              color={'white'}
-              fontWeight={'bold'}
-              name={'common/genImg'}
-              onClick={onGenerateImg}
-            />
-          </MyTooltip> */}
+          {(typeof chat.genImgStatus === 'undefined' ||
+            chat.genImgStatus === GenerateImgStatusEnum.INITIAL ||
+            chat.genImgStatus === GenerateImgStatusEnum.FAILED) && (
+            <MyTooltip label={'生成图片'}>
+              <MyIcon
+                {...controlIconStyle}
+                _hover={{ color: 'primary.600' }}
+                color={'white'}
+                fontWeight={'bold'}
+                name={'common/genImg'}
+                onClick={onGenerateImg}
+              />
+            </MyTooltip>
+          )}
+          {chat.genImgStatus === GenerateImgStatusEnum.LOADING && (
+            <MyTooltip label={'图片生成中...'}>
+              <MyIcon
+                _hover={{ color: 'primary.600' }}
+                {...controlIconStyle}
+                name={'common/loading'}
+              />
+            </MyTooltip>
+          )}
+          {chat.genImgStatus === GenerateImgStatusEnum.SUCCESS && (
+            <MyTooltip label={'生成成功,复制图片链接'}>
+              <MyIcon
+                _hover={{ color: 'primary.600' }}
+                {...controlIconStyle}
+                name={'common/copyImgLink'}
+                onClick={() => {
+                  if (chat.genImgUrl) {
+                    copyData(chat?.genImgUrl);
+                  }
+                }}
+              />
+            </MyTooltip>
+          )}
         </>
       )}
     </Flex>

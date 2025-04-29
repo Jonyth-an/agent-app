@@ -34,7 +34,7 @@ const AIContentCard = React.memo(function AIContentCard({
 });
 
 const ChatItem = (props: { value: ChatItemValueItemType[]; dataId: string }) => {
-  console.log('xxx ChatItem props', props);
+  // console.log('xxx ChatItem props', props);
   const styleMap: BoxProps = {
     order: 1,
     borderRadius: '0 8px 8px 8px',

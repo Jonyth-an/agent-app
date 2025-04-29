@@ -5,7 +5,8 @@ import {
   ChatItemValueTypeEnum,
   ChatRoleEnum,
   ChatSourceEnum,
-  ChatStatusEnum
+  ChatStatusEnum,
+  GenerateImgStatusEnum
 } from './constants';
 import { FlowNodeTypeEnum } from '../workflow/node/constant';
 import { NodeOutputKeyEnum } from '../workflow/constants';
@@ -135,6 +136,8 @@ export type ChatItemType = (UserChatItemType | SystemChatItemType | AIChatItemTy
 export type ChatSiteItemType = (UserChatItemType | SystemChatItemType | AIChatItemType) & {
   dataId: string;
   status: `${ChatStatusEnum}`;
+  genImgStatus?: `${GenerateImgStatusEnum}`;
+  genImgUrl?: string;
   moduleName?: string;
   ttsBuffer?: Uint8Array;
   responseData?: ChatHistoryItemResType[];
