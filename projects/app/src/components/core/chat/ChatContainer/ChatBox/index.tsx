@@ -76,6 +76,7 @@ import DisableChatModel from './components/disableChatModel';
 import { ChatStatusType } from '@/web/core/app/constants';
 import { generateImgApi } from '@/web/core/chat/user';
 import { basePath, share_h5_url_front } from '@/web/common/utils/config';
+import { useCopyData } from '@fastgpt/web/hooks/useCopyData';
 
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
@@ -160,7 +161,7 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
-  
+  const { copyData } = useCopyData();
  
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
@@ -789,6 +790,11 @@ const ChatBox = ({
       const url = `${origin}${basePathStr}${pathUrl}`;
       const res = await generateImgApi({url})
       console.log('xxx onGenerateImg res',res)
+      
+      // if (res.code === 0 && res.data) {
+      //   copyData(formatChatValue2InputType(value).text ?? '')
+      // }
+      
     };
   });
 

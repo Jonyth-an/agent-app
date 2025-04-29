@@ -153,6 +153,16 @@ const ChatItem = (props: Props) => {
     return colorMap[statusBoxData.status];
   }, [statusBoxData?.status]);
 
+
+  const hasContentCardMark = useMemo(() => {
+    const CONTENT_CARD_MARK = 'codeClassNameEnum';
+    const CONTENT_CARD_TYPE = 'CONTENT_CARD';
+    // 使用正则表达式匹配，允许中间有空格、换行等
+    const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
+    // const source = chat.value && chat.value[0] && chat.value[0].text && chat.value[0].text.content || '';
+    const source = chat.value?.[0]?.text?.content || '';
+    return source.includes(CONTENT_CARD_MARK) || regex.test(source);
+  }, [chat]);
   /* 
     1. The interactive node is divided into n dialog boxes.
     2. Auto-complete the last textnode
@@ -238,7 +248,7 @@ const ChatItem = (props: Props) => {
                 }).replace('#', ':')}
               </Box>
             )}
-            <ChatController {...props} isLastChild={isLastChild} />
+            <ChatController {...props} hasContentCardMark={hasContentCardMark} isLastChild={isLastChild} />
           </Flex>
         )}
 
@@ -302,7 +312,7 @@ const ChatItem = (props: Props) => {
             {/* 对话框底部的复制按钮 */}
             {type == ChatRoleEnum.AI &&
               value[0]?.type !== 'interactive' &&
-              (!isChatting || (isChatting && !isLastChild)) && (
+              (!isChatting || (isChatting && !isLastChild)) && !hasContentCardMark && (
                 <Box
                   className="footer-copy"
                   display={['block', 'none']}

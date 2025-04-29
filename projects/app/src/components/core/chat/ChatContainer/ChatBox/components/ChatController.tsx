@@ -16,6 +16,7 @@ export type ChatControllerProps = {
   isLastChild: boolean;
   chat: ChatSiteItemType;
   showVoiceIcon?: boolean;
+  hasContentCardMark?: boolean;
   onRetry?: () => void;
   onDelete?: () => void;
   onMark?: () => void;
@@ -49,6 +50,7 @@ const ChatController = ({
   onDelete,
   onAddUserDislike,
   onAddUserLike,
+  hasContentCardMark,
   onGenerateImg
 }: ChatControllerProps & FlexProps) => {
   const { t } = useTranslation();
@@ -67,15 +69,7 @@ const ChatController = ({
   const chatType = useContextSelector(ChatBoxContext, (v) => v.chatType);
 
   const chatText = useMemo(() => formatChatValue2InputType(chat.value).text || '', [chat.value]);
-  const hasContentCardMark = useMemo(() => {
-    const CONTENT_CARD_MARK = 'codeClassNameEnum';
-    const CONTENT_CARD_TYPE = 'CONTENT_CARD';
-    // 使用正则表达式匹配，允许中间有空格、换行等
-    const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
-    // const source = chat.value && chat.value[0] && chat.value[0].text && chat.value[0].text.content || '';
-    const source = chat.value?.[0]?.text?.content || '';
-    return source.includes(CONTENT_CARD_MARK) || regex.test(source);
-  }, [chat]);
+
   // console.log('ddd ChatController hasContentCardMark', hasContentCardMark);
   return (
     <Flex
@@ -251,7 +245,7 @@ const ChatController = ({
             />
           )}
 
-          <MyTooltip label={'生成图片'}>
+          {/* <MyTooltip label={'生成图片'}>
             <MyIcon
               {...controlIconStyle}
               color={'white'}
@@ -259,7 +253,7 @@ const ChatController = ({
               name={'common/genImg'}
               onClick={onGenerateImg}
             />
-          </MyTooltip>
+          </MyTooltip> */}
         </>
       )}
     </Flex>
