@@ -127,7 +127,8 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
           </MyTooltip>
         </>
       )}
-      {showVoiceIcon &&
+      {!hasContentCardMark &&
+        showVoiceIcon &&
         hasAudio &&
         (() => {
           const isPlayingChat = chat.dataId === audioPlayingChatId;
