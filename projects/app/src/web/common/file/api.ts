@@ -20,6 +20,27 @@ export const postUploadFiles = (
     }
   });
 
+export const uploadFileToFS = (
+  data: FormData,
+  onUploadProgress: (progressEvent: AxiosProgressEvent) => void
+) =>
+  POST<{
+    fileId: string;
+    requestUrl: string;
+  }>(
+    `/open/api/v1/fs/upload?bizCode=agent&features.publicRead=false&features.reUpload=true`,
+    data,
+    {
+      baseURL: '/marketing',
+      timeout: 600000,
+      onUploadProgress,
+      headers: {
+        appKey: 'agent',
+        'Content-Type': 'multipart/form-data; charset=utf-8'
+      }
+    }
+  );
+
 export const getPreviewFileContent = (data: PreviewContextProps) =>
   POST<{
     previewContent: string;
