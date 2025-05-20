@@ -44,6 +44,7 @@ const colorMap = {
 };
 
 type BasicProps = {
+  isHistory?: boolean;
   avatar?: string;
   statusBoxData?: {
     status: `${ChatStatusEnum}`;
@@ -83,15 +84,17 @@ const AIContentCard = React.memo(function AIContentCard({
   dataId,
   isLastChild,
   isChatting,
-  questionGuides
+  questionGuides,
+  isHistory
 }: {
   dataId: string;
   chatValue: ChatItemValueItemType[];
   isLastChild: boolean;
   isChatting: boolean;
   questionGuides: string[];
+  isHistory?: boolean;
 }) {
-  console.log('xxx aaa questionGuides', questionGuides);
+  // console.log('xxx aaa questionGuides', questionGuides);
   return (
     <Flex flexDirection={'column'} gap={2}>
       {chatValue.map((value, i) => {
@@ -99,6 +102,7 @@ const AIContentCard = React.memo(function AIContentCard({
 
         return (
           <AIResponseBox
+            isHistory={isHistory}
             key={key}
             value={value}
             isLastResponseValue={isLastChild && i === chatValue.length - 1}
@@ -115,7 +119,7 @@ const AIContentCard = React.memo(function AIContentCard({
 
 const ChatItem = (props: Props) => {
   // console.log('xxx ChatItem props', props);
-  const { type, avatar, statusBoxData, children, isLastChild, questionGuides = [], chat } = props;
+  const { type, avatar, isHistory, statusBoxData, children, isLastChild, questionGuides = [], chat } = props;
 
   const { isPc } = useSystem();
 
@@ -300,6 +304,7 @@ const ChatItem = (props: Props) => {
             {type === ChatRoleEnum.Human && <HumanContentCard chatValue={value} />}
             {type === ChatRoleEnum.AI && (
               <AIContentCard
+                isHistory={isHistory}
                 chatValue={value}
                 dataId={chat.dataId}
                 isLastChild={isLastChild && i === splitAiResponseResults.length - 1}

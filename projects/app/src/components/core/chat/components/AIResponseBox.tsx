@@ -41,22 +41,24 @@ type props = {
   value: UserChatItemValueItemType | AIChatItemValueItemType;
   isLastResponseValue: boolean;
   isChatting: boolean;
+  isHistory?: boolean;
 };
 
 const onSendPrompt: SendPromptFnType = (e) => eventBus.emit(EventNameEnum.sendQuestion, e);
 
 const RenderText = React.memo(function RenderText({
   showAnimation,
-  text
+  text,
+  isHistory
 }: {
   showAnimation: boolean;
   text?: string;
+  isHistory?: boolean;
 }) {
   let source = text || '';
   // First empty line
   // if (!source && !isLastChild) return null;
-
-  return <Markdown source={source} showAnimation={showAnimation} />;
+  return <Markdown isHistory={isHistory} source={source} showAnimation={showAnimation} />;
 });
 const RenderTool = React.memo(
   function RenderTool({
@@ -338,10 +340,14 @@ const RenderUserFormInteractive = React.memo(function RenderFormInput({
   );
 });
 
-const AIResponseBox = ({ value, isLastResponseValue, isChatting }: props) => {
+const AIResponseBox = ({ value, isLastResponseValue, isChatting, isHistory }: props) => {
   if (value.type === ChatItemValueTypeEnum.text && value.text)
     return (
-      <RenderText showAnimation={isChatting && isLastResponseValue} text={value.text.content} />
+      <RenderText
+        isHistory={isHistory}
+        showAnimation={isChatting && isLastResponseValue}
+        text={value.text.content}
+      />
     );
   if (value.type === ChatItemValueTypeEnum.reasoning && value.reasoning)
     return (

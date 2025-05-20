@@ -83,6 +83,7 @@ const ChatRecordContextProvider = ({
         ...res,
         list: res.list.map((item) => ({
           ...item,
+          isHistory: true,
           dataId: item.dataId || getNanoid(),
           status: ChatStatusEnum.finish
         }))

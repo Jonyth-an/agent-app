@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import { CodeClassNameEnum } from './utils';
 import { cloneDeep } from 'lodash';
+import { getNanoid } from '@fastgpt/global/common/string/tools';
 
 const CodeLight = dynamic(() => import('./codeBlock/CodeLight'), { ssr: false });
 const MermaidCodeBlock = dynamic(() => import('./img/MermaidCodeBlock'), { ssr: false });
@@ -41,33 +42,41 @@ interface ContentCardProps {
 
 const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
   const displayItems = items;
-
+  // console.log('xxx displayItems', displayItems);
   return (
     <Box borderWidth="1px" borderRadius="lg" p={4} bgColor="white">
       <Flex direction="column" gap={3}>
-        {displayItems.map((item, index) => (
-          <React.Fragment key={item.id}>
-            <Link href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
-              <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
-                <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
-                  <Image
-                    src={item.imageUrl || '/placeholder.svg'}
-                    alt={item.title}
-                    objectFit="cover"
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
-                <Box flex={1} minWidth={0}>
-                  <Text fontSize="14px" noOfLines={2} color="rgb(46, 48, 57)">
-                    {item.title}
-                  </Text>
-                </Box>
-              </Flex>
-            </Link>
-            {index < displayItems.length - 1 && <Divider borderColor="gray.200" />}
-          </React.Fragment>
-        ))}
+        {displayItems &&
+          displayItems.length > 0 &&
+          displayItems.map((item, index) => (
+            <React.Fragment key={`${item.id}_${index}`}>
+              <Link href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
+                <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
+                  <Box
+                    flexShrink={0}
+                    width="65px"
+                    height="50px"
+                    overflow="hidden"
+                    borderRadius="md"
+                  >
+                    <Image
+                      src={item.imageUrl || '/placeholder.svg'}
+                      alt={item.title}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
+                  <Box flex={1} minWidth={0}>
+                    <Text fontSize="14px" noOfLines={2} color="rgb(46, 48, 57)">
+                      {item.title}
+                    </Text>
+                  </Box>
+                </Flex>
+              </Link>
+              {index < displayItems.length - 1 && <Divider borderColor="gray.200" />}
+            </React.Fragment>
+          ))}
       </Flex>
     </Box>
   );
@@ -78,6 +87,7 @@ type Props = {
   showAnimation?: boolean;
   isDisabled?: boolean;
   forbidZhFormat?: boolean;
+  isHistory?: boolean;
 };
 
 const isValidDataFormat = (input: string) => {
@@ -90,8 +100,7 @@ const parseData = (source: string) => {
     return [];
   }
 
-  const regex =
-    /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
+  const regex = /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
   const entries = [];
   let index = 0;
 
@@ -106,12 +115,13 @@ const parseData = (source: string) => {
       // 确保所有必需的字段都存在
       if (codeClassNameEnumValue && avatarUrl && titleText && titleLink) {
         entries.push({
-          id: 'key' + index,
+          id: 'key_' + getNanoid() + '_' + index,
           codeClassNameEnum: codeClassNameEnumValue,
           imageUrl: avatarUrl,
           title: titleText,
           link: titleLink
         });
+        console.log('ccc entries', entries);
         index += 1;
       }
     }
@@ -162,6 +172,7 @@ const Markdown = (props: Props) => {
   // console.log('ccc Markdown props', props);
   const source = props.source || '';
   const showAnimation = props.showAnimation || false;
+  const isHistory = props.isHistory || false;
   const CONTENT_CARD_MARK = 'codeClassNameEnum';
   const CONTENT_CARD_TYPE = 'CONTENT_CARD';
   const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
@@ -195,7 +206,8 @@ const Markdown = (props: Props) => {
   useEffect(() => {
     setVisibleItems([]); // 重置状态
     if (!hasContentCardMark || contentCardData.length === 0) return;
-    if (!showAnimation) {
+    // const isHistory = contentCardData[0].isHistory || false
+    if (isHistory) {
       setVisibleItems(contentCardData);
       return;
     }
@@ -212,7 +224,7 @@ const Markdown = (props: Props) => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [contentCardData, hasContentCardMark, showAnimation]);
+  }, [contentCardData, hasContentCardMark, isHistory, showAnimation]);
 
   // 渲染逻辑
   if (!hasContentCardMark || source.length < CONTENT_CARD_MARK.length) {

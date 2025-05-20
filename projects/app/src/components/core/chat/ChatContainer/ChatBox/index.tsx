@@ -803,6 +803,10 @@ const ChatBox = ({
         const resData = await generateImgApi({url})
         console.log('xxx onGenerateImg resData',resData)
         const {requestUrl} = resData
+        toast({
+          title: "图片生成成功",
+          status: 'success'
+        });
         setChatRecords((state) =>
           state.map((item) =>
             item.dataId === chat.dataId
@@ -970,7 +974,7 @@ const ChatBox = ({
   const chatInputRef = useRef<ChatInputRefType>(null);
 
   const RenderRecords = useMemo(() => {
-    console.log('ccc RenderRecords chatStauts', chatStauts);
+    // console.log('ccc RenderRecords chatRecords chatStauts', chatRecords, chatStauts);
     return (
       <ScrollData
         onClick={(event) => {
@@ -1008,7 +1012,7 @@ const ChatBox = ({
                 style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
               >
                 {chatRecords.map((item, index) => (
-                  <Box key={item.dataId}>
+                  <Box key={item._id +'_'+index}>
                     {/* 并且时间和上一条的time相差超过十分钟 */}
                     {index !== 0 &&
                       item.time &&
@@ -1033,6 +1037,7 @@ const ChatBox = ({
                           type={item.obj}
                           avatar={agentConfigInfo.avatar}
                           chat={item}
+                          isHistory={item.isHistory || false}
                           isLastChild={index === chatRecords.length - 1}
                           {...{
                             showVoiceIcon,
