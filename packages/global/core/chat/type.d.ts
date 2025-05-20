@@ -136,6 +136,8 @@ export type ChatItemType = (UserChatItemType | SystemChatItemType | AIChatItemTy
 export type ChatSiteItemType = (UserChatItemType | SystemChatItemType | AIChatItemType) & {
   dataId: string;
   status: `${ChatStatusEnum}`;
+  isHistory?: boolean;
+  _id?: string;
   genImgStatus?: `${GenerateImgStatusEnum}`;
   genImgUrl?: string;
   moduleName?: string;
