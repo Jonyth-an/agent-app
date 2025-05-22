@@ -51,6 +51,7 @@
     "formidable": "^2.1.1",
     "framer-motion": "9.1.7",
     "fs-extra": "^11.3.0",
+    "gm-crypto": "^0.1.12",
     "hyperdown": "^2.4.29",
     "i18next": "23.11.5",
     "immer": "^9.0.19",

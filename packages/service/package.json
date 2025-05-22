@@ -19,6 +19,7 @@
     "file-type": "^19.0.0",
     "form-data": "^4.0.0",
     "fs-extra": "^11.3.0",
+    "gm-crypto": "^0.1.12",
     "iconv-lite": "^0.6.3",
     "joplin-turndown-plugin-gfm": "^1.0.12",
     "json5": "^2.2.3",

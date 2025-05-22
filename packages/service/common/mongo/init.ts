@@ -2,6 +2,7 @@ import { delay } from '@fastgpt/global/common/system/utils';
 import { addLog } from '../system/log';
 import { connectionMongo } from './index';
 import type { Mongoose } from 'mongoose';
+import { getConfigValue, logAllConfigValues } from '../crypto/decrypt';
 
 const maxConnecting = Math.max(30, Number(process.env.DB_MAX_LINK || 20));
 
@@ -27,8 +28,10 @@ export async function connectMongo(): Promise<Mongoose> {
     connectionMongo.connection.on('disconnected', () => {
       console.log('mongo disconnected');
     });
+    const mongodbUri = getConfigValue('MONGODB_URI');
+    logAllConfigValues();
 
-    await connectionMongo.connect(process.env.MONGODB_URI as string, {
+    await connectionMongo.connect(mongodbUri as string, {
       bufferCommands: true,
       maxConnecting: maxConnecting,
       maxPoolSize: maxConnecting,
