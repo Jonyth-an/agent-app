@@ -554,14 +554,14 @@ const ChatBox = ({
               return newChatHistories;
             });
 
-            // setTimeout(() => {
-            //   if (!checkIsInteractiveByHistories(newChatHistories)) {
-            //     createQuestionGuide();
-            //   }
+            setTimeout(() => {
+              if (!checkIsInteractiveByHistories(newChatHistories)) {
+                createQuestionGuide();
+              }
 
-            //   generatingScroll(true);
-            //   isPc && TextareaDom.current?.focus();
-            // }, 100);
+              generatingScroll(true);
+              isPc && TextareaDom.current?.focus();
+            }, 100);
 
             // tts audio
             autoTTSResponse && splitText2Audio(responseText, true);

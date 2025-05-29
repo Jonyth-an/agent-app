@@ -101,7 +101,10 @@ export const createChatCompletion = async ({
 > => {
   try {
     const modelConstantsData = getLLMModel(body.model);
-
+    addLog.info(`LLM request`, {
+      'body.model': body.model,
+      modelConstantsData
+    });
     const formatTimeout = timeout ? timeout : body.stream ? 60000 : 600000;
     const ai = getAIApi({
       userKey,
