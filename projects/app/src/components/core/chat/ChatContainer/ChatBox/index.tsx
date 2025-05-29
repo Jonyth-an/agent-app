@@ -363,6 +363,7 @@ const ChatBox = ({
   // create question guide
   const createQuestionGuide = useCallback(async () => {
     if (!questionGuide.open || chatController.current?.signal?.aborted) return;
+    const appKey = agentConfigInfo.appKey;
     try {
       const abortSignal = new AbortController();
       questionGuideController.current = abortSignal;
@@ -374,7 +375,8 @@ const ChatBox = ({
           questionGuide,
           ...outLinkAuthData
         },
-        abortSignal
+        abortSignal,
+        appKey
       );
       if (Array.isArray(result)) {
         setQuestionGuide(result);
@@ -383,7 +385,7 @@ const ChatBox = ({
         }, 100);
       }
     } catch (error) {}
-  }, [questionGuide, appId, chatId, outLinkAuthData, scrollToBottom]);
+  }, [questionGuide, appId, chatId, outLinkAuthData,agentConfigInfo.appKey, scrollToBottom]);
 
   /* Abort chat completions, questionGuide */
   const abortRequest = useMemoizedFn((signal: string = 'stop') => {
