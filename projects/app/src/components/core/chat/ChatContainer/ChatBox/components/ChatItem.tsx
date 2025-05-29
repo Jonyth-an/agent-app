@@ -165,7 +165,7 @@ const ChatItem = (props: Props) => {
     const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
     // const source = chat.value && chat.value[0] && chat.value[0].text && chat.value[0].text.content || '';
     const source = chat.value?.[0]?.text?.content || '';
-    return source.includes(CONTENT_CARD_MARK) || regex.test(source);
+    return source.includes('RENDER_CONTENT_CARD') || source.includes(CONTENT_CARD_MARK) || regex.test(source);
   }, [chat]);
   /* 
     1. The interactive node is divided into n dialog boxes.
