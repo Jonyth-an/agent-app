@@ -31,8 +31,8 @@ const A = dynamic(() => import('./A'), { ssr: false });
 interface ContentItem {
   id: string;
   title: string;
-  imageUrl: string;
-  link: string;
+  avatar: string;
+  url: string;
 }
 
 interface ContentCardProps {
@@ -42,7 +42,7 @@ interface ContentCardProps {
 
 const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
   const displayItems = items;
-  // console.log('xxx displayItems', displayItems);
+  console.log('xxx displayItems', displayItems);
   return (
     <Box borderWidth="1px" borderRadius="lg" p={4} bgColor="white">
       <Flex direction="column" gap={3}>
@@ -50,7 +50,7 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
           displayItems.length > 0 &&
           displayItems.map((item, index) => (
             <React.Fragment key={`${item.id}_${index}`}>
-              <Link href={item.link} isExternal _hover={{ textDecoration: 'none' }}>
+              <Link href={item.url} isExternal _hover={{ textDecoration: 'none' }}>
                 <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
                   <Box
                     flexShrink={0}
@@ -60,7 +60,7 @@ const ContentCard = ({ items, maxItems = 3 }: ContentCardProps) => {
                     borderRadius="md"
                   >
                     <Image
-                      src={item.imageUrl || '/placeholder.svg'}
+                      src={item.avatar || '/placeholder.svg'}
                       alt={item.title}
                       objectFit="cover"
                       width="100%"
@@ -90,11 +90,6 @@ type Props = {
   isHistory?: boolean;
 };
 
-const isValidDataFormat = (input: string) => {
-  const regex = /^avatar:\!\[.+?\]\(.+?\)\s+title:\[.+?\]\(.+?\)$/;
-  return regex.test(input);
-};
-
 const parseData = (source: string) => {
   if (typeof source !== 'string') {
     return [];
@@ -108,18 +103,18 @@ const parseData = (source: string) => {
     let match;
     while ((match = regex.exec(source)) !== null) {
       const codeClassNameEnumValue = match[1]?.trim();
-      const avatarUrl = match[2] ? match[2].trim() : match[3]?.trim();
-      const titleText = match[3]?.trim();
-      const titleLink = match[4]?.trim();
+      const avatar = match[2] ? match[2].trim() : match[3]?.trim();
+      const title = match[3]?.trim();
+      const url = match[4]?.trim();
 
       // 确保所有必需的字段都存在
-      if (codeClassNameEnumValue && avatarUrl && titleText && titleLink) {
+      if (codeClassNameEnumValue && avatar && title && url) {
         entries.push({
           id: 'key_' + getNanoid() + '_' + index,
           codeClassNameEnum: codeClassNameEnumValue,
-          imageUrl: avatarUrl,
-          title: titleText,
-          link: titleLink
+          avatar: avatar || '',
+          title: title || '',
+          url: url || ''
         });
         console.log('ccc entries', entries);
         index += 1;
@@ -171,7 +166,9 @@ const ContentCardSkeleton = () => (
 const Markdown = (props: Props) => {
   // console.log('ccc Markdown props', props);
   const source = props.source || '';
+
   const showAnimation = props.showAnimation || false;
+
   const isHistory = props.isHistory || false;
   const CONTENT_CARD_MARK = 'codeClassNameEnum';
   const CONTENT_CARD_TYPE = 'CONTENT_CARD';
@@ -181,20 +178,32 @@ const Markdown = (props: Props) => {
   const hasContentCardMark = useMemo(() => {
     // 使用正则表达式匹配，允许中间有空格、换行等
     const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
-    return source.includes(CONTENT_CARD_MARK) || regex.test(source);
+    return (
+      source.includes('RENDER_CONTENT_CARD') ||
+      source.includes(CONTENT_CARD_MARK) ||
+      regex.test(source)
+    );
   }, [source]);
 
   // 检查数据是否完整
   const isDataComplete = useMemo(() => {
     if (!hasContentCardMark) return false;
     // 检查是否包含完整的 avatar 和 title
-    return source.includes('avatar:') && source.includes('title:');
+    return source.includes('avatar') && source.includes('title');
   }, [source, hasContentCardMark]);
 
   // 使用 useMemo 缓存解析结果
   const contentCardData = useMemo(() => {
     if (!hasContentCardMark || !isDataComplete) return [];
-
+    if (source.includes('RENDER_CONTENT_CARD')) {
+      try {
+        let tempSource = JSON.parse(source);
+        console.log('ccc Markdown tempSource', tempSource);
+        return tempSource.data;
+      } catch (e) {
+        console.log('ccc Markdown error', e);
+      }
+    }
     try {
       return parseData(source);
     } catch (error) {
@@ -208,15 +217,22 @@ const Markdown = (props: Props) => {
     if (!hasContentCardMark || contentCardData.length === 0) return;
     // const isHistory = contentCardData[0].isHistory || false
     if (isHistory) {
-      setVisibleItems(contentCardData);
+      setVisibleItems([...contentCardData]);
       return;
     }
     const interval = contentCardData.length < 5 ? 1000 : contentCardData.length < 12 ? 600 : 400;
+    console.log('animation contentCardData', contentCardData);
+    const itemsMap = new Map();
     let currentIndex = 0;
 
+    // 创建定时器逐个显示内容
     const timer = setInterval(() => {
       if (currentIndex < contentCardData.length) {
-        setVisibleItems((prev) => [...prev, contentCardData[currentIndex]]);
+        const item = contentCardData[currentIndex];
+        // 使用 id 作为键，确保唯一性
+        itemsMap.set(item.id, item);
+        // 将 Map 值转换为数组设置状态
+        setVisibleItems(Array.from(itemsMap.values()));
         currentIndex++;
       } else {
         clearInterval(timer);
@@ -254,11 +270,6 @@ export default React.memo(Markdown, (prevProps, nextProps) => {
   );
 });
 
-function Paragraph(props: any) {
-  const { node, children }: { node: any; children: React.ReactNode } = props;
-  console.log('xxx aaa Paragraph props node, children', props, node, children);
-  return <p className={styles.paragraph}>{children}</p>;
-}
 const MarkdownRender = ({ source = '', showAnimation, isDisabled, forbidZhFormat }: Props) => {
   const components = useMemo<any>(
     () => ({
