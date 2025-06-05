@@ -30,7 +30,24 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
         duration: number;
       }
     >(req, res);
+    // 保存上传的文件到本地public目录
+    const saveDir = path.join(process.cwd(), 'public/voices');
+    const fileName = `upload_${Date.now()}.wav`; // 使用时间戳创建唯一文件名
+    const savePath = path.join(saveDir, fileName);
+    addLog.info('whisper save info', {
+      appId,
+      duration,
+      savePath,
+      fileName
+    });
+    // 确保目录存在
+    if (!fs.existsSync(saveDir)) {
+      fs.mkdirSync(saveDir, { recursive: true });
+    }
 
+    // 复制文件
+    fs.copyFileSync(file.path, savePath);
+    console.log(`文件已保存到: ${savePath}`);
     req.body.appId = appId;
     req.body.shareId = shareId;
     req.body.outLinkUid = outLinkUid;
@@ -68,14 +85,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     // }
     const result = await aiTranscriptions({
       model: getDefaultSTTModel().model,
-      fileStream: fs.createReadStream(path.join(process.cwd(), 'public/voices/chinese_voice.wav'))
+      // fileStream: fs.createReadStream(path.join(process.cwd(), 'public/voices/chinese_voice.wav'))
+      fileStream: fs.createReadStream(file.path)
     });
     pushWhisperUsage({
       teamId,
       tmbId,
       duration
     });
-    addLog.info('whisper', {
+    addLog.info('whisper result', {
       model: getDefaultSTTModel().model,
       result,
       filePaths
