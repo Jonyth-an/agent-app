@@ -1,3 +1,4 @@
+import path from 'path';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { jsonRes } from '@fastgpt/service/common/response';
 import { getUploadModel } from '@fastgpt/service/common/file/multer';
@@ -10,6 +11,7 @@ import { NextAPI } from '@/service/middleware/entry';
 import { aiTranscriptions } from '@fastgpt/service/core/ai/audio/transcriptions';
 import { useIPFrequencyLimit } from '@fastgpt/service/common/middle/reqFrequencyLimit';
 import { getDefaultSTTModel } from '@fastgpt/service/core/ai/model';
+import { addLog } from '@fastgpt/service/common/system/log';
 
 const upload = getUploadModel({
   maxSize: 5
@@ -64,23 +66,29 @@ async function handler(req: NextApiRequest, res: NextApiResponse<any>) {
     // if (!whisperConfig?.open) {
     //   throw new Error('Whisper is not open in the app');
     // }
-
     const result = await aiTranscriptions({
       model: getDefaultSTTModel().model,
-      fileStream: fs.createReadStream(file.path)
+      fileStream: fs.createReadStream(path.join(process.cwd(), 'public/voices/chinese_voice.wav'))
     });
-
     pushWhisperUsage({
       teamId,
       tmbId,
       duration
     });
-
+    addLog.info('whisper', {
+      model: getDefaultSTTModel().model,
+      result,
+      filePaths
+    });
     jsonRes(res, {
       data: result.text
     });
   } catch (err) {
     console.log(err);
+    addLog.error('whisper error', {
+      error: err,
+      filePaths
+    });
     jsonRes(res, {
       code: 500,
       error: err
