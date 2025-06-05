@@ -21,12 +21,13 @@ export const aiTranscriptions = async ({
   const { data: result } = await axios<{ text: string }>({
     method: 'post',
     ...(modelData.requestUrl
-      ? { url: modelData.requestUrl }
+      ? { url: `${modelData.requestUrl}/audio/transcriptions` }
       : {
           baseURL: aiAxiosConfig.baseUrl,
           url: '/audio/transcriptions'
         }),
     headers: {
+      'Content-Type': 'multipart/form-data',
       Authorization: modelData.requestAuth
         ? `Bearer ${modelData.requestAuth}`
         : aiAxiosConfig.authorization,

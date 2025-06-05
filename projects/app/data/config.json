@@ -34,8 +34,56 @@
       "defaultConfig": {}, // 请求API时，挟带一些默认配置（比如 GLM4 的 top_p）
       "fieldMap": {} // 字段映射（o1 模型需要把 max_tokens 映射为 max_completion_tokens）
     },
+    {
+      "model": "FunAudioLLM/SenseVoiceSmall",
+      "metadata": {
+        "model": "FunAudioLLM/SenseVoiceSmall",
+        "name": "FunAudioLLM/SenseVoiceSmall",
+        "type": "stt",
+        "provider": "Siliconflow",
+        "isActive": true,
+        "requestUrl": "https://api.siliconflow.cn/v1",
+        "requestAuth": "sk-fribewdzuyljwcjphbdtvvledvktwnknenfhzzhmhhkbaxzc"
+      }
+    },
+    {
+      "model": "SenseVoiceSmall",
+      "metadata": {
+        "model": "SenseVoiceSmall",
+        "name": "SenseVoiceSmall",
+        "type": "stt",
+        "provider": "AliCloud",
+        "isActive": false,
+        "requestUrl": "https://dashscope.aliyuncs.com",
+        "requestAuth": "sk-0a6e2fc77239455394f47afd8f52eb1d"
+      }
+    },
   ],
   "vectorModels": [
+    {
+      "model": "FunAudioLLM/SenseVoiceSmall",
+      "metadata": {
+        "model": "FunAudioLLM/SenseVoiceSmall",
+        "name": "FunAudioLLM/SenseVoiceSmall",
+        "type": "stt",
+        "provider": "Siliconflow",
+        "isActive": true,
+        "requestUrl": "https://api.siliconflow.cn/v1",
+        "requestAuth": "sk-fribewdzuyljwcjphbdtvvledvktwnknenfhzzhmhhkbaxzc"
+      }
+    },
+    {
+      "model": "SenseVoiceSmall",
+      "metadata": {
+        "model": "SenseVoiceSmall",
+        "name": "SenseVoiceSmall",
+        "type": "stt",
+        "provider": "AliCloud",
+        "isActive": false,
+        "requestUrl": "https://dashscope.aliyuncs.com",
+        "requestAuth": "sk-0a6e2fc77239455394f47afd8f52eb1d"
+      }
+    },
     {
       "provider": "通义千问",
       "model": "text-embedding-v1", // 模型名（与通义千问对应）
@@ -51,6 +99,30 @@
   ],
   "reRankModels": [],
   "audioSpeechModels": [
+    {
+      "model": "FunAudioLLM/SenseVoiceSmall",
+      "metadata": {
+        "model": "FunAudioLLM/SenseVoiceSmall",
+        "name": "FunAudioLLM/SenseVoiceSmall",
+        "type": "stt",
+        "provider": "Siliconflow",
+        "isActive": true,
+        "requestUrl": "https://api.siliconflow.cn/v1",
+        "requestAuth": "sk-fribewdzuyljwcjphbdtvvledvktwnknenfhzzhmhhkbaxzc"
+      }
+    },
+    {
+      "model": "SenseVoiceSmall",
+      "metadata": {
+        "model": "SenseVoiceSmall",
+        "name": "SenseVoiceSmall",
+        "type": "stt",
+        "provider": "AliCloud",
+        "isActive": false,
+        "requestUrl": "https://dashscope.aliyuncs.com",
+        "requestAuth": "sk-0a6e2fc77239455394f47afd8f52eb1d"
+      }
+    },
     {
       "provider": "OpenAI",
       "model": "tts-1",
