@@ -230,6 +230,15 @@ export const useChatStore = create<State>()(
               friend_share_config: {},
               pay_config: {},
               card_config: {}
+            },
+            qaGuideConfig: {
+              enable: true,
+              appId: '',
+              appKey: '',
+              version: 'v1'
+            },
+            chatConfig: {
+              version: 'v1'
             }
           },
           tenantId: -1,
@@ -248,6 +257,12 @@ export const useChatStore = create<State>()(
                 console.log('xxx agentConfigInfo2322 agConfig', agConfig);
                 if (agConfig && agConfig.list) {
                   state.agentConfigInfo.agentConfig.list = agConfig.list || [];
+                }
+                if (agConfig && agConfig.qaGuideConfig) {
+                  state.agentConfigInfo.agentConfig.qaGuideConfig = agConfig.qaGuideConfig || {};
+                }
+                if (agConfig && agConfig.chatConfig) {
+                  state.agentConfigInfo.agentConfig.chatConfig = agConfig.chatConfig || {};
                 }
 
                 if (agConfig && agConfig.commonConfig) {

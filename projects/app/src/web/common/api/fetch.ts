@@ -10,10 +10,12 @@ import {
 } from '@fortaine/fetch-event-source';
 import { TeamErrEnum } from '@fastgpt/global/common/error/code/team';
 import { useSystemStore } from '../system/useSystemStore';
+
 import { formatTime2YMDHMW } from '@fastgpt/global/common/string/time';
 import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 import Cookies from 'js-cookie';
 import { saveChatLog } from '@/web/core/chat/user';
+import { getFetchBaseUrl } from '../utils/config';
 
 export type StreamCBParams = {
   type: string;
@@ -52,8 +54,9 @@ class FatalError extends Error {}
 // saveChatLog
 
 export const streamFetch = ({
-  url = '/api/v1/chat/completions',
+  // url = `${getFetchBaseUrl()}/v2/chat/completions`,
   // url = '/api/v2/chat/completions',
+  url = '/api/v1/chat/completions',
   // url = '/api/v1/chat/startChat',
   data,
   onMessage,
@@ -61,7 +64,8 @@ export const streamFetch = ({
   callback
 }: StreamFetchProps) =>
   new Promise<StreamResponseType>(async (resolve, reject) => {
-    console.log('xxx streamFetch finish data', data);
+    // console.log('xxx streamFetch finish data', data);
+
     // First res
     const timeoutId = setTimeout(() => {
       abortCtrl.abort('Time out');

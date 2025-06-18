@@ -63,9 +63,13 @@ const nextConfig = {
         destination: 'http://10.5.9.219:3000/api/v2/chat/completions'
       },
       {
-        source: '/api/v1/chat/completions', // 匹配 /uc-system 及其子路径
-        destination: 'http://10.5.9.219:3000/api/v1/chat/completions'
+        source: '/localRun/api/:path*', // 匹配 /uc-system 及其子路径
+        destination: 'http://10.5.9.219:3000/api/:path*'
       },
+      // {
+      //   source: '/api/v1/chat/completions', // 匹配 /uc-system 及其子路径
+      //   destination: 'http://10.5.9.219:3000/api/v1/chat/completions'
+      // },
       {
         source: '/share-sandbox/:path*', // 匹配 /uc-system 及其子路径
         destination: 'http://127.0.0.1:3007/share-sandbox/:path*'

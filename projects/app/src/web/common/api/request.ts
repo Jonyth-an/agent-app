@@ -106,7 +106,7 @@ function checkRes(data: ResponseDataType) {
   } else if ((data.code !== 0 && data.code < 200) || (data.code !== 0 && data.code >= 400)) {
     return Promise.reject(data);
   }
-  return data.data || data.param;
+  return data.data || data.param || data;
 }
 
 /**
@@ -225,3 +225,57 @@ export function PUT<T = undefined>(url: string, data = {}, config: ConfigType = 
 export function DELETE<T = undefined>(url: string, data = {}, config: ConfigType = {}): Promise<T> {
   return request(url, data, config, 'DELETE');
 }
+
+// curl --location --request POST 'http://localhost:3000/api/v1/chat/completions' \
+// --header 'Authorization: Bearer fastgpt-mWM5YTWRJwaeQiywkTdw4mniZNxCob7fNcfQX7REKkRr0H5Lgu5rLtuKJSk24Up1K' \
+// --header 'Content-Type: application/json' \
+// --data-raw '{
+//     "stream": false,
+//     "detail": false,
+//     appId: "6850d93d38169417d3e8a822",
+//     chatId: "kFmmc5SCGz92YlkD7f624Bs",
+//     "responseChatItemId": "jglsRJrVEbXKT09Bi1ojRi7q",
+
+//     "messages": [
+//         {
+//             "role": "user",
+//             "content": "资料包"
+//         }
+//     ]
+// }'
+
+// curl --location --request POST 'http://10.5.9.219:3000/api/v2/chat/completions' \
+// --header 'Authorization: Bearer fastgpt-mWM5YTWRJwaeQiywkTdw4mniZNxCob7fNcfQX7REKkRr0H5Lgu5rLtuKJSk24Up1K' \
+// --header 'Content-Type: application/json' \
+// --data-raw '{
+//     "chatId": "my_chatId",
+//     "stream": false,
+//     "detail": false,
+//     "responseChatItemId": "my_responseChatItemId",
+//     "variables": {
+//         "uid": "asdfadsfasfd2323",
+//         "name": "张三"
+//     },
+//     "messages": [
+//         {
+//             "role": "user",
+//             "content": "资料包"
+//         }
+//     ]
+// }'
+
+// curl 'http://10.5.9.219:3000/api/v2/chat/completions' \
+//   -H 'Referer: http://10.5.9.219:3000/chat?appId=6850d93d38169417d3e8a822' \
+//   -H 'Authorization: Bearer fastgpt-mWM5YTWRJwaeQiywkTdw4mniZNxCob7fNcfQX7REKkRr0H5Lgu5rLtuKJSk24Up1K' \
+//   -H 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1' \
+//   -H 'accept: text/event-stream' \
+//   -H 'Content-Type: application/json' \
+//   --data-raw '{"messages":[{"dataId":"rEQ6ly7qle7b2d6woLXhCjuF","hideInUI":false,"role":"user","content":"资料包"}],"variables":{"cTime":"2025-06-18 16:25:01 Wednesday"},"responseChatItemId":"jglsRJrVEbXKT09Bi1ojRi7q","appId":"6850d93d38169417d3e8a822","chatId":"kFmmc5SCGz92YlkD7f624Bsm","detail":false,"stream":false}'
+
+// curl 'http://10.5.9.219:3000/api/v2/chat/completions' \
+//   -H 'Referer: http://10.5.9.219:3000/chat?appId=6850d93d38169417d3e8a822' \
+//   -H 'Authorization: Bearer fastgpt-mWM5YTWRJwaeQiywkTdw4mniZNxCob7fNcfQX7REKkRr0H5Lgu5rLtuKJSk24Up1K' \
+//   -H 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1' \
+//   -H 'accept: text/event-stream' \
+//   -H 'Content-Type: application/json' \
+//   --data-raw '{"messages":[{"dataId":"rEQ6ly7qle7b2d6woLXhCjuF","hideInUI":false,"role":"user","content":"资料包"}],"variables":{"cTime":"2025-06-18 16:25:01 Wednesday"},"appId":"6850d93d38169417d3e8a822","detail":false,"stream":false}'

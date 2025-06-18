@@ -30,7 +30,7 @@ import type { AdminMarkType } from './components/SelectMarkCollection';
 
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
 
-import { postQuestionGuide } from '@/web/core/ai/api';
+import { postQAGuide, postQuestionGuide } from '@/web/core/ai/api';
 import type {
   ChatBoxInputType,
   ChatBoxInputFormType,
@@ -136,7 +136,7 @@ const ChatBox = ({
   const [questionGuides, setQuestionGuide] = useState<string[]>([]);
 
   const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
-  const { agentConfigInfo, chatStauts, setChatStauts } = useChatStore();
+  const { agentConfigInfo, chatStauts, setChatStauts, unionid, openid, nickname } = useChatStore();
   const userAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.userAvatar);
   const chatBoxData = useContextSelector(ChatItemContext, (v) => v.chatBoxData);
   const ChatBoxRef = useContextSelector(ChatItemContext, (v) => v.ChatBoxRef);
@@ -160,8 +160,6 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
- 
-  
   
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
@@ -379,6 +377,7 @@ const ChatBox = ({
         appKey
       );
       if (Array.isArray(result)) {
+        console.log('xxx createQuestionGuide result', result);
         setQuestionGuide(result);
         setTimeout(() => {
           scrollToBottom();
@@ -386,6 +385,59 @@ const ChatBox = ({
       }
     } catch (error) {}
   }, [questionGuide, appId, chatId, outLinkAuthData,agentConfigInfo.appKey, scrollToBottom]);
+
+
+  const createQAGuide = useCallback(async (text: string) => {
+    if (!questionGuide.open || chatController.current?.signal?.aborted) return;
+  
+
+    try {
+      const abortSignal = new AbortController();
+      questionGuideController.current = abortSignal;
+      const qaGuideConfig = agentConfigInfo?.agentConfig.qaGuideConfig || {};
+      const qaVersion = qaGuideConfig.version || 'v1';
+      const qaAppId = qaGuideConfig.appId || ''; 
+      const qaAppKey = qaGuideConfig.appKey || ''; 
+      const result = await postQAGuide(
+        {
+          params: {
+            appId,
+            chatId,
+            unionid,
+            openid,
+            nickname,
+            qaAppId
+          },
+          customUid: `unionid=${unionid};openid=${openid};nickname=${nickname};appId=${appId};chatId=${chatId}`,
+          "messages": [
+              {
+                  "role": "user",
+                  "content": text
+              }
+          ],
+          variables: {},
+          appId: qaAppId,
+          stream: false,
+          detail: false,
+        },
+        abortSignal,
+        qaAppKey,
+        qaVersion
+      );
+      console.log('xxx createQAGuide result111', result);
+      const choices = result?.choices || [];
+      const message = choices[0]?.message || {};
+      const content = message.content || '';
+      const resultArr = JSON.parse(content) || [];
+      if (Array.isArray(resultArr)) {
+        console.log('xxx createQuestionGuide result', result);
+        setQuestionGuide(resultArr);
+        setTimeout(() => {
+          scrollToBottom();
+        }, 100);
+      }
+    } catch (error) {}
+  }, [questionGuide, appId, chatId,scrollToBottom, agentConfigInfo?.agentConfig.qaGuideConfig, nickname, openid, unionid]);
 
   /* Abort chat completions, questionGuide */
   const abortRequest = useMemoizedFn((signal: string = 'stop') => {
@@ -520,7 +572,7 @@ const ChatBox = ({
               reserveId: true,
               reserveTool: true
             });
-
+          
             const {
               responseData,
               responseText,
@@ -557,8 +609,18 @@ const ChatBox = ({
             });
 
             setTimeout(() => {
-              if (!checkIsInteractiveByHistories(newChatHistories)) {
-                createQuestionGuide();
+              // if (!checkIsInteractiveByHistories(newChatHistories)) {
+              //   // createQuestionGuide();
+              //   const qaGuideConfig = agentConfigInfo?.agentConfig?.qaGuideConfig || {};
+              //   const enable = qaGuideConfig.enable ?? true; // 默认开启
+              //   if (enable) {
+              //     createQAGuide()
+              //   }
+              // }
+              const qaGuideConfig = agentConfigInfo?.agentConfig?.qaGuideConfig || {};
+              const enable = qaGuideConfig.enable ?? true; // 默认开启
+              if (enable) {
+                createQAGuide(text)
               }
 
               generatingScroll(true);

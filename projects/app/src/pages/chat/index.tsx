@@ -159,6 +159,16 @@ const Chat = () => {
         chatStauts
       );
       const histories = messages.slice(-1);
+      const agentConfig = agentConfigInfo.agentConfig || {};
+      const chatConfig = agentConfig.chatConfig || {};
+      const version = chatConfig.version || 'v1';
+      let chatUrl = '/api/v1/chat/completions';
+      if (version === 'v1') {
+        chatUrl = '/api/v1/chat/completions';
+      }
+      if (version === 'v2') {
+        chatUrl = '/api/v2/chat/completions';
+      }
       const { responseText, responseData } = await streamFetch({
         data: {
           params: {
@@ -173,6 +183,7 @@ const Chat = () => {
           chatId,
           stream: false
         },
+        url: chatUrl,
         onMessage: generatingMessage,
         abortCtrl: controller,
         callback: (data) => onSaveChatLog(data, histories, variables)
@@ -190,6 +201,7 @@ const Chat = () => {
       return { responseText, responseData, isNewChat: forbidLoadChat.current };
     },
     [
+      agentConfigInfo.agentConfig,
       name,
       nickname,
       tenantId,
@@ -279,8 +291,16 @@ const Chat = () => {
 
 const Render = (props: { appId: string; isStandalone?: string }) => {
   const { appId, isStandalone } = props;
-  const { source, chatId, agentConfigInfo, setSource, setAppId, openid, unionid, runPlatform } =
-    useChatStore();
+  const {
+    source,
+    chatId,
+    agentConfigInfo,
+    setSource,
+    setAppId,
+    openid,
+    unionid,
+    runPlatform
+  } = useChatStore();
   const appKey = agentConfigInfo.appKey;
   const h5 = agentConfigInfo.agentConfig.h5;
   const share_switch = h5 && h5.share_switch;

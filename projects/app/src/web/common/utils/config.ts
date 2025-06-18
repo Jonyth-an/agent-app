@@ -18,3 +18,13 @@ export function basePath() {
   }
   return url;
 }
+
+export function getFetchBaseUrl() {
+  let url = '';
+  if (process.env.NODE_ENV === 'development') {
+    url = '/localRun/api';
+  } else {
+    url = '/api';
+  }
+  return url;
+}
