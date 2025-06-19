@@ -2,6 +2,7 @@ import { GET, POST, PUT, DELETE } from '@/web/common/api/request';
 import type { CreateQuestionGuideParams } from '@/pages/api/core/ai/agent/v2/createQuestionGuide';
 import { StartChatFnProps } from '@/components/core/chat/ChatContainer/type';
 import { getFetchBaseUrl } from '@/web/common/utils/config';
+import { getWebReqUrl } from '@fastgpt/web/common/system/utils';
 
 // 添加返回值类型接口
 export interface CusAiResponse {
@@ -46,5 +47,5 @@ export const postQAGuide = (
     headers: {
       Authorization: `Bearer ${appKey}`
     },
-    baseURL: getFetchBaseUrl()
+    baseURL: getWebReqUrl(getFetchBaseUrl())
   });
