@@ -73,6 +73,11 @@ export async function middleware(request: NextRequest) {
     if (searchParams.has('code')) {
       return NextResponse.next();
     }
+
+    if (process.env.NODE_ENV === 'development' && searchParams.has('nbuser')) {
+      return NextResponse.next();
+    }
+
     if (!openid || !unionid) {
       console.log('sss middleware share_h5_url_node', share_h5_url_node);
       const authUrl = `${share_h5_url_node}/share-agent/chat?${searchParams.toString()}`;
