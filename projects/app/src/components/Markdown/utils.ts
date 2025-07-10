@@ -1,3 +1,4 @@
+import { getNanoid } from '@fastgpt/global/common/string/tools';
 export enum CodeClassNameEnum {
   guide = 'guide',
   questionGuide = 'questionGuide',
@@ -9,9 +10,110 @@ export enum CodeClassNameEnum {
   iframe = 'iframe',
   html = 'html',
   video = 'video',
-  contentCard = 'contentCard',
-  audio = 'audio'
+  audio = 'audio',
+  contentCard = 'contentCard' // 确保这个值与之前的CONTENT_CARD_TYPE一致
 }
+
+// ContentCard 相关工具函数
+export interface ContentItem {
+  id: string;
+  title: string;
+  avatar: string;
+  url: string;
+}
+
+// 常量定义
+export const CONTENT_CARD_MARK = 'codeClassNameEnum';
+export const CONTENT_CARD_TYPE = 'CONTENT_CARD';
+
+// 检查是否包含 ContentCard 标记
+export const isContentCardFormat = (source: string): boolean => {
+  if (!source || typeof source !== 'string') return false;
+
+  // 使用正则表达式匹配，允许中间有空格、换行等
+  const regex = new RegExp(`${CONTENT_CARD_MARK}\\s*:\\s*${CONTENT_CARD_TYPE}`);
+  return (
+    source.includes('RENDER_CONTENT_CARD') ||
+    source.includes(CONTENT_CARD_MARK) ||
+    regex.test(source)
+  );
+};
+
+// 检查数据是否完整
+export const isContentCardDataComplete = (source: string): boolean => {
+  if (!isContentCardFormat(source)) return false;
+  // 检查是否包含完整的 avatar 和 title
+  return source.includes('avatar') && source.includes('title');
+};
+
+// 检查是否是ContentCard JSON格式
+export const isContentCardJson = (source: string): boolean => {
+  try {
+    if (!source.trim().startsWith('{')) return false;
+    const data = JSON.parse(source);
+    return data.type === 'RENDER_CONTENT_CARD' && Array.isArray(data.data);
+  } catch (e) {
+    return false;
+  }
+};
+
+// 解析旧版本格式的ContentCard数据
+export const parseContentCardData = (source: string): ContentItem[] => {
+  if (typeof source !== 'string') {
+    return [];
+  }
+
+  const regex =
+    /codeClassNameEnum:\s*(\w+)[\s\S]*?avatar:\s*(?:!\[.*?\]\((https?:\/\/[^\s]+)\)|https?:\/\/[^\s]+)[\s\S]*?title:\s*\[(.*?)\]\((.*?)\)/g;
+  const entries: ContentItem[] = [];
+  let index = 0;
+
+  try {
+    let match;
+    while ((match = regex.exec(source)) !== null) {
+      const codeClassNameEnumValue = match[1]?.trim();
+      const avatar = match[2] ? match[2].trim() : match[3]?.trim();
+      const title = match[3]?.trim();
+      const url = match[4]?.trim();
+
+      // 确保所有必需的字段都存在
+      if (codeClassNameEnumValue && avatar && title && url) {
+        entries.push({
+          id: 'key_' + getNanoid() + '_' + index,
+          avatar: avatar || '',
+          title: title || '',
+          url: url || ''
+        });
+        index += 1;
+      }
+    }
+  } catch (error) {
+    console.error('Error parsing content card data:', error);
+  }
+
+  return entries;
+};
+
+// 处理ContentCard数据，统一返回格式
+export const processContentCardData = (source: string): ContentItem[] => {
+  // 如果是JSON格式
+  if (isContentCardJson(source)) {
+    try {
+      const parsedData = JSON.parse(source);
+      return parsedData.data;
+    } catch (e) {
+      console.error('Failed to parse ContentCard JSON data:', e);
+      return [];
+    }
+  }
+
+  // 如果是旧版本格式
+  if (isContentCardDataComplete(source)) {
+    return parseContentCardData(source);
+  }
+
+  return [];
+};
 
 function htmlTableToLatex(html: string) {
   const parser = new DOMParser();
