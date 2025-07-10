@@ -86,7 +86,14 @@ const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCa
       <Flex direction="column" gap={3}>
         {visibleItems.slice(0, maxItems).map((item, index) => (
           <React.Fragment key={`${item.id}_${index}`}>
-            <Link href={item.url} isExternal _hover={{ textDecoration: 'none' }}>
+            <Link
+              sx={{
+                textDecoration: 'none!important'
+              }}
+              href={item.url}
+              isExternal
+              _hover={{ textDecoration: 'none' }}
+            >
               <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
                   <Image
@@ -98,13 +105,23 @@ const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCa
                   />
                 </Box>
                 <Box flex={1} minWidth={0}>
-                  <Text fontSize="14px" noOfLines={2} color="rgb(46, 48, 57)">
+                  <Text
+                    fontSize="14px"
+                    sx={{
+                      marginTop: '0 !important',
+                      marginBottom: '0 !important'
+                    }}
+                    noOfLines={2}
+                    color="rgb(46, 48, 57)"
+                  >
                     {item.title}
                   </Text>
                 </Box>
               </Flex>
             </Link>
-            {index < visibleItems.length - 1 && <Divider borderColor="gray.200" />}
+            {index < visibleItems.length - 1 && (
+              <Box height="1px" bg="gray.200" opacity="0.6" width="100%" my={0} />
+            )}
           </React.Fragment>
         ))}
       </Flex>
