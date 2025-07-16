@@ -39,6 +39,7 @@ import { AgentAccessType, ChatStatusType } from '@/web/core/app/constants';
 import { hasUserChatPermission } from '@/web/core/chat/context/chatCheck';
 import { tokenIsValid } from '@/web/core/chat/context/utils';
 import { initWechatShare } from '@/web/core/chat/wechat';
+import { useStyleConfig } from '@/components/Markdown/styles/styleUtils';
 const CustomPluginRunBox = dynamic(() => import('@/pageComponents/chat/CustomPluginRunBox'));
 
 const Chat = () => {
@@ -238,9 +239,9 @@ const Chat = () => {
       </Drawer>
     );
   }, [appId, isOpenSlider, isPc, onCloseSlider, t]);
-
+  const styles = useStyleConfig();
   return (
-    <Flex h={'100%'}>
+    <Flex h={'100%'} className={`chat-page-wrapper ${styles['chat-page-wrapper']}`}>
       <NextHead
         title={agentConfigInfo.name}
         icon={agentConfigInfo.avatar}
@@ -260,7 +261,8 @@ const Chat = () => {
             flexDirection={'column'}
           >
             {/* chat box */}
-            <Box flex={'1 0 0'} bg={'white'}>
+            {/* <Box flex={'1 0 0'} bg={'white'}> */}
+            <Box flex={'1 0 0'}>
               {isPlugin ? (
                 <CustomPluginRunBox
                   appId={appId}

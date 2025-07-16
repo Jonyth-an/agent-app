@@ -1,11 +1,12 @@
 import { Box, BoxProps, Card, Flex } from '@chakra-ui/react';
 import React from 'react';
-import { MessageCardStyle } from '../constants';
 import Markdown from '@/components/Markdown';
 import { ChatItemValueTypeEnum } from '@fastgpt/global/core/chat/constants';
 
 import { ChatItemValueItemType } from '@fastgpt/global/core/chat/type';
 import { cloneDeep } from 'lodash';
+// import { MessageCardStyle } from '@/components/Markdown/styles/styleUtils';
+import { MessageCardStyle } from '../constants';
 
 const RenderText = React.memo(function RenderText({ value }: any) {
   if (value.type === ChatItemValueTypeEnum.text && value.text) {

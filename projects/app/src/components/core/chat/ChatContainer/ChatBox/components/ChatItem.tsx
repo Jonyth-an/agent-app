@@ -2,7 +2,9 @@ import { Box, BoxProps, Card, Flex } from '@chakra-ui/react';
 import React, { useMemo, useRef } from 'react';
 import ChatController, { type ChatControllerProps } from './ChatController';
 import ChatAvatar from './ChatAvatar';
+// import { MessageCardStyle } from '@/components/Markdown/styles/styleUtils';
 import { MessageCardStyle } from '../constants';
+
 import { formatChatValue2InputType } from '../utils';
 import Markdown from '@/components/Markdown';
 import styles from '../index.module.scss';
