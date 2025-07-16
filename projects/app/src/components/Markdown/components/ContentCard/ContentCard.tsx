@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
-import { ContentItem } from '../utils';
+import { ContentItem } from '../../utils';
 
 interface ContentCardProps {
   items: ContentItem[];

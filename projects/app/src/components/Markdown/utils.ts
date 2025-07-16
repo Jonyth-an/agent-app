@@ -11,7 +11,8 @@ export enum CodeClassNameEnum {
   html = 'html',
   video = 'video',
   audio = 'audio',
-  contentCard = 'contentCard' // 确保这个值与之前的CONTENT_CARD_TYPE一致
+  contentCard = 'contentCard', // 确保这个值与之前的CONTENT_CARD_TYPE一致
+  realmArticle = 'realmArticle' // 确保这个值与之前的CONTENT_CARD_TYPE一致
 }
 
 // ContentCard 相关工具函数

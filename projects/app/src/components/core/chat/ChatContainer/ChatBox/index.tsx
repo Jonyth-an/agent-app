@@ -1076,7 +1076,7 @@ const ChatBox = ({
                 style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
               >
                 {chatRecords.map((item, index) => (
-                  <Box key={item._id +'_'+index}>
+                  <Box key={item._id +'_'+index} className='chat-item-box'>
                     {/* 并且时间和上一条的time相差超过十分钟 */}
                     {index !== 0 &&
                       item.time &&

@@ -218,7 +218,8 @@ export const useChatStore = create<State>()(
           description: '',
           agentConfig: {
             commonConfig: {
-              enableGenImg: false
+              enableGenImg: false,
+              styleType: 'huaan'
             },
             list: [],
             weChatShareConfig: {},
@@ -267,6 +268,8 @@ export const useChatStore = create<State>()(
 
                 if (agConfig && agConfig.commonConfig) {
                   state.agentConfigInfo.agentConfig.commonConfig = agConfig.commonConfig || {};
+                  state.agentConfigInfo.agentConfig.commonConfig.styleType =
+                    agConfig.commonConfig.styleType || 'huaan';
                 }
 
                 if (agConfig && agConfig.h5) {

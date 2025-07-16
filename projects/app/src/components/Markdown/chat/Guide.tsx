@@ -8,8 +8,8 @@ import RemarkBreaks from 'remark-breaks';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
 
 import 'katex/dist/katex.min.css';
-import styles from '../index.module.scss';
 import Image from '../img/Image';
+import { useStyleConfig } from '../styles/styleUtils';
 
 function MyLink(e: any) {
   const href = e.href;
@@ -41,6 +41,8 @@ const Guide = ({ text }: { text: string }) => {
     () => text.replace(/\[(.*?)\]($|\n)/g, '[$1]()').replace(/\\n/g, '\n&nbsp;'),
     [text]
   );
+
+  const styles = useStyleConfig();
 
   return (
     <ReactMarkdown

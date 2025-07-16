@@ -1,6 +1,6 @@
 import React from 'react';
 import ContentCard from './ContentCard';
-import { processContentCardData, isContentCardJson } from '../utils';
+import { processContentCardData, isContentCardJson } from '../../utils';
 
 interface ContentCardRendererProps {
   value: string;

@@ -7,7 +7,6 @@ import RehypeKatex from 'rehype-katex'; // Math render
 import RemarkGfm from 'remark-gfm'; // Special markdown syntax
 import RehypeExternalLinks from 'rehype-external-links';
 
-import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import { CodeClassNameEnum, ContentItem, isContentCardJson, processContentCardData } from './utils';
@@ -28,7 +27,9 @@ const ChatGuide = dynamic(() => import('./chat/Guide'), { ssr: false });
 const QuestionGuide = dynamic(() => import('./chat/QuestionGuide'), { ssr: false });
 const A = dynamic(() => import('./A'), { ssr: false });
 
-import ContentCardRenderer from './components/ContentCardRenderer';
+import ContentCardRenderer from './components/ContentCard/ContentCardRenderer';
+import RealmArticle from './components/RealmArticle';
+import { useStyleConfig } from './styles/styleUtils';
 
 type Props = {
   source?: string;
@@ -111,7 +112,8 @@ const MarkdownRender = (props: Props) => {
   );
 
   // 如果是ContentCard JSON格式，直接使用ContentCardRenderer渲染
-
+  let styles = useStyleConfig();
+  console.log('mmm MarkdownRender styles', styles);
   return (
     <Box position={'relative'}>
       <ReactMarkdown
@@ -152,6 +154,9 @@ function CodeRenderer(props: any) {
   const strChildren = String(children);
 
   // 检测是否是ContentCard格式
+  if (codeType === CodeClassNameEnum.realmArticle) {
+    return <RealmArticle value={strChildren} />;
+  }
   if (codeType === CodeClassNameEnum.contentCard) {
     return <ContentCardRenderer value={strChildren} isHistory={isHistory} />;
   }
