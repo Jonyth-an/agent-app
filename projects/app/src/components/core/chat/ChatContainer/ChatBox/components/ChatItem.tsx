@@ -29,7 +29,7 @@ import { formatTimeToChatItemTime } from '@fastgpt/global/common/string/time';
 import dayjs from 'dayjs';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
-import { useStyleConfig } from '@/components/Markdown/styles/styleUtils';
+import { getStyleClass, useStyleConfig } from '@/components/Markdown/styles/styleUtils';
 
 const colorMap = {
   [ChatStatusEnum.loading]: {
@@ -126,26 +126,52 @@ const ChatItem = (props: Props) => {
 
   const { isPc } = useSystem();
 
-  const styleMap: BoxProps = {
+  const defaultStyleMap: BoxProps = {
     ...(type === ChatRoleEnum.Human
       ? {
           order: 0,
           borderRadius: '8px 0 8px 8px',
           justifyContent: 'flex-end',
           textAlign: 'right',
-          // bg: 'primary.100'
+          bg: 'primary.100'
         }
       : {
           order: 1,
           borderRadius: '0 8px 8px 8px',
           justifyContent: 'flex-start',
           textAlign: 'left',
-          // bg: 'myGray.50'
+          bg: 'myGray.50'
         }),
     fontSize: 'mini',
     fontWeight: '400',
     color: 'myGray.500'
   };
+
+  const huaanStyleMap: BoxProps = {
+    ...(type === ChatRoleEnum.Human
+      ? {
+          order: 0,
+          borderRadius: '8px 0 8px 8px',
+          justifyContent: 'flex-end',
+          textAlign: 'right',
+          bg: 'primary.100'
+        }
+      : {
+          order: 1,
+          borderRadius: '0 8px 8px 8px',
+          justifyContent: 'flex-start',
+          textAlign: 'left',
+          bg: 'myGray.50'
+        }),
+    fontSize: 'mini',
+    fontWeight: '400',
+    color: 'myGray.500'
+  };
+
+  const styleMap = getStyleClass({
+    huaan: huaanStyleMap,
+    default: defaultStyleMap
+  })
   const { t } = useTranslation();
 
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
@@ -232,6 +258,7 @@ const ChatItem = (props: Props) => {
   const styleConfig = useStyleConfig();
   return (
     <Box
+      className="chat-item-outer-wrapper"
       _hover={{
         '& .time-label': {
           display: 'block'
@@ -302,7 +329,7 @@ const ChatItem = (props: Props) => {
           <Card
             className={`chat-item-card ${styleConfig['chat-item-card']}`}
             {...MessageCardStyle}
-            // bg={styleMap.bg}
+            bg={styleMap.bg}
             borderRadius={styleMap.borderRadius}
             textAlign={'left'}
           >

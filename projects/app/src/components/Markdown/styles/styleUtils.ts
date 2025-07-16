@@ -3,16 +3,19 @@ import defaultStyles from './default.module.scss';
 import huaanStyles from './huaan.module.scss';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { BoxProps } from '@chakra-ui/react';
+import { ChatRoleEnum } from '@fastgpt/global/core/chat/constants';
 
-// 样式类型定义
-export type StyleType = 'default' | 'huaan' | string;
+export enum StyleTypeEnum {
+  default = 'default',
+  huaan = 'huaan'
+}
 
 /**
  * 获取当前应该使用的样式类型
  * @param styleType 可选的样式类型参数
  * @returns 当前应使用的样式类型
  */
-export const useCurrentStyleType = (styleType?: StyleType) => {
+export const useCurrentStyleType = (styleType?: StyleTypeEnum): StyleTypeEnum => {
   // 从 store 获取样式类型
   const storeStyleType = useChatStore(
     (state: any) => state?.agentConfigInfo.agentConfig?.commonConfig?.styleType
@@ -27,11 +30,11 @@ export const useCurrentStyleType = (styleType?: StyleType) => {
  * @param styleType 可选的样式类型参数，如果提供则优先使用，否则从 store 获取
  * @returns 对应的样式对象
  */
-export const useStyleConfig = (styleType?: StyleType) => {
-  const currentStyleType = useCurrentStyleType(styleType);
-
+export const useStyleConfig = () => {
+  const currentStyleType = useCurrentStyleType();
+  console.log('mmm useStyleConfig currentStyleType', currentStyleType);
   return useMemo(() => {
-    if (currentStyleType === 'huaan') {
+    if (currentStyleType === StyleTypeEnum.huaan) {
       return huaanStyles;
     }
     return defaultStyles;
@@ -65,13 +68,29 @@ export const huaanMessageCardStyle: BoxProps = {
  * @param styleType 可选的样式类型参数，如果提供则优先使用，否则从 store 获取
  * @returns 对应的消息卡片样式
  */
-export const MessageCardStyle = (styleType?: StyleType): BoxProps => {
+export const MessageCardStyle = (): BoxProps => {
   // 使用公共逻辑获取当前样式类型
-  const currentStyleType = useCurrentStyleType(styleType);
-
+  const currentStyleType = useCurrentStyleType();
+  console.log('mmm  MessageCardStyle currentStyleType', currentStyleType);
   // 根据样式类型返回对应的消息卡片样式
-  if (currentStyleType === 'huaan') {
+  if (currentStyleType === StyleTypeEnum.huaan) {
     return huaanMessageCardStyle;
   }
   return defaultMessageCardStyle;
+};
+
+//  default: defaultClass,
+// huaan: huaanClass,
+// xingying: otherClass
+export const getStyleClass = (options: Record<StyleTypeEnum, any>) => {
+  // 使用公共逻辑获取当前样式类型
+  const currentStyleType = useCurrentStyleType();
+
+  // 如果提供了当前样式类型的 class，则返回它
+  if (currentStyleType && options[currentStyleType]) {
+    return options[currentStyleType];
+  }
+
+  // 如果没有找到对应的 class，则返回默认样式
+  return options.default || '';
 };

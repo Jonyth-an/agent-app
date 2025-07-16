@@ -12,13 +12,14 @@ const PageContainer = ({
   return (
     <MyBox h={'100%'} py={[0, '16px']} pr={[0, '16px']} {...props}>
       <MyBox
+        className={'page-container-mybox-wrapper'}
         isLoading={isLoading}
         h={'100%'}
         borderColor={'borderColor.base'}
         borderWidth={[0, 1]}
         boxShadow={'1.5'}
         overflow={'overlay'}
-        bg={'myGray.25'}
+        // bg={'myGray.25'}
         borderRadius={[0, '16px']}
         overflowX={'hidden'}
         {...insertProps}

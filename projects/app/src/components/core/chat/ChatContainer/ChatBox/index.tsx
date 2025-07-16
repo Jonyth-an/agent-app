@@ -1044,6 +1044,7 @@ const ChatBox = ({
         onClick={(event) => {
           chatInputRef.current?.closeTools();
         }}
+        className="chat-box-scroll-container"
         ScrollContainerRef={ScrollContainerRef}
         flex={'1 0 0'}
         h={0}
