@@ -77,7 +77,7 @@ const Chat = () => {
   const appKey = agentConfigInfo.appKey;
   const permissionType = agentConfigInfo.permissionType;
   const name = staffInfo.name;
-
+  console.log('xxx agentConfigInfo2322 chat page', agentConfigInfo);
   // Load chat init data
 
   const { loading } = useRequest2(
@@ -162,6 +162,7 @@ const Chat = () => {
       const histories = messages.slice(-1);
       const agentConfig = agentConfigInfo.agentConfig || {};
       const chatConfig = agentConfig.chatConfig || {};
+
       const version = chatConfig.version || 'v1';
       let chatUrl = '/api/v1/chat/completions';
       if (version === 'v1') {

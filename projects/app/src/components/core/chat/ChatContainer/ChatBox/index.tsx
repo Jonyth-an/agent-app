@@ -160,7 +160,10 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
-  
+  // console.log('xxx ChatItem props', props);
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {}
+  const paddingTop = chatItemConfig?.paddingTop ||  24;
+  const paddingBottom = chatItemConfig?.paddingBottom ||  24;
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
     defaultValues: {
@@ -1086,7 +1089,7 @@ const ChatBox = ({
                         new Date(chatRecords[index - 1].time!).getTime() >
                         10 * 60 * 1000 && <TimeBox time={item.time} />}
 
-                    <Box py={item.hideInUI ? 0 : 6}>
+                    <Box pt={item.hideInUI ? 0 : `${paddingTop}px`} pb={item.hideInUI ? 0 : `${paddingBottom}px`}>
                       {item.obj === ChatRoleEnum.Human && !item.hideInUI && (
                         <ChatItem
                           type={item.obj}

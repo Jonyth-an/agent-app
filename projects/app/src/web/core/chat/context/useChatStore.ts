@@ -221,6 +221,16 @@ export const useChatStore = create<State>()(
               enableGenImg: false,
               styleType: 'huaan'
             },
+            chatItemConfig: {
+              paddingTop: 24,
+              paddingBottom: 24,
+              isFullWidth: false,
+              showHumanController: true,
+              showAIAvatar: true,
+              showAIWorkflowStatus: true,
+              showAIControllerPosition: 'top',
+              showAIController: true
+            },
             list: [],
             weChatShareConfig: {},
             h5: {
@@ -260,20 +270,31 @@ export const useChatStore = create<State>()(
                   state.agentConfigInfo.agentConfig.list = agConfig.list || [];
                 }
                 if (agConfig && agConfig.qaGuideConfig) {
-                  state.agentConfigInfo.agentConfig.qaGuideConfig = agConfig.qaGuideConfig || {};
+                  Object.assign(
+                    state.agentConfigInfo.agentConfig.qaGuideConfig,
+                    agConfig.qaGuideConfig
+                  );
                 }
                 if (agConfig && agConfig.chatConfig) {
-                  state.agentConfigInfo.agentConfig.chatConfig = agConfig.chatConfig || {};
+                  Object.assign(state.agentConfigInfo.agentConfig.chatConfig, agConfig.chatConfig);
                 }
 
                 if (agConfig && agConfig.commonConfig) {
-                  state.agentConfigInfo.agentConfig.commonConfig = agConfig.commonConfig || {};
-                  state.agentConfigInfo.agentConfig.commonConfig.styleType =
-                    agConfig.commonConfig.styleType || 'huaan';
+                  Object.assign(
+                    state.agentConfigInfo.agentConfig.commonConfig,
+                    agConfig.commonConfig
+                  );
+                }
+
+                if (agConfig && agConfig.chatItemConfig) {
+                  Object.assign(
+                    state.agentConfigInfo.agentConfig.chatItemConfig,
+                    agConfig.chatItemConfig
+                  );
                 }
 
                 if (agConfig && agConfig.h5) {
-                  state.agentConfigInfo.agentConfig.h5 = agConfig.h5 || {};
+                  Object.assign(state.agentConfigInfo.agentConfig.h5, agConfig.h5);
                 }
 
                 if (agConfig && agConfig.miniprogram && agConfig.miniprogram.dialog_share_config) {
@@ -295,8 +316,6 @@ export const useChatStore = create<State>()(
                   state.agentConfigInfo.agentConfig.miniprogram.card_config =
                     agConfig.miniprogram.card_config || {};
                 }
-
-                console.log('xxx agentConfigInfo2322', state.agentConfigInfo);
               } catch (error) {
                 console.error('agentConfigInfo.agentConfig error:', error);
               }

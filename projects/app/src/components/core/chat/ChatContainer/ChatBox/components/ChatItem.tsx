@@ -3,7 +3,7 @@ import React, { useMemo, useRef } from 'react';
 import ChatController, { type ChatControllerProps } from './ChatController';
 import ChatAvatar from './ChatAvatar';
 // import { MessageCardStyle } from '@/components/Markdown/styles/styleUtils';
-import { MessageCardStyle } from '../constants';
+import { MessageCardStyle, MessageCardFullStyle } from '../constants';
 
 import { formatChatValue2InputType } from '../utils';
 import Markdown from '@/components/Markdown';
@@ -29,7 +29,8 @@ import { formatTimeToChatItemTime } from '@fastgpt/global/common/string/time';
 import dayjs from 'dayjs';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
-import { getStyleClass, useStyleConfig } from '@/components/Markdown/styles/styleUtils';
+import { getStyleClass, HandlerType, useStyleConfig } from '@/components/Markdown/styles/styleUtils';
+import { useShareChatStore } from '@/web/core/chat/storeShareChat';
 
 const colorMap = {
   [ChatStatusEnum.loading]: {
@@ -121,9 +122,18 @@ const AIContentCard = React.memo(function AIContentCard({
 });
 
 const ChatItem = (props: Props) => {
+  const { agentConfigInfo } = useChatStore();
   // console.log('xxx ChatItem props', props);
   const { type, avatar, isHistory, statusBoxData, children, isLastChild, questionGuides = [], chat } = props;
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {}
+  const showAIAvatar = chatItemConfig?.showAIAvatar ?? true
+  const showAIWorkflowStatus = chatItemConfig?.showAIWorkflowStatus ?? true
+  const isFullWidth = chatItemConfig?.isFullWidth ?? false
 
+  let messageCardStyle = MessageCardStyle
+  if(isFullWidth){
+    messageCardStyle = MessageCardFullStyle
+  }
   const { isPc } = useSystem();
 
   const defaultStyleMap: BoxProps = {
@@ -154,14 +164,14 @@ const ChatItem = (props: Props) => {
           borderRadius: '8px 0 8px 8px',
           justifyContent: 'flex-end',
           textAlign: 'right',
-          bg: 'primary.100'
+          bg: '#E5EDFE'
         }
       : {
           order: 1,
           borderRadius: '0 8px 8px 8px',
           justifyContent: 'flex-start',
           textAlign: 'left',
-          bg: 'myGray.50'
+          bg: '#ffffff'
         }),
     fontSize: 'mini',
     fontWeight: '400',
@@ -253,8 +263,7 @@ const ChatItem = (props: Props) => {
 
     return groupedValues;
   }, [chat.obj, chat.value, isChatting]);
-
-  const { agentConfigInfo } = useChatStore();
+  
   const styleConfig = useStyleConfig();
   return (
     <Box
@@ -266,7 +275,7 @@ const ChatItem = (props: Props) => {
       }}
     >
       {/* control icon */}
-      <Flex w={'100%'} alignItems={'center'} gap={2} justifyContent={styleMap.justifyContent}>
+       <Flex className='chat-controls-out-wapper' w={'100%'} alignItems={'center'} gap={2} justifyContent={styleMap.justifyContent}>
         {isChatting && type === ChatRoleEnum.AI && isLastChild ? null : (
           <Flex order={styleMap.order} ml={styleMap.ml} align={'center'} gap={'0.62rem'}>
             {chat.time && (isPc || isChatLog) && (
@@ -287,10 +296,10 @@ const ChatItem = (props: Props) => {
           </Flex>
         )}
 
-        {type === ChatRoleEnum.AI ? <ChatAvatar src={agentConfigInfo.avatar} type={type} /> : null}
+        { showAIAvatar && type === ChatRoleEnum.AI ? <ChatAvatar src={agentConfigInfo.avatar} type={type} /> : null}
 
         {/* Workflow status */}
-        {!!chatStatusMap && statusBoxData && isLastChild && showNodeStatus && (
+        {showAIWorkflowStatus && !!chatStatusMap && statusBoxData && isLastChild && showNodeStatus && (
           <Flex
             alignItems={'center'}
             px={3}
@@ -328,7 +337,7 @@ const ChatItem = (props: Props) => {
         >
           <Card
             className={`chat-item-card ${styleConfig['chat-item-card']}`}
-            {...MessageCardStyle}
+            {...messageCardStyle}
             bg={styleMap.bg}
             borderRadius={styleMap.borderRadius}
             textAlign={'left'}
@@ -346,6 +355,7 @@ const ChatItem = (props: Props) => {
             )}
             {/* Example: Response tags. A set of dialogs only needs to be displayed once*/}
             {i === splitAiResponseResults.length - 1 && <>{children}</>}
+
             {/* 对话框底部的复制按钮 */}
             {type == ChatRoleEnum.AI &&
               value[0]?.type !== 'interactive' &&
@@ -375,6 +385,9 @@ const ChatItem = (props: Props) => {
           </Card>
         </Box>
       ))}
+
+      
+
     </Box>
   );
 };

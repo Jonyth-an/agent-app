@@ -94,3 +94,27 @@ export const getStyleClass = (options: Record<StyleTypeEnum, any>) => {
   // 如果没有找到对应的 class，则返回默认样式
   return options.default || '';
 };
+
+export type IHandlerTypeShape = Record<HandlerType, any>;
+
+export const huaanHandlerMap: IHandlerTypeShape = {
+  showHumanController: false // 是否显示用户控制器
+};
+
+export const defaultHandlerMap: IHandlerTypeShape = {
+  showHumanController: true // 是否显示用户控制器
+};
+
+export enum HandlerType {
+  showHumanController = 'showHumanController'
+}
+export const getHandlerStatus = (handlerType: HandlerType) => {
+  const currentStyleType = useCurrentStyleType();
+  let map = {};
+  if (currentStyleType === StyleTypeEnum.huaan) {
+    map = huaanHandlerMap;
+  } else {
+    map = defaultHandlerMap;
+  }
+  return (map as IHandlerTypeShape)[handlerType];
+};

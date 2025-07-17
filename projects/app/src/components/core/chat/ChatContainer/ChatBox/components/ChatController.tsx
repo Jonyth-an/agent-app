@@ -77,12 +77,18 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
   const chatText = useMemo(() => formatChatValue2InputType(chat.value).text || '', [chat.value]);
   const { agentConfigInfo, serverEnableGenImg } = useChatStore();
 
-  const commonConfig = agentConfigInfo.agentConfig.commonConfig || {};
-  const enableGenImg = commonConfig.enableGenImg || false;
+  const commonConfig = agentConfigInfo?.agentConfig?.commonConfig || {};
+  const enableGenImg = commonConfig.enableGenImg ?? false;
+
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
+  const showHumanController = chatItemConfig.showHumanController ?? true;
+  const showAIController = chatItemConfig.showAIController ?? true;
+  const showAIControllerPosition = chatItemConfig.showAIControllerPosition || 'top';
   // console.log('ddd ChatController hasContentCardMark', hasContentCardMark);
   return (
     <Flex
       {...controlContainerStyle}
+      className="chat-controller-container"
       borderRadius={'sm'}
       overflow={'hidden'}
       border={'base'}
@@ -94,7 +100,7 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
         }
       })}
     >
-      {!hasContentCardMark && (
+      {showHumanController && !hasContentCardMark && (
         <MyTooltip label={t('common:common.Copy')}>
           <MyIcon
             {...controlIconStyle}
@@ -105,7 +111,7 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
         </MyTooltip>
       )}
 
-      {!!onDelete && !isChatting && chatType !== 'log' && (
+      {showHumanController && !!onDelete && !isChatting && chatType !== 'log' && (
         <>
           {onRetry && (
             <MyTooltip label={t('common:core.chat.retry')}>
@@ -127,7 +133,8 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
           </MyTooltip>
         </>
       )}
-      {!hasContentCardMark &&
+      {showHumanController &&
+        !hasContentCardMark &&
         showVoiceIcon &&
         hasAudio &&
         (() => {
@@ -184,7 +191,8 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
             </MyTooltip>
           );
         })()}
-      {!!onMark && (
+
+      {showHumanController && !!onMark && (
         <MyTooltip label={t('common:core.chat.Mark')}>
           <MyIcon
             {...controlIconStyle}
@@ -194,7 +202,8 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
           />
         </MyTooltip>
       )}
-      {chat.obj === ChatRoleEnum.AI && (
+
+      {showAIController && chat.obj === ChatRoleEnum.AI && (
         <>
           {!!onCloseUserLike && chat.userGoodFeedback && (
             <MyTooltip label={t('common:core.chat.feedback.Close User Like')}>
@@ -254,6 +263,7 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
               name={'core/chat/feedback/badLight'}
             />
           )}
+
           {enableGenImg &&
             serverEnableGenImg &&
             (typeof chat.genImgStatus === 'undefined' ||
@@ -279,6 +289,7 @@ const ChatController = (props: ChatControllerProps & FlexProps) => {
               />
             </MyTooltip>
           )}
+
           {chat.genImgStatus === GenerateImgStatusEnum.SUCCESS && (
             <MyTooltip label={'生成成功,复制图片链接'}>
               <MyIcon
