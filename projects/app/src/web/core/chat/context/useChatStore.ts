@@ -219,7 +219,7 @@ export const useChatStore = create<State>()(
           agentConfig: {
             commonConfig: {
               enableGenImg: false,
-              styleType: 'huaan'
+              styleType: 'default'
             },
             chatItemConfig: {
               paddingTop: 24,
