@@ -30,6 +30,7 @@ const A = dynamic(() => import('./A'), { ssr: false });
 import ContentCardRenderer from './components/ContentCard/ContentCardRenderer';
 import RealmArticle from './components/RealmArticle';
 import { useStyleConfig } from './styles/styleUtils';
+import MarketMaterials from './components/MarketMaterials';
 
 type Props = {
   source?: string;
@@ -106,7 +107,9 @@ const MarkdownRender = (props: Props) => {
       pre: RewritePre,
       code: (props: any) => <CodeRenderer {...props} isHistory={isHistory} />,
       a: A,
-      contentcard: (props: any) => <ContentCardRenderer {...props} isHistory={isHistory} />
+      contentcard: (props: any) => <ContentCardRenderer {...props} isHistory={isHistory} />,
+      RealmArticle: (props: any) => <RealmArticle {...props} isHistory={isHistory} />,
+      marketMaterials: (props: any) => <MarketMaterials {...props} isHistory={isHistory} />
     }),
     [isHistory]
   );
@@ -155,7 +158,10 @@ function CodeRenderer(props: any) {
 
   // 检测是否是ContentCard格式
   if (codeType === CodeClassNameEnum.realmArticle) {
-    return <RealmArticle value={strChildren} />;
+    return <RealmArticle value={strChildren} isHistory={isHistory} />;
+  }
+  if (codeType === CodeClassNameEnum.marketMaterials) {
+    return <MarketMaterials value={strChildren} isHistory={isHistory} />;
   }
   if (codeType === CodeClassNameEnum.contentCard) {
     return <ContentCardRenderer value={strChildren} isHistory={isHistory} />;

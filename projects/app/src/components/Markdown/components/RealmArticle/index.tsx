@@ -13,34 +13,29 @@ interface ArticleItem {
 
 interface RealmArticleData {
   moduleTitle: string;
+  hideOrder?: boolean;
   data: ArticleItem[];
 }
 interface RealmArticleProps {
   value: string;
+  isHistory?: boolean;
 }
 
 const RealmArticle: React.FC<RealmArticleProps> = ({ value }) => {
-  try {
-  } catch (error) {
-    console.error('Error parsing RealmArticle data:', error);
-    return null;
-  }
-  //   const o = JSON.parse(value) as RealmArticleData;
-  //   const { moduleTitle , data } = o;
-
   const parsedData = useMemo(() => {
     try {
       const o = JSON.parse(value);
       return {
         moduleTitle: o?.moduleTitle ?? '',
-        data: Array.isArray(o?.data) ? o.data : []
+        data: Array.isArray(o?.data) ? o.data : [],
+        hideOrder: o?.hideOrder ?? false
       };
     } catch (error) {
       console.error('Error parsing RealmArticle data:', error);
-      return { moduleTitle: '', data: [] };
+      return { moduleTitle: '', data: [], hideOrder: false };
     }
   }, [value]);
-  const { moduleTitle, data } = parsedData;
+  const { moduleTitle, data, hideOrder } = parsedData;
 
   const realmArticleData: ArticleItem[] = (data as ArticleItem[]) || [];
   const handleArticleClick = (article: ArticleItem) => {
@@ -75,7 +70,7 @@ const RealmArticle: React.FC<RealmArticleProps> = ({ value }) => {
               >
                 <HStack flex={1}>
                   <Text fontSize="sm" fontWeight="medium" color="#1A1A1A" noOfLines={1}>
-                    {index + 1}、 {article.title}
+                    {hideOrder ? '' : <span>{index + 1}、</span>} {article.title}
                   </Text>
                 </HStack>
                 <Icon as={ChevronRightIcon} color="#1A1A1A" boxSize={5} />
