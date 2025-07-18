@@ -1,28 +1,25 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import CardSkeleton from '../ContentCard/CardSkeleton';
-
-interface FundManagerCardItem {
-  summary: string;
-  postTime: string;
-  postTimeTitle: string;
-  fundMgrName: string;
-  fundMgrNameTitle: string;
-  manageScaleTitle: string;
-  manageScaleText: string;
+// "url": "",
+// 			"title": "净值播报1",
+// 			"id": 1,
+// 			"icon": "https:\/\/www.huaan.com.cn\/upload2010\/2021\/12\/23\/073812936_0_537292b2-917e-3c6c-a4ac-b1ff3a557947.png"
+interface LinkCardItem {
+  title: string;
   id: number;
   url: string;
-  avatar: string;
+  icon: string;
 }
 
-interface FundManagerCardProps {
+interface LinkCardProps {
   value: string;
   isHistory?: boolean;
 }
 
 // 骨架屏组件
 
-const FundManagerCard = ({ value, isHistory = false }: FundManagerCardProps) => {
+const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
   const parsedData = useMemo(() => {
     try {
       const o = JSON.parse(value);
@@ -36,7 +33,7 @@ const FundManagerCard = ({ value, isHistory = false }: FundManagerCardProps) => 
     }
   }, [value]);
   const { moduleTitle, data } = parsedData;
-  const [visibleItems, setVisibleItems] = useState<FundManagerCardItem[]>([]);
+  const [visibleItems, setVisibleItems] = useState<LinkCardItem[]>([]);
 
   useEffect(() => {
     setVisibleItems([]); // 重置状态
@@ -85,10 +82,47 @@ const FundManagerCard = ({ value, isHistory = false }: FundManagerCardProps) => 
         {moduleTitle}
       </Text>
       <Flex direction="column" gap={3}>
-        {/* 基金经理卡片list */}
+        {/* 链接卡片list */}
+        <Flex flexWrap="nowrap" gap="12px">
+          {data.map((item: LinkCardItem) => (
+            // <Link key={item.id} href={item.url} isExternal _hover={{ textDecoration: 'none' }}>
+            <Flex
+              key={item.id}
+              direction="column"
+              alignItems="center"
+              width="74px"
+              height="74px"
+              background="#F5F7FA"
+              borderRadius="12px"
+              padding="12px 0"
+            >
+              <Box height="28px" width="28px" mb="6px">
+                <Image
+                  src={item.icon}
+                  alt={item.title}
+                  width="100%"
+                  height="100%"
+                  objectFit="contain"
+                />
+              </Box>
+              <Text
+                as="span"
+                fontWeight="400"
+                fontSize="12px"
+                color="#1A1A1A"
+                lineHeight="17px"
+                textAlign="center"
+                noOfLines={1}
+              >
+                {item.title}
+              </Text>
+            </Flex>
+            // </Link>
+          ))}
+        </Flex>
       </Flex>
     </Box>
   );
 };
 
-export default FundManagerCard;
+export default LinkCard;

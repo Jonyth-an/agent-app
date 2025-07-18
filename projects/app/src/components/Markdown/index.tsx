@@ -33,6 +33,7 @@ import { useStyleConfig } from './styles/styleUtils';
 import MarketMaterials from './components/MarketMaterials';
 import VideoCard from './components/VideoCard';
 import FundManagerCard from './components/FundManagerCard';
+import LinkCard from './components/LinkCard';
 
 type Props = {
   source?: string;
@@ -160,7 +161,7 @@ function CodeRenderer(props: any) {
 
   // 检测是否是ContentCard格式
   if (codeType === CodeClassNameEnum.linkCard) {
-    return <RealmArticle value={strChildren} isHistory={true} />;
+    return <LinkCard value={strChildren} isHistory={true} />;
   }
   if (codeType === CodeClassNameEnum.fundManagerCard) {
     return <FundManagerCard value={strChildren} isHistory={true} />;
