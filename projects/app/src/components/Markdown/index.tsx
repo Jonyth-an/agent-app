@@ -32,6 +32,7 @@ import RealmArticle from './components/RealmArticle';
 import { useStyleConfig } from './styles/styleUtils';
 import MarketMaterials from './components/MarketMaterials';
 import VideoCard from './components/VideoCard';
+import FundManagerCard from './components/FundManagerCard';
 
 type Props = {
   source?: string;
@@ -162,7 +163,7 @@ function CodeRenderer(props: any) {
     return <RealmArticle value={strChildren} isHistory={true} />;
   }
   if (codeType === CodeClassNameEnum.fundManagerCard) {
-    return <RealmArticle value={strChildren} isHistory={true} />;
+    return <FundManagerCard value={strChildren} isHistory={true} />;
   }
   if (codeType === CodeClassNameEnum.videoCard) {
     return <VideoCard value={strChildren} isHistory={true} />;
