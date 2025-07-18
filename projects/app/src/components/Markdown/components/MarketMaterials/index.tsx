@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text, Link, Divider, Image, Badge } from '@chakra-ui/react';
 import CardSkeleton from '../ContentCard/CardSkeleton';
+import { getReturnColor } from '../../utils';
 
 interface FundListItem {
   id: number;
@@ -82,18 +83,18 @@ const MarketMaterials = ({ value, isHistory = false }: MarketMaterialsProps) => 
   }
 
   return (
-    <Box bgColor="white">
+    <Box className={`market-materials-card-container`} mb={2} mt={4}>
       <Text
         as={'div'}
         fontSize="18px"
         fontWeight="600"
         lineHeight="28px"
         color="#1A1A1A"
-        sx={{ marginBottom: '8px !important' }}
+        sx={{ marginBottom: '12px !important' }}
       >
         {moduleTitle}
       </Text>
-      <Flex direction="column" gap={3}>
+      <Flex direction="column" gap={4}>
         {visibleItems.map((item, index) => (
           <React.Fragment key={`${item.id}_${index}`}>
             <Link
@@ -144,52 +145,57 @@ const MarketMaterials = ({ value, isHistory = false }: MarketMaterialsProps) => 
                   </Text>
                 </Box>
               </Flex>
-
-              {/* 产品组件 */}
-              {item.fundList && item.fundList.length > 0 && (
-                <Box>
-                  {item.fundList.map((fund, fundIndex) => (
-                    <Box
-                      borderRadius={'8px'}
-                      p={3}
-                      bg="#F5F7FA"
-                      key={`${fund.id}_${fundIndex}`}
-                      mb={fundIndex < item.fundList.length - 1 ? 1.5 : 0}
-                    >
-                      <Flex justifyContent="space-between" alignItems="center" mb={2}>
-                        <Text as="div" fontSize="16px" fontWeight="600" color="#1A1A1A">
-                          {fund.fundName}
-                        </Text>
-                        <Text as="div" fontSize="16px" fontWeight="600" color="#FF4D4F">
-                          +{fund.last1YRange}
-                        </Text>
-                      </Flex>
-                      <Flex justifyContent="space-between" alignItems="center">
-                        <Flex gap={2}>
-                          {fund.fundType.map((type, typeIndex) => (
-                            <Badge
-                              key={typeIndex}
-                              px={1.75}
-                              py={0.75}
-                              borderRadius="2px"
-                              bg="transparent"
-                              border="1px solid #999999"
-                              color="#999999"
-                              fontSize="10px"
-                            >
-                              {type}
-                            </Badge>
-                          ))}
-                        </Flex>
-                        <Text as="span" fontSize="12px" color="gray.500" mt={1} textAlign="right">
-                          {fund.last1YRangeTitle || '近一年收益率'}
-                        </Text>
-                      </Flex>
-                    </Box>
-                  ))}
-                </Box>
-              )}
             </Link>
+            {/* 产品组件 */}
+            {item.fundList && item.fundList.length > 0 && (
+              <Box>
+                {item.fundList.map((fund, fundIndex) => (
+                  <Box
+                    borderRadius={'8px'}
+                    p={3}
+                    bg="#F5F7FA"
+                    key={`${fund.id}_${fundIndex}`}
+                    mb={fundIndex < item.fundList.length - 1 ? 3 : 0}
+                  >
+                    <Flex justifyContent="space-between" alignItems="center" mb={2}>
+                      <Text as="div" fontSize="16px" fontWeight="600" color="#1A1A1A">
+                        {fund.fundName}
+                      </Text>
+                      <Text
+                        as="div"
+                        fontSize="16px"
+                        fontWeight="600"
+                        color={getReturnColor(fund.last1YRange)}
+                      >
+                        {fund.last1YRange}
+                      </Text>
+                    </Flex>
+                    <Flex justifyContent="space-between" alignItems="center">
+                      <Flex gap={2}>
+                        {fund.fundType.map((type, typeIndex) => (
+                          <Badge
+                            key={typeIndex}
+                            px={1.75}
+                            py={0.75}
+                            borderRadius="2px"
+                            bg="transparent"
+                            border="1px solid #999999"
+                            color="#999999"
+                            fontSize="10px"
+                          >
+                            {type}
+                          </Badge>
+                        ))}
+                      </Flex>
+                      <Text as="span" fontSize="12px" color="gray.500" mb={0.5} textAlign="right">
+                        {fund.last1YRangeTitle || '近一年收益率'}
+                      </Text>
+                    </Flex>
+                  </Box>
+                ))}
+              </Box>
+            )}
+
             {index < visibleItems.length - 1 && (
               <Box height="1px" bg="gray.200" opacity="0.6" width="100%" my={0} />
             )}

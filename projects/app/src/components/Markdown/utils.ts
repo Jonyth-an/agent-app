@@ -11,9 +11,12 @@ export enum CodeClassNameEnum {
   html = 'html',
   video = 'video',
   audio = 'audio',
-  contentCard = 'contentCard', // 确保这个值与之前的CONTENT_CARD_TYPE一致
-  marketMaterials = 'marketMaterials', // 确保这个值与之前的CONTENT_CARD_TYPE一致
-  realmArticle = 'realmArticle' // 确保这个值与之前的CONTENT_CARD_TYPE一致
+  fundManagerCard = 'fundManagerCard',
+  linkCard = 'linkCard',
+  videoCard = 'videoCard',
+  contentCard = 'contentCard',
+  marketMaterials = 'marketMaterials',
+  realmArticle = 'realmArticle'
 }
 
 // ContentCard 相关工具函数
@@ -230,3 +233,16 @@ export function convertHtmlTablesToLatex(input: string) {
   const tableRegex = /<table[\s\S]*?<\/table>/gi;
   return input.replace(tableRegex, (match) => htmlTableToLatex(match));
 }
+
+export const getReturnColor = (returnValue: string) => {
+  if (!returnValue) return '#222222';
+
+  // 尝试提取数字部分
+  const numValue = parseFloat(returnValue.replace('%', ''));
+
+  if (isNaN(numValue)) return '#222222';
+
+  if (numValue > 0) return '#ED4F4F';
+  if (numValue < 0) return '#27a57c';
+  return '#222222';
+};

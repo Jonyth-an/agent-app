@@ -31,6 +31,7 @@ import ContentCardRenderer from './components/ContentCard/ContentCardRenderer';
 import RealmArticle from './components/RealmArticle';
 import { useStyleConfig } from './styles/styleUtils';
 import MarketMaterials from './components/MarketMaterials';
+import VideoCard from './components/VideoCard';
 
 type Props = {
   source?: string;
@@ -157,11 +158,20 @@ function CodeRenderer(props: any) {
   const strChildren = String(children);
 
   // 检测是否是ContentCard格式
+  if (codeType === CodeClassNameEnum.linkCard) {
+    return <RealmArticle value={strChildren} isHistory={true} />;
+  }
+  if (codeType === CodeClassNameEnum.fundManagerCard) {
+    return <RealmArticle value={strChildren} isHistory={true} />;
+  }
+  if (codeType === CodeClassNameEnum.videoCard) {
+    return <VideoCard value={strChildren} isHistory={true} />;
+  }
   if (codeType === CodeClassNameEnum.realmArticle) {
-    return <RealmArticle value={strChildren} isHistory={isHistory} />;
+    return <RealmArticle value={strChildren} isHistory={true} />;
   }
   if (codeType === CodeClassNameEnum.marketMaterials) {
-    return <MarketMaterials value={strChildren} isHistory={isHistory} />;
+    return <MarketMaterials value={strChildren} isHistory={true} />;
   }
   if (codeType === CodeClassNameEnum.contentCard) {
     return <ContentCardRenderer value={strChildren} isHistory={isHistory} />;

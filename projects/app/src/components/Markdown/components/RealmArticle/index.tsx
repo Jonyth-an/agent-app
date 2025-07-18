@@ -43,7 +43,12 @@ const RealmArticle: React.FC<RealmArticleProps> = ({ value }) => {
   };
 
   return (
-    <Box className={`realm-article-container ${styles['realm-article-container']}`} my={4}>
+    <Box
+      mb={2}
+      mt={4}
+      className={`realm-article-container ${styles['realm-article-container']}`}
+      my={4}
+    >
       {/* 标题 */}
       <Text
         as={'div'}

@@ -47,7 +47,13 @@ const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCa
   }
 
   return (
-    <Box borderWidth="1px" borderRadius="lg" p={4} bgColor="white">
+    <Box
+      className={`content-card-container`}
+      borderWidth="1px"
+      borderRadius="lg"
+      p={4}
+      bgColor="white"
+    >
       <Flex direction="column" gap={3}>
         {visibleItems.slice(0, maxItems).map((item, index) => (
           <React.Fragment key={`${item.id}_${index}`}>
