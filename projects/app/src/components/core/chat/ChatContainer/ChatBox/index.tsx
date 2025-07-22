@@ -77,12 +77,14 @@ import { ChatStatusType } from '@/web/core/app/constants';
 import { generateImgApi } from '@/web/core/chat/user';
 import { basePath, share_h5_url_front } from '@/web/common/utils/config';
 import { GenerateImgStatusEnum } from '@fastgpt/global/core/chat/constants';
+import ComponentWrapper from './CompoentWrapper';
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
 const ReadFeedbackModal = dynamic(() => import('./components/ReadFeedbackModal'));
 const SelectMarkCollection = dynamic(() => import('./components/SelectMarkCollection'));
 const Empty = dynamic(() => import('./components/Empty'));
-const WelcomeBoxWrapper = dynamic(() => import('./components/WelcomeBox'));
+const WelcomeBox = dynamic(() => import('./components/WelcomeBox/WelcomeBox'));
+const HuaanWelcomeBox = dynamic(() => import('./components/WelcomeBox/HuaanWelcomeBox'));
 const VariableInput = dynamic(() => import('./components/VariableInput'));
 
 enum FeedbackTypeEnum {
@@ -1067,7 +1069,7 @@ const ChatBox = ({
               style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
             >
               {/* {showEmpty && <Empty />} */}
-              {!!welcomeText && <WelcomeBoxWrapper welcomeText={welcomeText} />}
+              {!!welcomeText && <ComponentWrapper  huaanComponent={HuaanWelcomeBox} defaultComponent={WelcomeBox} welcomeText={welcomeText} />}
 
               {/* variable input */}
               {!!variableList?.length && (

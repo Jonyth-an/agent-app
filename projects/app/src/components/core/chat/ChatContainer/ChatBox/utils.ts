@@ -6,6 +6,7 @@ import {
 import { ChatBoxInputType, UserInputFileItemType } from './type';
 import { getFileIcon } from '@fastgpt/global/common/file/icon';
 import { ChatItemValueTypeEnum, ChatStatusEnum } from '@fastgpt/global/core/chat/constants';
+import { StyleTypeEnum, useCurrentStyleType } from '@/components/Markdown/styles/styleUtils';
 
 export const formatChatValue2InputType = (value?: ChatItemValueItemType[]): ChatBoxInputType => {
   if (!value) {

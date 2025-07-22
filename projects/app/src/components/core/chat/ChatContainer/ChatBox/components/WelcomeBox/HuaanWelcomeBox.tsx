@@ -22,6 +22,7 @@ const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
     messageCardStyle.py = 0;
     messageCardStyle.pt = 5;
     messageCardStyle.pb = 2;
+    messageCardStyle.borderRadius = '8px';
   }
   return (
     <Box className="welcome-box-wrapper" position={'relative'} mt={3} pb={3} pt={'73px'}>

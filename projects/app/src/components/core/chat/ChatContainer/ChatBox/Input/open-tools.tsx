@@ -46,6 +46,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
     onClick: () => void;
   }) => (
     <Flex
+      className="open-tools-item"
       direction="column"
       align="center"
       justify="center"
@@ -76,6 +77,7 @@ const OpenTools: React.FC<OpenToolsProps> = ({ isOpen, onToggle, onImageSelect }
   };
   return (
     <Flex
+      className="open-tools-wrapper"
       justify="flex-start"
       align="center"
       w="100%"

@@ -92,7 +92,7 @@ const CardList = ({ cardItems }: { cardItems: CardItem[] }) => {
               <Image src={item.icon} alt={item.name} boxSize="1.25rem" objectFit="cover" />
             </Flex>
             <Text fontSize="0.75rem" fontWeight="medium" whiteSpace="nowrap">
-              {item.name}
+              1--{item.name}
             </Text>
           </Flex>
         ))}
