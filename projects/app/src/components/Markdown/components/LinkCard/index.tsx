@@ -21,6 +21,8 @@ interface LinkCardProps {
 // 骨架屏组件
 
 const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
+  const styles = useStyleConfig();
+
   const parsedData = useMemo(() => {
     try {
       const o = JSON.parse(value);
@@ -69,9 +71,8 @@ const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
   if (data.length === 0 || visibleItems.length === 0) {
     return <CardSkeleton />;
   }
-  // const styles = useStyleConfig();
   return (
-    <Box className={`video-card-container `} mb={2} mt={4}>
+    <Box className={`video-card-container ${styles['chat-cus-card-style']}`} mb={2} mt={4}>
       <Text
         as={'div'}
         fontSize="18px"

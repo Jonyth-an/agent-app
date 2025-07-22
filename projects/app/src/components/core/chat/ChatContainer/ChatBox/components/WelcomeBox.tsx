@@ -13,6 +13,7 @@ const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
   const { agentConfigInfo } = useChatStore();
   const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
   const isFullWidth = chatItemConfig?.isFullWidth ?? false;
+  const showAIAvatar = chatItemConfig?.showAIAvatar ?? true;
 
   let messageCardStyle = cloneDeep(MessageCardStyle);
   if (isFullWidth) {
@@ -22,7 +23,7 @@ const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
   return (
     <Box py={3}>
       {/* avatar */}
-      <ChatAvatar src={agentConfigInfo.avatar} type={'AI'} />
+      {showAIAvatar && <ChatAvatar src={agentConfigInfo.avatar} type={'AI'} />}
       {/* message */}
       <Box textAlign={'left'}>
         <Card

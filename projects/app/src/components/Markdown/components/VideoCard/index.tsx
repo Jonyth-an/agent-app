@@ -25,6 +25,7 @@ interface VideoCardProps {
 // 骨架屏组件
 
 const VideoCard = ({ value, isHistory = false }: VideoCardProps) => {
+  const styles = useStyleConfig();
   const parsedData = useMemo(() => {
     try {
       const o = JSON.parse(value);
@@ -77,7 +78,7 @@ const VideoCard = ({ value, isHistory = false }: VideoCardProps) => {
   // const styles = useStyleConfig();
 
   return (
-    <Box className={`video-card-container `} mb={2} mt={4}>
+    <Box className={`video-card-container ${styles['chat-cus-card-style']}`} mb={2} mt={4}>
       <Text
         as={'div'}
         fontSize="18px"

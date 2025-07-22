@@ -30,7 +30,7 @@ const A = dynamic(() => import('./A'), { ssr: false });
 
 import ContentCardRenderer from './components/ContentCard/ContentCardRenderer';
 import RealmArticle from './components/RealmArticle';
-import { useStyleConfig } from './styles/styleUtils';
+import { StyleTypeEnum, useCurrentStyleType, useStyleConfig } from './styles/styleUtils';
 import MarketMaterials from './components/MarketMaterials';
 import VideoCard from './components/VideoCard';
 import FundManagerCard from './components/FundManagerCard';
@@ -184,19 +184,26 @@ function CodeRenderer(props: any) {
   if (codeType === CodeClassNameEnum.mermaid) {
     return <MermaidCodeBlock code={strChildren} />;
   }
+
   if (codeType === CodeClassNameEnum.guide) {
-    return <HuaanChatGuide text={strChildren} />;
-    // return <ChatGuide text={strChildren} />;
+    const styleType = useCurrentStyleType();
+    if (styleType === StyleTypeEnum.huaan) {
+      return <HuaanChatGuide text={strChildren} />;
+    }
+    return <ChatGuide text={strChildren} />;
   }
+
   if (codeType === CodeClassNameEnum.questionGuide) {
     return <QuestionGuide text={strChildren} />;
   }
   if (codeType === CodeClassNameEnum.echarts) {
     return <EChartsCodeBlock code={strChildren} />;
   }
+
   if (codeType === CodeClassNameEnum.iframe) {
     return <IframeCodeBlock code={strChildren} />;
   }
+
   if (codeType && codeType.toLowerCase() === CodeClassNameEnum.html) {
     return (
       <IframeHtmlCodeBlock className={className} codeBlock={codeBlock} match={match}>
