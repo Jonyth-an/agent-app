@@ -82,7 +82,7 @@ const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
 const ReadFeedbackModal = dynamic(() => import('./components/ReadFeedbackModal'));
 const SelectMarkCollection = dynamic(() => import('./components/SelectMarkCollection'));
 const Empty = dynamic(() => import('./components/Empty'));
-const WelcomeBox = dynamic(() => import('./components/WelcomeBox'));
+const WelcomeBoxWrapper = dynamic(() => import('./components/WelcomeBox'));
 const VariableInput = dynamic(() => import('./components/VariableInput'));
 
 enum FeedbackTypeEnum {
@@ -1067,7 +1067,7 @@ const ChatBox = ({
               style={{ pointerEvents: chatStauts === ChatStatusType.CAN_CHAT ? 'auto' : 'none' }}
             >
               {/* {showEmpty && <Empty />} */}
-              {!!welcomeText && <WelcomeBox welcomeText={welcomeText} />}
+              {!!welcomeText && <WelcomeBoxWrapper welcomeText={welcomeText} />}
 
               {/* variable input */}
               {!!variableList?.length && (

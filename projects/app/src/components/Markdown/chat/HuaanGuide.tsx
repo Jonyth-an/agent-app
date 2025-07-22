@@ -20,7 +20,7 @@ function MyLink(e: any) {
       {text}
     </Link>
   ) : (
-    <Box as={'div'} mb={1} bg="#F5F7FA" px={'14px'} py={'9px'} rounded={'8px'}>
+    <Box as={'div'} mb={2} bg="#F5F7FA" px={'14px'} py={'9px'} rounded={'8px'}>
       <Box
         as={'span'}
         fontWeight={'medium'}
