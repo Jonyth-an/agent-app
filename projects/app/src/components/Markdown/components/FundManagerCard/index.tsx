@@ -89,12 +89,7 @@ const FundManagerCard = ({ value, isHistory = false }: FundManagerCardProps) => 
   }
 
   return (
-    <Box
-      className={`fund-manager-card-container ${styles['fund-manager-card-container']}`}
-      bgColor="white"
-      mb={2}
-      mt={4}
-    >
+    <Box className={`fund-manager-card-container `} mb={2} mt={4}>
       <Text
         as={'div'}
         fontSize="18px"

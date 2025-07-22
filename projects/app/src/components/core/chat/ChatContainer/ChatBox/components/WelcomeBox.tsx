@@ -1,15 +1,24 @@
 import { Box, Card } from '@chakra-ui/react';
 import React from 'react';
-import { MessageCardStyle } from '../constants';
+import { MessageCardStyle, MessageCardFullStyle } from '../constants';
 import Markdown from '@/components/Markdown';
 import ChatAvatar from './ChatAvatar';
+
 import { useContextSelector } from 'use-context-selector';
 import { ChatItemContext } from '@/web/core/chat/context/chatItemContext';
 import { useChatStore } from '@/web/core/chat/context/useChatStore';
+import { cloneDeep } from 'lodash';
 
 const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
-  const appAvatar = useContextSelector(ChatItemContext, (v) => v.chatBoxData?.app?.avatar);
   const { agentConfigInfo } = useChatStore();
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
+  const isFullWidth = chatItemConfig?.isFullWidth ?? false;
+
+  let messageCardStyle = cloneDeep(MessageCardStyle);
+  if (isFullWidth) {
+    messageCardStyle = cloneDeep(MessageCardFullStyle);
+    messageCardStyle.w = ['100%', '100%'];
+  }
   return (
     <Box py={3}>
       {/* avatar */}
@@ -19,7 +28,7 @@ const WelcomeBox = ({ welcomeText }: { welcomeText: string }) => {
         <Card
           order={2}
           mt={2}
-          {...MessageCardStyle}
+          {...messageCardStyle}
           bg={'white'}
           boxShadow={'0 0 8px rgba(0,0,0,0.15)'}
         >

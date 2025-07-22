@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import CardSkeleton from '../ContentCard/CardSkeleton';
+import { useStyleConfig } from '../../styles/styleUtils';
 // "url": "",
 // 			"title": "净值播报1",
 // 			"id": 1,
@@ -68,9 +69,9 @@ const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
   if (data.length === 0 || visibleItems.length === 0) {
     return <CardSkeleton />;
   }
-
+  // const styles = useStyleConfig();
   return (
-    <Box className={`video-card-container`} bgColor="white" mb={2} mt={4}>
+    <Box className={`video-card-container `} mb={2} mt={4}>
       <Text
         as={'div'}
         fontSize="18px"

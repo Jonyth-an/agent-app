@@ -24,6 +24,7 @@ const AudioBlock = dynamic(() => import('./codeBlock/Audio'), { ssr: false });
 // const ContentCard = dynamic(() => import('./contentCard'), { ssr: false });
 
 const ChatGuide = dynamic(() => import('./chat/Guide'), { ssr: false });
+const HuaanChatGuide = dynamic(() => import('./chat/HuaanGuide'), { ssr: false });
 const QuestionGuide = dynamic(() => import('./chat/QuestionGuide'), { ssr: false });
 const A = dynamic(() => import('./A'), { ssr: false });
 
@@ -123,7 +124,7 @@ const MarkdownRender = (props: Props) => {
   return (
     <Box position={'relative'}>
       <ReactMarkdown
-        className={`markdown ${styles.markdown}
+        className={`cus-react-markdown-outer markdown ${styles.markdown}
       ${showAnimation ? `${formatSource ? styles.waitingAnimation : styles.animation}` : ''}
     `}
         remarkPlugins={[RemarkMath, [RemarkGfm, { singleTilde: false }], RemarkBreaks]}
@@ -184,7 +185,8 @@ function CodeRenderer(props: any) {
     return <MermaidCodeBlock code={strChildren} />;
   }
   if (codeType === CodeClassNameEnum.guide) {
-    return <ChatGuide text={strChildren} />;
+    return <HuaanChatGuide text={strChildren} />;
+    // return <ChatGuide text={strChildren} />;
   }
   if (codeType === CodeClassNameEnum.questionGuide) {
     return <QuestionGuide text={strChildren} />;

@@ -6,8 +6,8 @@ import { ChatItemValueTypeEnum } from '@fastgpt/global/core/chat/constants';
 import { ChatItemValueItemType } from '@fastgpt/global/core/chat/type';
 import { cloneDeep } from 'lodash';
 // import { MessageCardStyle } from '@/components/Markdown/styles/styleUtils';
-import { MessageCardStyle } from '../constants';
-
+import { MessageCardStyle, MessageCardFullStyle } from '../constants';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 const RenderText = React.memo(function RenderText({ value }: any) {
   if (value.type === ChatItemValueTypeEnum.text && value.text) {
     let source = value.text.content || '';
@@ -36,6 +36,10 @@ const AIContentCard = React.memo(function AIContentCard({
 
 const ChatItem = (props: { value: ChatItemValueItemType[]; dataId: string }) => {
   // console.log('xxx ChatItem props', props);
+  const { agentConfigInfo } = useChatStore();
+  // console.log('xxx ChatItem props', props);
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
+  const isFullWidth = chatItemConfig?.isFullWidth ?? false;
   const styleMap: BoxProps = {
     order: 1,
     borderRadius: '0 8px 8px 8px',
@@ -47,7 +51,12 @@ const ChatItem = (props: { value: ChatItemValueItemType[]; dataId: string }) => 
     color: 'myGray.500'
   };
 
-  const MessageCardFileStyle = cloneDeep(MessageCardStyle);
+  let messageCardStyle = MessageCardStyle;
+  if (isFullWidth) {
+    messageCardStyle = MessageCardFullStyle;
+  }
+
+  const MessageCardFileStyle = cloneDeep(messageCardStyle);
   MessageCardFileStyle.maxW = ['100%', '100%'];
   return (
     <Box

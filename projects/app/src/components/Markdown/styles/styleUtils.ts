@@ -59,7 +59,7 @@ export const huaanMessageCardStyle: BoxProps = {
   borderRadius: '0 8px 8px 8px',
   boxShadow: 'none',
   display: 'inline-block',
-  maxW: ['calc(100% - 25px)', 'calc(100% - 40px)'],
+  maxW: ['calc(100%)', 'calc(100%)'],
   color: 'myGray.900'
 };
 
