@@ -29,6 +29,9 @@ import CardList, { CardItem } from './card-list';
 import ChatTools from './chat-tools';
 import OpenTools from './open-tools';
 import { ChatStatusType } from '@/web/core/app/constants';
+import ComponentWrapper from '../CompoentWrapper';
+import EntryList from './EntryList/EntryList';
+import HuaanEntryList from './EntryList/HuaanEntryList';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -241,8 +244,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
               isSpeaking
                 ? t('common:core.chat.Speaking')
                 : isPc
-                  ? t('common:core.chat.Type a message')
-                  : t('chat:input_placeholder_phone')
+                ? t('common:core.chat.Type a message')
+                : t('chat:input_placeholder_phone')
             }
             resize={'none'}
             rows={1}
@@ -395,8 +398,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                   isSpeaking || isChatting
                     ? ''
                     : !havInput || hasFileUploading
-                      ? '#E5E5E5'
-                      : 'primary.500'
+                    ? '#E5E5E5'
+                    : 'primary.500'
                 }
                 cursor={havInput ? 'pointer' : 'not-allowed'}
                 lineHeight={1}
@@ -514,10 +517,10 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
       ]
     );
 
-    const cardItems: CardItem[] = useMemo(() => {
+    const entryItems: CardItem[] = useMemo(() => {
       const agentConfig = agentConfigInfo?.agentConfig || {};
-      const cardList = (agentConfig && agentConfig.list) || [];
-      return cardList;
+      const entryItems = (agentConfig && agentConfig.list) || [];
+      return entryItems;
     }, [agentConfigInfo]);
 
     const handleImageSelect = (files: FileList) => {
@@ -576,7 +579,15 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
       >
         {/* mark卡片列表 */}
         <Box boxShadow={isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`}>
-          {cardItems.length > 0 ? <CardList cardItems={cardItems} /> : null}
+          {/* {cardItems.length > 0 ? <CardList cardItems={cardItems} /> : null} */}
+          {entryItems.length > 0 ? (
+            <ComponentWrapper
+              defaultComponent={EntryList}
+              huaanComponent={HuaanEntryList}
+              entryItems={entryItems}
+            />
+          ) : null}
+
           <Box
             pt={fileList.length > 0 ? '0' : ['14px', '18px']}
             pb={['14px', '18px']}
