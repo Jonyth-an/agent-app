@@ -32,6 +32,7 @@ import { ChatStatusType } from '@/web/core/app/constants';
 import ComponentWrapper from '../CompoentWrapper';
 import EntryList from './EntryList/EntryList';
 import HuaanEntryList from './EntryList/HuaanEntryList';
+import { StyleTypeEnum, useCurrentStyleType } from '@/components/Markdown/styles/styleUtils';
 const InputGuideBox = dynamic(() => import('./InputGuideBox'));
 
 const fileTypeFilter = (file: File) => {
@@ -74,6 +75,9 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
     const [isToolsOpen, setIsToolsOpen] = useState(false);
     const [isShowTools, setIsShowTools] = useState(false);
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
+    const styleType = useCurrentStyleType();
+    const listStyle = agentConfigInfo?.agentConfig?.listStyle || {};
+
     React.useImperativeHandle(ref, () => ({
       closeTools: () => {
         setIsShowTools(false);
@@ -139,6 +143,14 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
       renderAudioGraph,
       stream
     } = useSpeech({ appId, ...outLinkAuthData });
+
+    let boxShadowStyle = '0 0 10px rgba(54,111,255,0.4)';
+    if (styleType === StyleTypeEnum.huaan) {
+      boxShadowStyle = listStyle?.containerShadow || '';
+    } else {
+      boxShadowStyle = isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`;
+    }
+
     const onWhisperRecord = useCallback(() => {
       const finishWhisperTranscription = (text: string) => {
         if (!text) return;
@@ -578,7 +590,7 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
         }}
       >
         {/* mark卡片列表 */}
-        <Box boxShadow={isSpeaking ? `0 0 10px rgba(54,111,255,0.4)` : `0 0 10px rgba(0,0,0,0.2)`}>
+        <Box className="input-bom-wrapper" boxShadow={boxShadowStyle}>
           {/* {cardItems.length > 0 ? <CardList cardItems={cardItems} /> : null} */}
           {entryItems.length > 0 ? (
             <ComponentWrapper

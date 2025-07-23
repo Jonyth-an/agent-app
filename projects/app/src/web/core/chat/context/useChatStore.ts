@@ -231,6 +231,7 @@ export const useChatStore = create<State>()(
               showAIControllerPosition: 'top',
               showAIController: true
             },
+            listStyle: {},
             list: [],
             weChatShareConfig: {},
             h5: {
@@ -268,6 +269,9 @@ export const useChatStore = create<State>()(
                 console.log('xxx agentConfigInfo2322 agConfig', agConfig);
                 if (agConfig && agConfig.list) {
                   state.agentConfigInfo.agentConfig.list = agConfig.list || [];
+                }
+                if (agConfig && agConfig.listStyle) {
+                  Object.assign(state.agentConfigInfo.agentConfig.listStyle, agConfig.listStyle);
                 }
                 if (agConfig && agConfig.qaGuideConfig) {
                   Object.assign(
