@@ -271,6 +271,75 @@ export const useChatStore = create<State>()(
             },
             chatConfig: {
               version: 'v1'
+            },
+            marketDialogConfig: {
+              overlayBgColor: 'rgba(0,0,0,0.5)',
+              showHandleBtn: true,
+              handleBtnImage:
+                'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-07-21/38d59df2-18a4-48a6-9153-5108afe591dd.png',
+              moduleBgColor: '#F4F5F8',
+              moduleTitle: '展业神器',
+              titleColor: '#1A1A1A',
+              titleFontSize: '18px',
+              titleFontWeight: 500,
+              moduleData: [
+                {
+                  title: '辅助销售',
+                  titleColor: '#737373',
+                  titleFontSize: '16px',
+                  titleFontWeight: 400,
+
+                  nameColor: '#1A1A1A',
+                  nameFontSize: '12px',
+                  nameFontWeight: 400,
+                  data: [
+                    {
+                      name: '喜报生成器',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-19/00412e7c-1c49-4b9c-8164-8b8a7c73d015.png',
+                      url: 'https://www.baidu.com'
+                    },
+                    {
+                      name: '指数专区',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-14/a55f81d1-4868-42da-9043-bfd7bc17d37e.png',
+                      url: 'https://agent.newtamp.cn:4000/chat/share?shareId=b9ypyisqfr3iri35y4k3rhlh'
+                    },
+                    {
+                      name: '市场风向标',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-08/6b0ff73e-ef52-4715-aadc-dac936bdfc95.png',
+                      url: 'https://dify.newtamp.cn/chat/nKoEmg2BtxTJohIZ'
+                    },
+                    {
+                      name: '每日签到',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-12/cafa2f79-cdd6-46c7-909f-1666b117fb7b.png',
+                      url: 'https://aim-saas-share-dev.newtamp.cn/share-agent/chat?appId=67b860750d1c6dfdccebab3d'
+                    }
+                  ]
+                },
+
+                {
+                  title: '售后增值',
+                  titleColor: '#737373',
+                  titleFontSize: '16px',
+                  titleFontWeight: 400,
+                  data: [
+                    {
+                      name: '净值播报',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-12/cafa2f79-cdd6-46c7-909f-1666b117fb7b.png',
+                      url: 'https://aim-saas-share-dev.newtamp.cn/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=https%3A%2F%2Faim-saas-share-dev.newtamp.cn%2Fshare%2FadvLogin%3Fredirect%3Dhttps%253A%252F%252Faim-saas-share-dev.newtamp.cn%252Fshare-agent%252Fchat%253FappId%253D67b860750d1c6dfdccebab3d'
+                    },
+                    {
+                      name: '赎回日计算',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-12/cafa2f79-cdd6-46c7-909f-1666b117fb7b.png',
+                      url: 'https://aim-saas-share-dev.newtamp.cn/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=https%3A%2F%2Faim-saas-share-dev.newtamp.cn%2Fshare%2FadvLogin%3Fredirect%3Dhttps%253A%252F%252Faim-saas-share-dev.newtamp.cn%252Fshare-agent%252Fchat%253FappId%253D67b860750d1c6dfdccebab3d'
+                    },
+                    {
+                      name: '转发助手',
+                      icon: 'https://fs-file.newbanker.cn/image/marketing/2025-02-12/cafa2f79-cdd6-46c7-909f-1666b117fb7b.png',
+                      url: 'https://aim-saas-share-dev.newtamp.cn/marketing/marketing-api/api/v1/h5/redirect/wechat?serviceChannel=PRI&url=https%3A%2F%2Faim-saas-share-dev.newtamp.cn%2Fshare%2FadvLogin%3Fredirect%3Dhttps%253A%252F%252Faim-saas-share-dev.newtamp.cn%252Fshare-agent%252Fchat%253FappId%253D67b860750d1c6dfdccebab3d'
+                    }
+                  ]
+                }
+              ]
             }
           },
           tenantId: -1,
@@ -322,6 +391,12 @@ export const useChatStore = create<State>()(
                   Object.assign(
                     state.agentConfigInfo.agentConfig.chatItemConfig,
                     agConfig.chatItemConfig
+                  );
+                }
+                if (agConfig && agConfig.marketDialogConfig) {
+                  Object.assign(
+                    state.agentConfigInfo.agentConfig.marketDialogConfig,
+                    agConfig.marketDialogConfig
                   );
                 }
 

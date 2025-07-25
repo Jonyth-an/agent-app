@@ -1,7 +1,7 @@
 import { useSpeech } from '@/web/common/hooks/useSpeech';
 import { AddIcon } from '@chakra-ui/icons';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { Box, Flex, Spinner, Textarea } from '@chakra-ui/react';
+import { Box, Flex, Spinner, Textarea, useDisclosure } from '@chakra-ui/react';
 import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
@@ -56,6 +56,7 @@ interface ChatInputProps {
 // 添加 ref 类型
 // 在文件顶部导入新组件
 import TextareaInput from './TextareaInput';
+import HuaanMarketModel, { MarketDialogConfig } from './MarketModel/HuaanMarketModel';
 
 // 修改组件定义，添加类型
 // 添加 ref 类型
@@ -82,6 +83,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const styleType = useCurrentStyleType();
     const listStyle = agentConfigInfo?.agentConfig?.listStyle || {};
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     React.useImperativeHandle(ref, () => ({
       closeTools: () => {
@@ -378,6 +381,21 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
               onImageSelect={handleImageSelect}
             />
           ) : null}
+          <Box
+            as="button"
+            onClick={onOpen}
+            bg="blue.500"
+            color="white"
+            px={4}
+            py={2}
+            borderRadius="md"
+            _hover={{ bg: 'blue.600' }}
+          >
+            打开展业神器
+          </Box>
+
+          <HuaanMarketModel isOpen={isOpen} onClose={onClose} />
+
           {/* <ChatTools/> mark */}
           {/* <ChatTools
           isOpen={isToolsOpen}
