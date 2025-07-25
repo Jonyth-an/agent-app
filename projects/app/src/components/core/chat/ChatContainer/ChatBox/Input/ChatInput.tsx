@@ -381,20 +381,8 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
               onImageSelect={handleImageSelect}
             />
           ) : null}
-          <Box
-            as="button"
-            onClick={onOpen}
-            bg="blue.500"
-            color="white"
-            px={4}
-            py={2}
-            borderRadius="md"
-            _hover={{ bg: 'blue.600' }}
-          >
-            打开展业神器
-          </Box>
 
-          <HuaanMarketModel isOpen={isOpen} onClose={onClose} />
+          <HuaanMarketModel />
 
           {/* <ChatTools/> mark */}
           {/* <ChatTools
