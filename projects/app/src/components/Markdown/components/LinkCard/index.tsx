@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import CardSkeleton from '../ContentCard/CardSkeleton';
 import { useStyleConfig } from '../../styles/styleUtils';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 // "url": "",
 // 			"title": "净值播报1",
 // 			"id": 1,
@@ -21,6 +22,9 @@ interface LinkCardProps {
 // 骨架屏组件
 
 const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
+  const { agentConfigInfo } = useChatStore();
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
+  const cardAIBg = chatItemConfig?.cardAIBg || '#ffffff';
   const styles = useStyleConfig();
 
   const parsedData = useMemo(() => {
@@ -72,7 +76,12 @@ const LinkCard = ({ value, isHistory = false }: LinkCardProps) => {
     return <CardSkeleton />;
   }
   return (
-    <Box className={`video-card-container ${styles['chat-cus-card-style']}`} mb={2} mt={4}>
+    <Box
+      className={`video-card-container ${styles['chat-cus-card-style']}`}
+      bg={cardAIBg}
+      mb={2}
+      mt={4}
+    >
       <Text
         as={'div'}
         fontSize="18px"

@@ -219,16 +219,36 @@ export const useChatStore = create<State>()(
           agentConfig: {
             commonConfig: {
               enableGenImg: false,
-              styleType: 'default'
+              styleType: 'default',
+              pageBg: '#ffffff'
             },
+            guideConfig: {
+              showGuideImage: true,
+              paddingTop: '73px',
+              guideImage:
+                'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-07-21/198509d8-3ab2-4d67-98ef-fcf6c6acfdbb.png'
+            },
+
             chatItemConfig: {
+              humanBg: 'primary.100',
+              humanFontSize: '14px',
+              humanFontColor: 'myGray.500',
+              humanBorderRadius: '8px',
+              humanShadow: 'myGray.500',
+
+              aiBg: '#f7f8fa', // #f7f8fa
+              aiFontSize: '14px',
+              aiFontColor: 'myGray.500',
+              aiBorderRadius: '0 8px 8px 8px',
+              aiShadow: '',
+
+              cardAIBg: '#ffffff',
               paddingTop: 24,
               paddingBottom: 24,
               isFullWidth: false,
               showHumanController: true,
               showAIAvatar: true,
               showAIWorkflowStatus: true,
-              showAIControllerPosition: 'top',
               showAIController: true
             },
             listStyle: {},
@@ -273,6 +293,14 @@ export const useChatStore = create<State>()(
                 if (agConfig && agConfig.listStyle) {
                   Object.assign(state.agentConfigInfo.agentConfig.listStyle, agConfig.listStyle);
                 }
+
+                if (agConfig && agConfig.guideConfig) {
+                  Object.assign(
+                    state.agentConfigInfo.agentConfig.guideConfig,
+                    agConfig.guideConfig
+                  );
+                }
+
                 if (agConfig && agConfig.qaGuideConfig) {
                   Object.assign(
                     state.agentConfigInfo.agentConfig.qaGuideConfig,

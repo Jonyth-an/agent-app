@@ -75,6 +75,8 @@ const Chat = () => {
   const tenantId = agentConfigInfo.tenantId;
   const agentId = agentConfigInfo.agentId;
   const appKey = agentConfigInfo.appKey;
+  const commonConfig = agentConfigInfo.agentConfig.commonConfig;
+  const pageBg = commonConfig.pageBg;
   const permissionType = agentConfigInfo.permissionType;
   const name = staffInfo.name;
   console.log('xxx agentConfigInfo2322 chat page', agentConfigInfo);
@@ -242,7 +244,7 @@ const Chat = () => {
   }, [appId, isOpenSlider, isPc, onCloseSlider, t]);
   const styles = useStyleConfig();
   return (
-    <Flex h={'100%'} className={`chat-page-wrapper ${styles['chat-page-wrapper']}`}>
+    <Flex h={'100%'} className={`chat-page-wrapper ${styles['chat-page-wrapper']}`} bg={pageBg}>
       <NextHead
         title={agentConfigInfo.name}
         icon={agentConfigInfo.avatar}

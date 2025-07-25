@@ -129,59 +129,61 @@ const ChatItem = (props: Props) => {
   const showAIAvatar = chatItemConfig?.showAIAvatar ?? true
   const showAIWorkflowStatus = chatItemConfig?.showAIWorkflowStatus ?? true
   const isFullWidth = chatItemConfig?.isFullWidth ?? false
+  const humanBg = chatItemConfig?.humanBg || 'primary.100'
+  const humanFontSize = chatItemConfig?.humanFontSize || '14px'
+  const humanFontColor = chatItemConfig?.humanFontColor || 'myGray.500'
+
+  const aiBg = chatItemConfig?.aiBg ||  'myGray.50'
+  const aiFontSize = chatItemConfig?.aiFontSize || '14px'
+  const aiFontColor = chatItemConfig?.aiFontColor ||'myGray.500'
+
+  const humanShadow = chatItemConfig?.humanShadow || ''
+  const aiShadow = chatItemConfig?.aiShadow || ''
+
+  const humanBorderRadius = chatItemConfig?.humanBorderRadius || '8px 0 8px 8px'
+  const aiBorderRadius  = chatItemConfig?.humanBorderRadius || '0 8px 8px 8px'
+
+  const cardAIBg = chatItemConfig?.cardAIBg 
 
   let messageCardStyle = MessageCardStyle
   if(isFullWidth){
     messageCardStyle = MessageCardFullStyle
   }
   const { isPc } = useSystem();
-
+  // humanBg: 'primary.100',
+  // humanFontSize: '14px',
+  // aiBg: '#f7f8fa', // #f7f8fa
+  // aiFontSize: '14px',
+  // cardAIBg: '#ffffff',
   const defaultStyleMap: BoxProps = {
     ...(type === ChatRoleEnum.Human
       ? {
           order: 0,
-          borderRadius: '8px 0 8px 8px',
+          borderRadius: humanBorderRadius,
           justifyContent: 'flex-end',
           textAlign: 'right',
-          bg: 'primary.100'
+          bg: humanBg,
+          fontSize: humanFontSize,
+          fontWeight: '400',
+          color: humanFontColor,
+          shadow: humanShadow
         }
       : {
           order: 1,
-          borderRadius: '0 8px 8px 8px',
+          borderRadius: aiBorderRadius,
           justifyContent: 'flex-start',
           textAlign: 'left',
-          bg: 'myGray.50'
+          bg: aiBg,
+          fontSize: aiFontSize,
+          fontWeight: '400',
+          color: aiFontColor,
+          shadow: aiShadow
         }),
-    fontSize: 'mini',
-    fontWeight: '400',
-    color: 'myGray.500'
+   
   };
 
-  const huaanStyleMap: BoxProps = {
-    ...(type === ChatRoleEnum.Human
-      ? {
-          order: 0,
-          borderRadius: '8px 0 8px 8px',
-          justifyContent: 'flex-end',
-          textAlign: 'right',
-          bg: '#E5EDFE'
-        }
-      : {
-          order: 1,
-          borderRadius: '0 8px 8px 8px',
-          justifyContent: 'flex-start',
-          textAlign: 'left',
-          bg: '#ffffff'
-        }),
-    fontSize: 'mini',
-    fontWeight: '400',
-    color: 'myGray.500'
-  };
 
-  const styleMap = getStyleClass({
-    huaan: huaanStyleMap,
-    default: defaultStyleMap
-  })
+  const styleMap = {...defaultStyleMap}
   const { t } = useTranslation();
 
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
@@ -275,7 +277,7 @@ const ChatItem = (props: Props) => {
       }}
     >
       {/* control icon */}
-       <Flex className='chat-controls-out-wapper' w={'100%'} alignItems={'center'} gap={2} justifyContent={styleMap.justifyContent}>
+       <Flex className='chat-controls-out-wapper' w={'100%'} alignItems={'center'} gap={2} justifyContent={styleMap.justifyContent} shadow={styleMap.shadow}>
         {isChatting && type === ChatRoleEnum.AI && isLastChild ? null : (
           <Flex order={styleMap.order} ml={styleMap.ml} align={'center'} gap={'0.62rem'}>
             {chat.time && (isPc || isChatLog) && (

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
 import CardSkeleton from '../ContentCard/CardSkeleton';
 import { useStyleConfig } from '../../styles/styleUtils';
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 
 interface VideoCardItem {
   id: number;
@@ -25,6 +26,9 @@ interface VideoCardProps {
 // 骨架屏组件
 
 const VideoCard = ({ value, isHistory = false }: VideoCardProps) => {
+  const { agentConfigInfo } = useChatStore();
+  const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {};
+  const cardAIBg = chatItemConfig?.cardAIBg || '#ffffff';
   const styles = useStyleConfig();
   const parsedData = useMemo(() => {
     try {
@@ -78,7 +82,12 @@ const VideoCard = ({ value, isHistory = false }: VideoCardProps) => {
   // const styles = useStyleConfig();
 
   return (
-    <Box className={`video-card-container ${styles['chat-cus-card-style']}`} mb={2} mt={4}>
+    <Box
+      className={`video-card-container ${styles['chat-cus-card-style']}`}
+      bg={cardAIBg}
+      mb={2}
+      mt={4}
+    >
       <Text
         as={'div'}
         fontSize="18px"
