@@ -479,7 +479,7 @@ const ChatBox = ({
           abortRequest();
           questionGuideController.current?.abort('stop');
 
-          text = text.trim();
+          text = text?.trim() || '';
 
           if (!text && files.length === 0) {
             toast({
