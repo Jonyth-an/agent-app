@@ -29,11 +29,7 @@ const A = ({ children, ...props }: any) => {
   const { agentConfigInfo, runPlatform } = useChatStore();
   const card_config = agentConfigInfo.agentConfig.miniprogram.card_config || {};
 
-  const {
-    data: quoteData,
-    loading,
-    runAsync
-  } = useRequest2(getQuoteData, {
+  const { data: quoteData, loading, runAsync } = useRequest2(getQuoteData, {
     manual: true
   });
 
@@ -106,16 +102,22 @@ const A = ({ children, ...props }: any) => {
 
   const handleClick = () => {
     const href = props.href;
-    if (runPlatform === RunPlatformEnum.MINI_PROGRAM) {
-      const miniPath = card_config && card_config.miniPath;
-      const url = `${miniPath}?url=${encodeURIComponent(href)}`;
-      console.log('xxx clickCard url', url);
-      wx.miniProgram.navigateTo({
-        url
-      });
-    } else {
-      window.location.href = href;
-    }
+    const miniPath = card_config && card_config.miniPath;
+    const url = `${miniPath}?url=${encodeURIComponent(href)}`;
+    console.log('xxx clickCard url', url);
+    wx.miniProgram.navigateTo({
+      url
+    });
+    // if (runPlatform === RunPlatformEnum.MINI_PROGRAM) {
+    //   const miniPath = card_config && card_config.miniPath;
+    //   const url = `${miniPath}?url=${encodeURIComponent(href)}`;
+    //   console.log('xxx clickCard url', url);
+    //   wx.miniProgram.navigateTo({
+    //     url
+    //   });
+    // } else {
+    //   window.location.href = href;
+    // }
   };
 
   return (
