@@ -1,4 +1,7 @@
+import { useChatStore } from '@/web/core/chat/context/useChatStore';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
+import { RunPlatformEnum } from '@fastgpt/global/core/chat/constants';
+import { useCallback, useMemo } from 'react';
 export enum CodeClassNameEnum {
   guide = 'guide',
   questionGuide = 'questionGuide',
@@ -228,3 +231,32 @@ export function convertHtmlTablesToLatex(input: string) {
   const tableRegex = /<table[\s\S]*?<\/table>/gi;
   return input.replace(tableRegex, (match) => htmlTableToLatex(match));
 }
+
+export const useLinkClick = () => {
+  const { agentConfigInfo, runPlatform } = useChatStore();
+  const card_config = useMemo(
+    () => agentConfigInfo.agentConfig.miniprogram.card_config || {},
+    [agentConfigInfo.agentConfig.miniprogram.card_config]
+  );
+
+  const handleLinkClick = useCallback(
+    (href: string) => {
+      if (runPlatform === RunPlatformEnum.MINI_PROGRAM) {
+        const miniPath = card_config && card_config.miniPath;
+        const url = `${miniPath}?url=${encodeURIComponent(href)}`;
+        console.log('xxx clickCard url', url, 'runPlatform', runPlatform);
+        wx.miniProgram.navigateTo({
+          url
+        });
+      } else {
+        window.location.href = href;
+        console.log('xxx clickCard url', href, 'runPlatform', runPlatform);
+      }
+    },
+    [runPlatform, card_config]
+  );
+
+  return {
+    handleLinkClick
+  };
+};
