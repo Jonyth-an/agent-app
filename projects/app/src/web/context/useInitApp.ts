@@ -87,35 +87,38 @@ export const useInitApp = () => {
   }, [agentConfigInfo]);
 
   useEffect(() => {
-    const bool = isMiniProgram();
-    if (bool) {
-      setRunPlatform(RunPlatformEnum.MINI_PROGRAM);
-      // 页面加载完成后向小程序发送消息
-      if (document.readyState === 'complete') {
-        sendMessageToMiniProgram();
+    const fn = async () => {
+      const bool = await isMiniProgram();
+      if (bool) {
+        setRunPlatform(RunPlatformEnum.MINI_PROGRAM);
+        // 页面加载完成后向小程序发送消息
+        if (document.readyState === 'complete') {
+          sendMessageToMiniProgram();
+        } else {
+          window.addEventListener('load', sendMessageToMiniProgram);
+          return () => {
+            window.removeEventListener('load', sendMessageToMiniProgram);
+          };
+        }
       } else {
-        window.addEventListener('load', sendMessageToMiniProgram);
-        return () => {
-          window.removeEventListener('load', sendMessageToMiniProgram);
-        };
+        setRunPlatform(RunPlatformEnum.H5);
       }
-    } else {
-      setRunPlatform(RunPlatformEnum.H5);
-    }
-    console.log('ccc runPlatform', runPlatform);
+      console.log('ccc runPlatform', runPlatform);
 
-    hiId && localStorage.setItem('inviterId', hiId);
-    bd_vid && sessionStorage.setItem('bd_vid', bd_vid);
-    k && sessionStorage.setItem('fastgpt_sem', JSON.stringify({ keyword: k }));
+      hiId && localStorage.setItem('inviterId', hiId);
+      bd_vid && sessionStorage.setItem('bd_vid', bd_vid);
+      k && sessionStorage.setItem('fastgpt_sem', JSON.stringify({ keyword: k }));
 
-    const formatSourceDomain = (() => {
-      if (sourceDomain) return sourceDomain;
-      return document.referrer;
-    })();
+      const formatSourceDomain = (() => {
+        if (sourceDomain) return sourceDomain;
+        return document.referrer;
+      })();
 
-    if (formatSourceDomain && !sessionStorage.getItem('sourceDomain')) {
-      sessionStorage.setItem('sourceDomain', formatSourceDomain);
-    }
+      if (formatSourceDomain && !sessionStorage.getItem('sourceDomain')) {
+        sessionStorage.setItem('sourceDomain', formatSourceDomain);
+      }
+    };
+    fn();
   }, [bd_vid, hiId, k, sourceDomain, runPlatform, setRunPlatform, sendMessageToMiniProgram]);
 
   return {

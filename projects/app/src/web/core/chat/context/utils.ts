@@ -136,10 +136,68 @@ export function toMemberLanding({ appId, tenantId, value }: RedirectAuthParams) 
   }
 }
 
-export const isMiniProgram = () => {
-  let ua = window.navigator.userAgent.toLowerCase();
-  console.log(ua);
-  let bool = ua.indexOf('miniprogram') != -1;
-  // true 在微信小程序  false 在微信网页
-  return !!bool;
+export const isMiniProgram = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    // 方法1: 检查 __wxjs_environment
+    if (typeof window !== 'undefined' && window.__wxjs_environment === 'miniprogram') {
+      resolve(true);
+      return;
+    }
+    // 方法2: 使用 WeixinJSBridge 检测
+    const checkWithJSBridge = () => {
+      if (typeof window !== 'undefined' && window.__wxjs_environment === 'miniprogram') {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      if (!window.WeixinJSBridge || !window.WeixinJSBridge.invoke) {
+        document.addEventListener('WeixinJSBridgeReady', checkWithJSBridge, false);
+        // 设置超时，避免无限等待
+        setTimeout(() => resolve(false), 1000);
+      } else {
+        checkWithJSBridge();
+      }
+    } else {
+      resolve(false);
+    }
+  });
+};
+
+// 如果需要同步版本，可以提供一个简化的检测方法
+export const isMiniProgramSync = (): boolean => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  // 优先使用官方推荐的 __wxjs_environment 检测
+  if (window.__wxjs_environment === 'miniprogram') {
+    return true;
+  }
+
+  // 备用方案：检查 userAgent（保持向后兼容）
+  const ua = window.navigator.userAgent.toLowerCase();
+  return ua.indexOf('miniprogram') !== -1;
+};
+
+// 使用 wx.miniProgram.getEnv 的方法（需要引入微信 JS-SDK）
+export const isMiniProgramWithWx = (): Promise<boolean> => {
+  return new Promise((resolve) => {
+    if (typeof window === 'undefined') {
+      resolve(false);
+      return;
+    }
+
+    // 检查是否存在 wx 对象和 miniProgram API
+    if (typeof window.wx !== 'undefined' && window.wx.miniProgram && window.wx.miniProgram.getEnv) {
+      window.wx.miniProgram.getEnv((res: { miniprogram: boolean }) => {
+        resolve(!!res.miniprogram);
+      });
+    } else {
+      // 如果 wx 对象不存在，回退到其他检测方法
+      resolve(isMiniProgramSync());
+    }
+  });
 };

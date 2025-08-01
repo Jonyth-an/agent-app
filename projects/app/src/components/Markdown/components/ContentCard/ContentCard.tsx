@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Flex, Text, Link, Divider, Image } from '@chakra-ui/react';
-import { ContentItem } from '../../utils';
+import { ContentItem, useLinkClick } from '../../utils';
 import CardSkeleton from './CardSkeleton';
 
 interface ContentCardProps {
@@ -11,7 +11,7 @@ interface ContentCardProps {
 
 const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCardProps) => {
   const [visibleItems, setVisibleItems] = useState<ContentItem[]>([]);
-
+  const { handleLinkClick } = useLinkClick();
   useEffect(() => {
     setVisibleItems([]); // 重置状态
     if (items.length === 0) return;
@@ -57,13 +57,13 @@ const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCa
       <Flex direction="column" gap={3}>
         {visibleItems.slice(0, maxItems).map((item, index) => (
           <React.Fragment key={`${item.id}_${index}`}>
-            <Link
+            <Box
               sx={{
                 textDecoration: 'none!important'
               }}
-              href={item.url}
-              isExternal
-              _hover={{ textDecoration: 'none' }}
+              onClick={() => {
+                handleLinkClick(item.url);
+              }}
             >
               <Flex alignItems="start" gap={3} borderRadius="md" transition="background 0.2s">
                 <Box flexShrink={0} width="65px" height="50px" overflow="hidden" borderRadius="md">
@@ -89,7 +89,7 @@ const ContentCard = ({ items = [], maxItems = 10, isHistory = false }: ContentCa
                   </Text>
                 </Box>
               </Flex>
-            </Link>
+            </Box>
             {index < visibleItems.length - 1 && (
               <Box height="1px" bg="gray.200" opacity="0.6" width="100%" my={0} />
             )}
