@@ -38,7 +38,7 @@ import type {
   ChatInputRefType
 } from './type.d';
 import type { StartChatFnProps, generatingMessageProps } from '../type';
-import ChatInput from './Input/ChatInput';
+import ChatInput from './Input/ChatInput/ChatInput';
 import ChatBoxDivider from '../../Divider';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
