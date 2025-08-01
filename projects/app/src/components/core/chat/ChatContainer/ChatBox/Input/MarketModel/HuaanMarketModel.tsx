@@ -72,7 +72,7 @@ const HuaanMarketModel: React.FC<HuaanMarketModelProps> = () => {
     <>
       {/* 触发按钮 */}
       <Box
-        as="button"
+        as="div"
         onClick={onOpen}
         bg="blue.500"
         color="white"
@@ -81,7 +81,7 @@ const HuaanMarketModel: React.FC<HuaanMarketModelProps> = () => {
         borderRadius="md"
         _hover={{ bg: 'blue.600' }}
       >
-        打开展业神器
+        打
       </Box>
 
       {/* 弹窗内容 */}

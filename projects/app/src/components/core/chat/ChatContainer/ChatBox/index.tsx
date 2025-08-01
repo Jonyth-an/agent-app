@@ -39,6 +39,7 @@ import type {
 } from './type.d';
 import type { StartChatFnProps, generatingMessageProps } from '../type';
 import ChatInput from './Input/ChatInput/ChatInput';
+import HuaanChatInput from './Input/ChatInput/HuaanChatInput';
 import ChatBoxDivider from '../../Divider';
 import { OutLinkChatAuthProps } from '@fastgpt/global/support/permission/chat';
 import { getNanoid } from '@fastgpt/global/common/string/tools';
@@ -78,6 +79,7 @@ import { generateImgApi } from '@/web/core/chat/user';
 import { basePath, share_h5_url_front } from '@/web/common/utils/config';
 import { GenerateImgStatusEnum } from '@fastgpt/global/core/chat/constants';
 import ComponentWrapper from './CompoentWrapper';
+import { StyleTypeEnum, useCurrentStyleType } from '@/components/Markdown/styles/styleUtils';
 const ResponseTags = dynamic(() => import('./components/ResponseTags'));
 const FeedbackModal = dynamic(() => import('./components/FeedbackModal'));
 const ReadFeedbackModal = dynamic(() => import('./components/ReadFeedbackModal'));
@@ -162,6 +164,7 @@ const ChatBox = ({
   const isChatting = useContextSelector(ChatBoxContext, (v) => v.isChatting);
   // Workflow running, there are user input or selection
   const isInteractive = useMemo(() => checkIsInteractiveByHistories(chatRecords), [chatRecords]);
+  const styleType = useCurrentStyleType()
   // console.log('xxx ChatItem props', props);
   const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {}
   const paddingTop = chatItemConfig?.paddingTop ||  24;
@@ -1184,6 +1187,8 @@ const ChatBox = ({
       </ScrollData>
     );
   }, [
+    paddingBottom,
+    paddingTop,
     chatStauts,
     ScrollData,
     chatForm,
@@ -1222,14 +1227,28 @@ const ChatBox = ({
 
       {/* message input */}
       {onStartChat && chatStarted && active && !isInteractive && (
-        <ChatInput
-          ref={chatInputRef}
-          onSendMessage={sendPrompt}
-          onStop={() => chatController.current?.abort('stop')}
-          TextareaDom={TextareaDom}
-          resetInputVal={resetInputVal}
-          chatForm={chatForm}
-        />
+        <>
+        {
+          styleType === StyleTypeEnum.huaan ?
+          <HuaanChatInput
+            ref={chatInputRef}
+            onSendMessage={sendPrompt}
+            onStop={() => chatController.current?.abort('stop')}
+            TextareaDom={TextareaDom}
+            resetInputVal={resetInputVal}
+            chatForm={chatForm}
+          />
+          :
+          <ChatInput
+            ref={chatInputRef}
+            onSendMessage={sendPrompt}
+            onStop={() => chatController.current?.abort('stop')}
+            TextareaDom={TextareaDom}
+            resetInputVal={resetInputVal}
+            chatForm={chatForm}
+          />
+        }
+        </>
       )}
       {/* user feedback modal */}
       {!!feedbackId && chatId && (
