@@ -477,7 +477,21 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
           </Flex>
           {/* mark */}
           {!isPc ? (
-            <HuaanMarketModel />
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              flexShrink={0}
+              h={['28px', '32px']}
+              w={['28px', '32px']}
+              borderRadius={'md'}
+              bg={'#E5E5E5'}
+              position={'absolute'}
+              right={[2, 4]}
+              bottom={['10px', '12px']}
+              // onClick={() => setIsToolsOpen(!isToolsOpen)}
+            >
+              <HuaanMarketModel />
+            </Flex>
           ) : // <Flex
           //   alignItems={'center'}
           //   justifyContent={'center'}

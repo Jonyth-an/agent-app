@@ -76,8 +76,6 @@ const HuaanMarketModel: React.FC<HuaanMarketModelProps> = () => {
         onClick={onOpen}
         bg="blue.500"
         color="white"
-        px={4}
-        py={2}
         borderRadius="md"
         _hover={{ bg: 'blue.600' }}
       >
