@@ -13,7 +13,7 @@ export const MessageCardStyle: BoxProps = {
 };
 
 export const MessageCardFullStyle: BoxProps = {
-  px: 4,
+  px: 3,
   py: 3,
   borderRadius: '0 8px 8px 8px',
   boxShadow: 'none',

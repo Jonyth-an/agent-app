@@ -1,7 +1,7 @@
 import { useSpeech } from '@/web/common/hooks/useSpeech';
 import { AddIcon } from '@chakra-ui/icons';
 import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { Box, Flex, Spinner, Textarea } from '@chakra-ui/react';
+import { Box, Flex, Image, Spinner, Textarea } from '@chakra-ui/react';
 import React, { useRef, useEffect, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
@@ -404,17 +404,11 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                 alignItems={'center'}
                 justifyContent={'center'}
                 flexShrink={0}
-                mr={isPc ? 0 : 10}
+                mr={isPc ? 0 : 0}
                 h={['28px', '32px']}
                 w={['28px', '32px']}
                 borderRadius={'md'}
-                bg={
-                  isSpeaking || isChatting
-                    ? ''
-                    : !havInput || hasFileUploading
-                    ? '#E5E5E5'
-                    : 'primary.500'
-                }
+                bg={isSpeaking || isChatting ? '' : !havInput || hasFileUploading ? '' : ''}
                 cursor={havInput ? 'pointer' : 'not-allowed'}
                 lineHeight={1}
                 onClick={() => {
@@ -425,22 +419,55 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                 }}
               >
                 {isChatting ? (
-                  <MyIcon
+                  <Box
                     animation={'zoomStopIcon 0.4s infinite alternate'}
-                    width={['22px', '25px']}
-                    height={['22px', '25px']}
-                    cursor={'pointer'}
-                    name={'stop'}
-                    color={'gray.500'}
-                  />
+                    flexShrink={0}
+                    width="22px"
+                    height="22px"
+                    overflow="hidden"
+                    borderRadius="50%"
+                  >
+                    <Image
+                      src={
+                        'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-07-21/d69d085e-b14b-404a-ae75-52f4dfc0b009.png'
+                      }
+                      alt={'禁止发送'}
+                      objectFit="cover"
+                      width="100%"
+                      height="100%"
+                    />
+                  </Box>
                 ) : (
                   <MyTooltip label={t('common:core.chat.Send Message')}>
-                    <MyIcon
-                      name={'core/chat/sendFill'}
-                      width={['18px', '20px']}
-                      height={['18px', '20px']}
-                      color={'white'}
-                    />
+                    <Box
+                      flexShrink={0}
+                      width="28px"
+                      height="28px"
+                      overflow="hidden"
+                      borderRadius="50%"
+                    >
+                      {!havInput || hasFileUploading ? (
+                        <Image
+                          src={
+                            'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-08-05/6a34db5d-7bc6-4da0-8c46-77d1753a6622.png'
+                          }
+                          alt={'禁止发送'}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                      ) : (
+                        <Image
+                          src={
+                            'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-07-21/21f0ec49-ebcd-4fb6-8d89-0ff9d66b8a15.png'
+                          }
+                          alt={'发送'}
+                          objectFit="cover"
+                          width="100%"
+                          height="100%"
+                        />
+                      )}
+                    </Box>
                   </MyTooltip>
                 )}
               </Flex>
@@ -450,70 +477,27 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
                 alignItems={'center'}
                 justifyContent={'center'}
                 flexShrink={0}
-                mr={isPc ? 0 : 10}
+                mr={isPc ? 0 : 0}
                 h={['28px', '32px']}
                 w={['28px', '32px']}
                 borderRadius={'md'}
-                // bg={'green'}
-                bg={'#E5E5E5'}
                 cursor={havInput ? 'pointer' : 'not-allowed'}
                 lineHeight={1}
-                // onClick={() => {
-                //   if (isChatting) {
-                //     return onStop();
-                //   }
-                //   return handleSend();
-                // }}
               >
-                <MyIcon
-                  name={'core/chat/sendFill'}
-                  width={['18px', '20px']}
-                  height={['18px', '20px']}
-                  color={'white'}
-                  // color={'red'}
-                />
+                <Box flexShrink={0} width="28px" height="28px" overflow="hidden" borderRadius="md">
+                  <Image
+                    src={
+                      'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-08-05/6a34db5d-7bc6-4da0-8c46-77d1753a6622.png'
+                    }
+                    alt={'发送'}
+                    objectFit="cover"
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
               </Flex>
             )}
           </Flex>
-          {/* mark */}
-          {!isPc ? (
-            <Flex
-              alignItems={'center'}
-              justifyContent={'center'}
-              flexShrink={0}
-              h={['28px', '32px']}
-              w={['28px', '32px']}
-              borderRadius={'md'}
-              bg={'#E5E5E5'}
-              position={'absolute'}
-              right={[2, 4]}
-              bottom={['10px', '12px']}
-              // onClick={() => setIsToolsOpen(!isToolsOpen)}
-            >
-              <HuaanMarketModel />
-            </Flex>
-          ) : // <Flex
-          //   alignItems={'center'}
-          //   justifyContent={'center'}
-          //   flexShrink={0}
-          //   h={['28px', '32px']}
-          //   w={['28px', '32px']}
-          //   borderRadius={'md'}
-          //   bg={'#E5E5E5'}
-          //   position={'absolute'}
-          //   right={[2, 4]}
-          //   bottom={['10px', '12px']}
-          //   onClick={() => setIsShowTools(!isShowTools)}
-          //   // onClick={() => setIsToolsOpen(!isToolsOpen)}
-          // >
-          //   <AddIcon
-          //     name={'history'}
-          //     color={'white'}
-          //     width={['18px', '20px']}
-          //     height={['18px', '20px']}
-          //   />
-          // </Flex>
-          null}
         </Flex>
       ),
       [
@@ -541,8 +525,7 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
         speakingTimeString,
         stopSpeak,
         t,
-        whisperConfig?.open,
-        isShowTools
+        whisperConfig?.open
       ]
     );
 
@@ -618,21 +601,30 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
           ) : null}
 
           <Box
+            className="input-wrapper-box"
+            sx={{
+              border: isPc ? '1px solid rgba(0,0,0,0.07)' : 'none'
+              // borderImage: isPc
+              //   ? ''
+              //   : 'linear-gradient(141deg, rgba(72, 244, 241, 1), rgba(103, 210, 255, 1), rgba(96, 141, 240, 1), rgba(203, 128, 255, 1)) 1 1'
+            }}
             pt={fileList.length > 0 ? '0' : ['14px', '18px']}
             pb={['14px', '18px']}
             position={'relative'}
-            borderRadius={['none', 'md']}
+            borderRadius={['16px', 'md']}
             bg={'white'}
+            ml={'12px'}
+            mb={'12px'}
+            mr={'48px'}
             overflow={'display'}
-            {...(isPc
-              ? {
-                  border: '1px solid',
-                  borderColor: 'rgba(0,0,0,0.07)'
-                }
-              : {
-                  borderTop: '1px solid',
-                  borderTopColor: 'rgba(0,0,0,0.07)'
-                })}
+            // {...(isPc
+            //   ? {
+            //       border: '1px solid',
+            //       borderColor: 'rgba(0,0,0,0.07)'
+            //     }
+            //   : {
+            //       border: '1px solid'
+            //     })}
           >
             {/* Chat input guide box */}
             {chatInputGuide.open && (
@@ -657,6 +649,23 @@ const ChatInput = React.forwardRef<ChatInputRefType, ChatInputProps>(
             </Box>
             {RenderTextarea}
           </Box>
+
+          {/* mark */}
+          {!isPc ? (
+            <Flex
+              alignItems={'center'}
+              justifyContent={'center'}
+              flexShrink={0}
+              h={['28px', '32px']}
+              w={['28px', '32px']}
+              position={'absolute'}
+              right={['11px']}
+              bottom={['23px']}
+              // onClick={() => setIsToolsOpen(!isToolsOpen)}
+            >
+              <HuaanMarketModel />
+            </Flex>
+          ) : null}
           {/* <open-tools/> mark */}
           {/* {isShowTools ? <HuaanMarketModel /> : null} */}
           {/* <ChatTools/> mark */}

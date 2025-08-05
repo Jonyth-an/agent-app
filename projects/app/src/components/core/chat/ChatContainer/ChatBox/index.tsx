@@ -169,6 +169,7 @@ const ChatBox = ({
   const chatItemConfig = agentConfigInfo?.agentConfig?.chatItemConfig || {}
   const paddingTop = chatItemConfig?.paddingTop ||  24;
   const paddingBottom = chatItemConfig?.paddingBottom ||  24;
+  const scrollCntainerPX = chatItemConfig?.scrollCntainerPX ||  '16px';
   // compute variable input is finish.
   const chatForm = useForm<ChatBoxInputFormType>({
     defaultValues: {
@@ -1058,7 +1059,7 @@ const ChatBox = ({
         h={0}
         w={'100%'}
         overflow={'overlay'}
-        px={[4, 0]}
+        px={[scrollCntainerPX, 0]}
         pb={3}
       >
         <Box id="chat-container" maxW={['100%', '92%']} h={'100%'} mx={'auto'}>

@@ -71,15 +71,16 @@ const HuaanMarketModel: React.FC<HuaanMarketModelProps> = () => {
   return (
     <>
       {/* 触发按钮 */}
-      <Box
-        as="div"
-        onClick={onOpen}
-        bg="blue.500"
-        color="white"
-        borderRadius="md"
-        _hover={{ bg: 'blue.600' }}
-      >
-        打
+      <Box as="div" onClick={onOpen} flexShrink={0} width="22px" height="22px" overflow="hidden">
+        <Image
+          src={
+            'https://aim-pic-test-huaan.newtamp.cn/image/course/2025-07-21/38d59df2-18a4-48a6-9153-5108afe591dd.png'
+          }
+          alt={'发送'}
+          objectFit="cover"
+          width="100%"
+          height="100%"
+        />
       </Box>
 
       {/* 弹窗内容 */}

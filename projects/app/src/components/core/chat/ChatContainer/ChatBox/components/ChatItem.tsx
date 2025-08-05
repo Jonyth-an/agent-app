@@ -338,7 +338,7 @@ const ChatItem = (props: Props) => {
           }}
         >
           <Card
-            className={`chat-item-card ${styleConfig['chat-item-card']}`}
+            className={`chat-item-card`}
             {...messageCardStyle}
             bg={styleMap.bg}
             borderRadius={styleMap.borderRadius}

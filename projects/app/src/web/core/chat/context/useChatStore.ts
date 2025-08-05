@@ -230,6 +230,7 @@ export const useChatStore = create<State>()(
             },
 
             chatItemConfig: {
+              scrollCntainerPX: '16px',
               humanBg: 'primary.100',
               humanFontSize: '14px',
               humanFontColor: 'myGray.500',
